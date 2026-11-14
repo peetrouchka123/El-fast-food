@@ -658,6 +658,7 @@ function pauseSimulation(){
   toast('Simulation mise en pause.');
 }
 
+
 function stopSimulation(){
   if(simulationTimer){
     clearInterval(simulationTimer);
@@ -672,27 +673,27 @@ function stopSimulation(){
   toast('Simulation arrêtée.');
 }
 
-
-  if(simulationTimer){
-    clearInterval(simulationTimer);
-    simulationTimer = null;
-  }
-
-  renderAdmin();
-  toast('Simulation arrêtée.');
-}
-
 function init(){
   renderMenus();
   renderMenuBuilder();
   renderProducts();
+
   const home=document.getElementById('homeProducts');
-  if(home)home.innerHTML=products.filter(p=>p.available&&p.stock>0).slice(0,3).map(productCard).join('');
+
+  if(home){
+    home.innerHTML=products
+      .filter(p=>p.available&&p.stock>0)
+      .slice(0,3)
+      .map(productCard)
+      .join('');
+  }
+
   updateCartCount();
   renderCart();
 }
 
 init();
+
 </script>
 </body>
 </html>
