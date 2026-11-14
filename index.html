@@ -54,6 +54,15 @@
 <script>
 'use strict';
 const STORE={cart:'elff_cart_v3',orders:'elff_orders_v3',products:'elff_products_v3',reviews:'elff_reviews_v1',team:'elff_team_v1',promos:'elff_promos_v1'};
+function loadJSON(key,fallback){
+  try{
+    const raw=localStorage.getItem(key);
+    return raw?JSON.parse(raw):JSON.parse(JSON.stringify(fallback));
+  }catch(e){
+    return JSON.parse(JSON.stringify(fallback));
+  }
+}
+
 const PROMOS=loadJSON(STORE.promos,{JUNGLE10:{type:'percent',value:10,label:'-10 %',active:true},WELCOME5:{type:'fixed',value:5,label:'-5 €',active:true}});
 let activePromo=null;let customerPseudo='';let reviews=loadJSON(STORE.reviews,[]);let teamMembers=loadJSON(STORE.team,['Directeur','Responsable caisse','Responsable cuisine','Équipier polyvalent']);
 const baseProducts=[
