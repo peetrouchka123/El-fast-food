@@ -577,7 +577,8 @@ function renderCart() {
   if(cart.length===0) {
     container.innerHTML = '<div class="empty"><div>🛒</div><h3>Ton panier est vide</h3><p>Ajoute quelques gourmandises pour commencer !</p><button class="secondary" id="back-to-card">Voir la carte</button></div>';
 document.getElementById('back-to-card').addEventListener('click', () => showPage('menu-card'));
-
+return;
+}
   cart.forEach((item,index)=>{
     total+=item.price*item.quantity;
     number+=item.quantity;
