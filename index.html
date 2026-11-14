@@ -52,8 +52,15 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="modal-backdrop hidden" id="productModal" onclick="if(event.target===this)closeProductModal()"><div class="modal"><div class="modal-head"><h2 id="modalProductName">Personnaliser</h2><button class="icon-btn" onclick="closeProductModal()" aria-label="Fermer">×</button></div><div id="modalProductContent"></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-'use strict';
+'use strict';const SUPABASE_URL = 'https://gbkfthbyeielaoimlolx.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_BBZIzUlLVVIwwW7b3TFJSw_dVgFOZ-P';
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 const STORE={cart:'elff_cart_v3',orders:'elff_orders_v3',products:'elff_products_v3',reviews:'elff_reviews_v1',team:'elff_team_v1',promos:'elff_promos_v1'};
 function loadJSON(key,fallback){
   try{
@@ -1008,7 +1015,25 @@ function stopSimulation(){
   renderAdmin();
   toast('Simulation arrêtée.');
 }
+async function syncOrderToCloud(order){
+  const { error } = await supabaseClient
+    .from('orders')
+    .upsert({
+      id: order.id,
+      customer_name: order.name,
+      items: order.items,
+      total: order.total,
+      status: order.status,
+      history: order.history || [],
+      created_at: order.createdAt,
+      data: order
+    }, { onConflict: 'id' });
 
+  if(error){
+    console.error('Erreur Supabase :', error);
+    toast('Erreur de synchronisation des commandes.');
+  }
+}
 function init(){
   renderMenus();
   renderMenuBuilder();
