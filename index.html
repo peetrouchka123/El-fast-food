@@ -310,6 +310,174 @@ function togglePromo(code){
   renderAdmin();
 }
 
+let simulationTimer = null;
+
+function renderSimulation(){
+  const simulated = orders.filter(o => o.simulated);
+
+  return `
+    <h2>Clients automatiques</h2>
+    <p class="muted">
+      Simule l'arrivée de clients et observe les commandes apparaître
+      dans ton espace caisse et cuisine.
+    </p>
+
+    <div class="stats">
+      <div class="stat">
+        <span>Clients simulés</span>
+        <strong>${simulated.length}</strong>
+      </div>
+      <div class="stat">
+        <span>Commandes en attente</span>
+        <strong>${simulated.filter(o => o.status === 'new').length}</strong>
+      </div>
+      <div class="stat">
+        <span>Commandes terminées</span>
+        <strong>${simulated.filter(o => o.status === 'done').length}</strong>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Contrôle de la simulation</h3>
+      <p class="muted">
+        Une nouvelle commande sera créée automatiquement toutes les
+        20 secondes lorsque la simulation est activée.
+      </p>
+
+      <div class="admin-actions">
+        <button class="btn btn-success"
+          onclick="startSimulation()">
+          ▶ Démarrer
+        </button>
+
+        <button class="btn btn-danger"
+          onclick="stopSimulation()">
+          ■ Arrêter
+        </button>
+
+        <button class="btn btn-primary"
+          onclick="createSimulatedClient()">
+          + Ajouter un client
+        </button>
+      </div>
+
+      <p id="simulationStatus" class="muted" style="margin-top:15px">
+        ${simulationTimer ? 'Simulation en cours' : 'Simulation arrêtée'}
+      </p>
+    </div>
+
+    <div class="panel" style="margin-top:18px">
+      <h3>Derniers clients simulés</h3>
+      ${
+        simulated.length
+        ? simulated.slice().reverse().slice(0,10).map(o => `
+          <div class="admin-card">
+            <div class="admin-card-head">
+              <strong>${escapeHTML(o.name)}</strong>
+              <span class="status ${o.status}">
+                ${statusLabel(o.status)}
+              </span>
+            </div>
+            <p>
+              ${o.items.map(i => `${i.quantity} × ${escapeHTML(i.name)}`).join(', ')}
+            </p>
+            <strong>${money(o.total)}</strong>
+          </div>
+        `).join('')
+        : '<p class="muted">Aucun client simulé pour le moment.</p>'
+      }
+    </div>
+  `;
+}
+
+function createSimulatedClient(){
+  const available = products.filter(p =>
+    p.available !== false && (Number(p.stock) || 0) > 0
+  );
+
+  if(!available.length){
+    toast('Aucun produit disponible pour créer une commande.');
+    return;
+  }
+
+  const names = [
+    'Lucas','Emma','Noah','Jade','Hugo',
+    'Lina','Louis','Chloé','Adam','Léa',
+    'Gabriel','Inès','Nathan','Manon'
+  ];
+
+  const firstName = names[Math.floor(Math.random()*names.length)];
+  const count = Math.min(available.length, Math.floor(Math.random()*3)+1);
+  const selected = [];
+
+  const shuffled = [...available].sort(() => Math.random()-0.5);
+
+  for(let i=0;i<count;i++){
+    const p = shuffled[i];
+    const quantity = Math.min(
+      Math.floor(Math.random()*2)+1,
+      Number(p.stock)||1
+    );
+
+    selected.push({
+      id:p.id,
+      name:p.name,
+      price:Number(p.price)||0,
+      quantity
+    });
+  }
+
+  const total = selected.reduce(
+    (sum,item)=>sum+item.price*item.quantity,0
+  );
+
+  const now = new Date().toISOString();
+
+  const order = {
+    id:'SIM-'+Date.now().toString().slice(-7),
+    name:firstName+' (client simulé)',
+    items:selected,
+    total,
+    status:'new',
+    createdAt:now,
+    note:'Commande créée automatiquement pour la simulation.',
+    simulated:true,
+    history:[{status:'new',at:now}]
+  };
+
+  orders.push(order);
+  saveAll();
+
+  renderAdmin();
+  toast('Nouveau client simulé : '+firstName);
+}
+
+function startSimulation(){
+  if(simulationTimer){
+    toast('La simulation est déjà en cours.');
+    return;
+  }
+
+  createSimulatedClient();
+
+  simulationTimer = setInterval(()=>{
+    createSimulatedClient();
+  },20000);
+
+  renderAdmin();
+  toast('Simulation démarrée !');
+}
+
+function stopSimulation(){
+  if(simulationTimer){
+    clearInterval(simulationTimer);
+    simulationTimer = null;
+  }
+
+  renderAdmin();
+  toast('Simulation arrêtée.');
+}
+
 function init(){
   renderMenus();
   renderMenuBuilder();
