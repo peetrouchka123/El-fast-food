@@ -97,3 +97,230 @@ function addToCart(item){const p=productById(item.id);if(p&&p.stock<=0)return to
 function updateCartCount(){document.getElementById('cartCount').textContent=cart.reduce((s,i)=>s+i.quantity,0)}
 function cartTotal(){return cart.reduce((s,i)=>s+i.price*i.quantity,0)}
 function discountAmount(){if(!activePromo)return 0;const sub=cartTotal();return activePromo.type==='percent'?Math.round(sub*activePromo.value)/100:Math.min(sub,activePromo.value)}
+function renderCart(){const root=document.getElementById('cartContent');if(!cart.length){root.innerHTML='<div class="panel empty"><div class="emoji">🛍️</div><h2>Ton panier est vide</h2><p>Il est temps de choisir quelque chose de bon !</p><button class="btn btn-primary" onclick="showPage(\'carte\')">Découvrir la carte</button></div>';return}root.innerHTML=`<div class="two-col"><div class="panel"><h2 style="margin-top:0">Tes produits</h2>${cart.map((i,index)=>`<div class="cart-row"><div><h3>${escapeHTML(i.name)}</h3>${i.details?`<p>${escapeHTML(i.details)}</p>`:''}<p>${money(i.price)} l'unité</p><div class="qty"><button onclick="changeQty(${index},-1)">−</button><strong>${i.quantity}</strong><button onclick="changeQty(${index},1)">+</button><button class="btn btn-danger btn-small" onclick="removeCartItem(${index})">Retirer</button></div></div><strong>${money(i.price*i.quantity)}</strong></div>`).join('')}</div><div class="panel"><h2 style="margin-top:0">Récapitulatif</h2><div class="summary-line"><span>Sous-total</span><strong>${money(cartTotal())}</strong></div><div class="form-group"><label for="promoCode">Code promotionnel</label><div style="display:flex;gap:8px"><input id="promoCode" class="field" placeholder="Ex. JUNGLE10"><button class="btn btn-dark" onclick="applyPromo()">Appliquer</button></div></div>${activePromo?`<p class="small" style="color:var(--green)">Code ${escapeHTML(activePromo.code)} appliqué : -${money(discountAmount())}</p>`:''}<div class="summary-line"><span>Réduction</span><strong>-${money(discountAmount())}</strong></div><div class="summary-line summary-total"><span>Total</span><strong>${money(Math.max(0,cartTotal()-discountAmount()))}</strong></div><button class="btn btn-primary" style="width:100%;margin-top:15px" onclick="showCheckout()">Valider ma commande →</button><p class="muted small">Démonstration : aucun paiement réel ne sera effectué.</p></div></div>`}
+function changeQty(index,delta){if(!cart[index])return;cart[index].quantity+=delta;if(cart[index].quantity<=0)cart.splice(index,1);saveAll();updateCartCount();renderCart()}
+function removeCartItem(index){cart.splice(index,1);saveAll();updateCartCount();renderCart()}
+function applyPromo(){const code=(document.getElementById('promoCode')?.value||'').trim().toUpperCase();const promo=PROMOS[code];if(!promo||!promo.active){activePromo=null;toast('Code promotionnel invalide.');renderCart();return}activePromo={...promo,code};toast('Réduction appliquée !');renderCart()}
+function showCheckout(){if(!cart.length)return;const root=document.getElementById('cartContent');root.innerHTML=`<div class="two-col"><div class="panel"><h2 style="margin-top:0">Tes informations</h2><form id="checkoutForm" onsubmit="submitOrder(event)"><div class="form-grid"><div class="form-group"><label for="customerName">Prénom ou pseudo</label><input class="field" id="customerName" maxlength="30" required placeholder="Ton prénom"></div><div class="form-group"><label for="customerMode">Mode de commande</label><select class="field" id="customerMode"><option>À emporter</option><option>Sur place</option></select></div><div class="form-group full"><label for="customerNote">Note pour la commande (facultatif)</label><textarea class="field" id="customerNote" maxlength="250" placeholder="Une précision pour l'équipe…"></textarea></div></div><div class="notice" style="margin-top:15px">Ce site est une démonstration. N'indique pas ton nom complet, ton adresse, ton téléphone ou des informations personnelles.</div><button class="btn btn-primary" style="width:100%;margin-top:16px" type="submit">Confirmer la commande</button></form></div><div class="panel"><h2 style="margin-top:0">Ton récapitulatif</h2>${cart.map(i=>`<div class="summary-line"><span>${i.quantity} × ${escapeHTML(i.name)}</span><strong>${money(i.price*i.quantity)}</strong></div>`).join('')}<div class="summary-line"><span>Sous-total</span><strong>${money(cartTotal())}</strong></div><div class="summary-line"><span>Réduction</span><strong>-${money(discountAmount())}</strong></div><div class="summary-line summary-total"><span>Total</span><strong>${money(cartTotal()-discountAmount())}</strong></div></div></div>`}
+function submitOrder(event){event.preventDefault();if(!cart.length)return;const name=document.getElementById('customerName').value.trim();if(!name)return;const now=new Date().toISOString();const items=cart.map(i=>({...i}));const order={id:makeOrderId(),name,mode:document.getElementById('customerMode').value,note:document.getElementById('customerNote').value.trim(),items,total:Math.max(0,cartTotal()-discountAmount()),promo:activePromo?.code||null,status:'new',createdAt:now,etaMinutes:15,history:[{status:'new',at:now}]};orders.unshift(order);items.forEach(i=>{const p=productById(i.id);if(p)p.stock=Math.max(0,p.stock-i.quantity)});cart=[];activePromo=null;saveAll();updateCartCount();document.getElementById('cartContent').innerHTML=`<div class="success-box"><div style="font-size:3rem">🎉</div><h2>Commande confirmée !</h2><p>Merci ${escapeHTML(name)} !</p><p>Ton numéro de commande :</p><h2>${escapeHTML(order.id)}</h2><p>Temps estimé : environ ${order.etaMinutes} minutes.</p><button class="btn btn-primary" onclick="document.getElementById('trackingCode').value='${escapeHTML(order.id)}';showPage('suivi');trackOrder()">Suivre ma commande</button></div>`;toast('Commande enregistrée !')}
+function statusLabel(status){return({new:'Nouvelle',accepted:'Acceptée',preparing:'En préparation',ready:'Prête',done:'Terminée',refused:'Refusée'})[status]||status}
+function statusDescription(status){return({new:'Commande envoyée à l’équipe',accepted:'Commande acceptée',preparing:'Préparation en cuisine',ready:'Commande prête à récupérer',done:'Commande terminée',refused:'Commande refusée'})[status]||'Mise à jour'}
+function trackOrder(){const code=document.getElementById('trackingCode').value.trim().toUpperCase();const order=orders.find(o=>o.id.toUpperCase()===code);const root=document.getElementById('trackingResult');if(!order){root.innerHTML='<p class="notice">Aucune commande trouvée avec ce numéro sur ce navigateur.</p>';return}const stages=['new','accepted','preparing','ready','done'];const index=stages.indexOf(order.status);const progress=order.status==='refused'?0:Math.max(0,index)/(stages.length-1)*100;root.innerHTML=`<div class="admin-card"><div class="admin-card-head"><div><strong>${escapeHTML(order.id)}</strong><p>${escapeHTML(order.name)} · ${new Date(order.createdAt).toLocaleString('fr-FR')}</p></div><span class="status ${order.status}">${statusLabel(order.status)}</span></div><p>Temps estimé : ${order.status==='ready'||order.status==='done'?'Commande prête':order.status==='refused'?'Non disponible':order.etaMinutes+' minutes environ'}</p><div style="height:10px;background:#edf0e9;border-radius:20px;overflow:hidden;margin:15px 0"><div style="height:100%;width:${progress}%;background:var(--leaf);border-radius:20px"></div></div><div class="small muted">${order.status==='refused'?'La commande a été refusée.':statusDescription(order.status)}</div><h3>Historique</h3>${order.history.map(h=>`<div class="summary-line"><span>${statusDescription(h.status)}</span><span class="small muted">${new Date(h.at).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</span></div>`).join('')}<button class="btn btn-light btn-small" onclick="enableOrderNotification('${escapeHTML(order.id)}')">Activer une alerte de commande prête</button></div>`}
+function enableOrderNotification(orderId){if(!('Notification'in window))return toast('Les notifications ne sont pas disponibles.');Notification.requestPermission().then(permission=>{if(permission==='granted'){localStorage.setItem('elff_notify_order',orderId);toast('Alerte activée sur cet appareil.')}else toast('Autorisation refusée.')})}
+if(window.addEventListener)window.addEventListener('storage',event=>{if(event.key!==STORE.orders||!event.newValue)return;const watched=localStorage.getItem('elff_notify_order');if(!watched)return;try{const updated=JSON.parse(event.newValue),order=updated.find(o=>o.id===watched);if(order&&order.status==='ready'&&'Notification'in window&&Notification.permission==='granted'){new Notification('EL Fast-Food · Commande prête',{body:'La commande '+order.id+' est prête à être récupérée.'});localStorage.removeItem('elff_notify_order')}}catch(e){}});function loadCustomerSpace(){customerPseudo=(document.getElementById('profileName').value||'').trim();const root=document.getElementById('customerSpace');if(!customerPseudo){root.innerHTML='<p class="notice">Entre un pseudo pour afficher tes commandes.</p>';return}const mine=orders.filter(o=>o.name.toLowerCase()===customerPseudo.toLowerCase());const points=mine.filter(o=>['ready','done'].includes(o.status)).reduce((s,o)=>s+Math.floor(o.total),0);root.innerHTML=`<div class="stats"><div class="stat"><span>Commandes</span><strong>${mine.length}</strong></div><div class="stat"><span>Points fidélité</span><strong>${points}</strong></div></div><h3>Mon historique</h3>${mine.length?mine.map(o=>`<div class="admin-card"><div class="admin-card-head"><div><strong>${escapeHTML(o.id)}</strong><p>${new Date(o.createdAt).toLocaleDateString('fr-FR')} · ${money(o.total)}</p></div><span class="status ${o.status}">${statusLabel(o.status)}</span></div><div class="admin-actions"><button class="btn btn-light btn-small" onclick="document.getElementById('trackingCode').value='${escapeHTML(o.id)}';showPage('suivi');trackOrder()">Suivre</button>${['ready','done'].includes(o.status)?`<button class="btn btn-primary btn-small" onclick="showReviewForm('${escapeHTML(o.id)}')">Donner un avis</button>`:''}</div></div>`).join(''):'<p class="muted">Aucune commande trouvée avec ce pseudo sur cet appareil.</p>'}`}
+function showReviewForm(orderId){const order=orders.find(o=>o.id===orderId);if(!order||!['ready','done'].includes(order.status))return;document.getElementById('reviewArea').innerHTML=`<form onsubmit="submitReview(event,'${escapeHTML(orderId)}')"><p>Commande ${escapeHTML(orderId)}</p><div class="form-group"><label for="reviewRating">Ta note</label><select id="reviewRating" class="field"><option value="5">★★★★★ — Excellent</option><option value="4">★★★★☆ — Très bien</option><option value="3">★★★☆☆ — Bien</option><option value="2">★★☆☆☆ — Moyen</option><option value="1">★☆☆☆☆ — À améliorer</option></select></div><div class="form-group" style="margin-top:12px"><label for="reviewText">Ton commentaire (facultatif)</label><textarea id="reviewText" class="field" maxlength="300"></textarea></div><button class="btn btn-primary" style="margin-top:12px">Envoyer mon avis</button></form>`}
+function submitReview(event,orderId){event.preventDefault();const order=orders.find(o=>o.id===orderId);if(!order)return;if(reviews.some(r=>r.orderId===orderId))return toast('Un avis existe déjà pour cette commande.');reviews.unshift({orderId,name:customerPseudo,rating:Number(document.getElementById('reviewRating').value),text:document.getElementById('reviewText').value.trim(),at:new Date().toISOString()});saveAll();document.getElementById('reviewArea').innerHTML='<p class="success-box">Merci pour ton avis !</p>';toast('Avis enregistré.')}
+function renderMenus(){const root=document.getElementById('menuGrid');const menus=[{name:'Menu Classique',emoji:'🍔',desc:'Un burger, des frites et une boisson.',price:16.99,items:['Burger au choix','Frites','Boisson']},{name:'Menu Gourmand',emoji:'🍗',desc:'Une formule généreuse pour les grandes faims.',price:16.99,items:['Plat au choix','Accompagnement','Boisson']},{name:'Menu Douceur',emoji:'🍦',desc:'Une formule avec une touche sucrée.',price:16.99,items:['Plat au choix','Accompagnement','Dessert'] }];root.innerHTML=menus.map(m=>`<article class="menu-card"><div class="menu-emoji">${m.emoji}</div><h3>${m.name}</h3><p>${m.desc}</p><ul>${m.items.map(i=>`<li>${i}</li>`).join('')}</ul><div class="menu-price">${money(m.price)}</div><button class="btn btn-primary" onclick="showPage('menus');document.getElementById('menuMain').focus()">Composer cette formule</button></article>`).join('')}
+function renderMenuBuilder(){const main=document.getElementById('menuMain'),side=document.getElementById('menuSide'),drink=document.getElementById('menuDrink');if(!main||!side||!drink)return;const fill=(el,items)=>{const old=el.value;el.innerHTML=items.map(p=>`<option value="${p.id}">${escapeHTML(p.name)}</option>`).join('');if(items.some(p=>p.id===old))el.value=old};fill(main,products.filter(p=>p.available&&['Burgers','Plats'].includes(p.category)));fill(side,products.filter(p=>p.available&&p.category==='Accompagnements'));fill(drink,products.filter(p=>p.available&&p.category==='Boissons'))}
+function addComposedMenu(){const ids=['menuMain','menuSide','menuDrink'].map(id=>document.getElementById(id).value);const chosen=ids.map(productById);if(chosen.some(p=>!p))return toast('Choisis un plat, un accompagnement et une boisson.');const details='Menu : '+chosen.map(p=>p.name).join(' + ');addToCart({key:'menu-'+Date.now(),id:chosen[0].id,name:'Menu EL composé',price:16.99,details,quantity:1})}
+function renderAdmin(){const root=document.getElementById('adminRoot');if(!currentRole){root.innerHTML=`<div class="panel admin-login"><h2>Connexion équipe</h2><p class="muted">Choisis ton rôle et entre le code de démonstration.</p><form onsubmit="loginAdmin(event)"><div class="form-group"><label for="roleSelect">Rôle</label><select class="field" id="roleSelect"><option value="director">Directeur</option><option value="cashier">Caisse</option><option value="kitchen">Cuisine</option></select></div><div class="form-group" style="margin-top:13px"><label for="adminPin">Code de démonstration</label><input class="field" id="adminPin" type="password" inputmode="numeric" maxlength="8" required></div><button class="btn btn-primary" style="width:100%;margin-top:16px">Se connecter</button></form><div class="notice" style="margin-top:15px">Codes de démonstration : Directeur 1234 · Caisse 2222 · Cuisine 3333. Ils ne sont pas sécurisés.</div></div>`;return}const role=roles[currentRole];if(!role.tabs.includes(adminTab))adminTab=role.tabs[0];root.innerHTML=`<div class="admin-shell"><aside class="admin-side"><div class="admin-user"><strong>${role.label}</strong><span>Session de démonstration</span></div><div class="admin-nav">${role.tabs.map(t=>`<button class="${adminTab===t?'active':''}" onclick="setAdminTab('${t}')">${({dashboard:'📊 Tableau de bord',orders:'🧾 Commandes',simulation:'🤖 Clients automatiques',products:'🍔 Carte & produits',stock:'📦 Gestion des stocks',promos:'🏷️ Promotions',team:'👥 Équipe'})[t]}</button>`).join('')}<button onclick="logoutAdmin()">↪ Déconnexion</button></div></aside><div class="admin-main">${adminTab==='dashboard'?renderDashboard():adminTab==='orders'?renderAdminOrders():adminTab==='simulation'?renderSimulation():adminTab==='products'?renderAdminProducts():adminTab==='stock'?renderStock():adminTab==='promos'?renderPromoAdmin():renderTeam()}</div></div>`}
+function loginAdmin(event){event.preventDefault();const role=document.getElementById('roleSelect').value;const pin=document.getElementById('adminPin').value;if(roles[role].pin!==pin){toast('Code incorrect.');return}currentRole=role;adminTab=roles[role].tabs[0];renderAdmin();toast('Connexion réussie.')}
+function logoutAdmin(){currentRole=null;renderAdmin();toast('Déconnexion effectuée.')}
+function setAdminTab(tab){if(!currentRole||!roles[currentRole].tabs.includes(tab))return;adminTab=tab;renderAdmin()}
+function renderDashboard(){const today=new Date().toDateString();const todays=orders.filter(o=>new Date(o.createdAt).toDateString()===today);const revenue=todays.filter(o=>o.status!=='refused').reduce((s,o)=>s+o.total,0);const low=products.filter(p=>p.stock<=5);return `<h2>Tableau de bord</h2><div class="stats"><div class="stat"><span>Commandes aujourd'hui</span><strong>${todays.length}</strong></div><div class="stat"><span>À traiter</span><strong>${orders.filter(o=>['new','accepted','preparing'].includes(o.status)).length}</strong></div><div class="stat"><span>Chiffre d'affaires estimé</span><strong>${money(revenue)}</strong></div><div class="stat"><span>Alertes de stock</span><strong>${low.length}</strong></div></div><div class="panel"><h3 style="margin-top:0">Dernières commandes</h3>${orders.length?orders.slice(0,5).map(o=>`<div class="admin-card"><div class="admin-card-head"><div><strong>${escapeHTML(o.id)} · ${escapeHTML(o.name)}</strong><p>${new Date(o.createdAt).toLocaleString('fr-FR')}</p></div><span class="status ${o.status}">${statusLabel(o.status)}</span></div><p>${money(o.total)} · ${o.items.reduce((s,i)=>s+i.quantity,0)} article(s)</p></div>`).join(''):'<p class="muted">Aucune commande pour le moment.</p>'}</div><div class="panel" style="margin-top:15px"><h3>Stocks à surveiller</h3>${low.length?low.map(p=>`<p>${escapeHTML(p.name)} : <strong>${p.stock}</strong> en stock</p>`).join(''):'<p class="muted">Aucune alerte de stock.</p>'}</div>`}function renderAdminOrders(){
+  let visible=orders;
+  if(currentRole==='kitchen')visible=orders.filter(o=>['accepted','preparing','ready'].includes(o.status));
+  return `<h2>Gestion des commandes</h2>
+  <p class="muted">Toutes les commandes enregistrées sur cet appareil.</p>
+  ${visible.length?visible.map(o=>`
+    <article class="admin-card">
+      <div class="admin-card-head">
+        <div><h3>${escapeHTML(o.id)} · ${escapeHTML(o.name)}</h3>
+        <p>${new Date(o.createdAt).toLocaleString('fr-FR')} · ${escapeHTML(o.mode||'Commande')} · ${money(o.total)}</p></div>
+        <span class="status ${o.status}">${statusLabel(o.status)}</span>
+      </div>
+      <p>${o.items.map(i=>`<strong>${i.quantity} × ${escapeHTML(i.name)}</strong>`).join('<br>')}</p>
+      ${o.note||o.comment?`<p class="muted">Note : ${escapeHTML(o.note||o.comment)}</p>`:''}
+      <div class="admin-actions">${orderButtons(o)}</div>
+    </article>`).join(''):'<div class="panel empty"><h3>Aucune commande à afficher</h3></div>'}`;
+}
+
+function orderButtons(o){
+  let buttons='';
+  if(currentRole==='cashier'&&o.status==='new'){
+    buttons+=`<button class="btn btn-success btn-small" onclick="setOrderStatus('${o.id}','accepted')">Accepter</button>
+    <button class="btn btn-danger btn-small" onclick="setOrderStatus('${o.id}','refused')">Refuser</button>`;
+  }
+  if(currentRole==='kitchen'&&o.status==='accepted'){
+    buttons+=`<button class="btn btn-primary btn-small" onclick="setOrderStatus('${o.id}','preparing')">Commencer la préparation</button>`;
+  }
+  if(currentRole==='kitchen'&&o.status==='preparing'){
+    buttons+=`<button class="btn btn-success btn-small" onclick="setOrderStatus('${o.id}','ready')">Commande prête</button>`;
+  }
+  if(currentRole==='cashier'&&o.status==='ready'){
+    buttons+=`<button class="btn btn-success btn-small" onclick="setOrderStatus('${o.id}','done')">Commande remise</button>`;
+  }
+  if(currentRole==='director'&&o.status!=='done'&&o.status!=='refused'){
+    buttons+=`<button class="btn btn-light btn-small" onclick="setOrderStatus('${o.id}','done')">Clôturer</button>`;
+  }
+  if(currentRole==='director'){
+    buttons+=`<button class="btn btn-danger btn-small" onclick="deleteOrder('${o.id}')">Supprimer</button>`;
+  }
+  return buttons||'<span class="muted small">Aucune action disponible.</span>';
+}
+
+function setOrderStatus(id,status){
+  const o=orders.find(x=>x.id===id);
+  if(!o)return;
+  o.status=status;
+  o.history=o.history||[];
+  o.history.push({status,at:new Date().toISOString()});
+  if(status==='done'&&!o.loyaltyAwarded){
+    o.loyaltyAwarded=true;
+    o.pointsEarned=Math.floor(o.total);
+  }
+  saveAll();
+  renderAdmin();
+  renderProducts();
+  toast('Commande mise à jour : '+statusLabel(status));
+}
+
+function deleteOrder(id){
+  if(!confirm('Supprimer cette commande ?'))return;
+  orders=orders.filter(o=>o.id!==id);
+  saveAll();
+  renderAdmin();
+  toast('Commande supprimée.');
+}
+
+function renderAdminProducts(){
+  return `<h2>Gestion de la carte</h2>
+  <div class="panel">
+    <h3>Ajouter un produit</h3>
+    <form onsubmit="saveProduct(event)">
+      <div class="form-grid">
+        <div class="form-group"><label for="pName">Nom</label><input class="field" id="pName" required maxlength="40"></div>
+        <div class="form-group"><label for="pPrice">Prix (€)</label><input class="field" id="pPrice" type="number" min="0" step="0.01" required></div>
+        <div class="form-group"><label for="pCategory">Catégorie</label>
+          <select class="field" id="pCategory">
+            <option>Burgers</option><option>Plats</option><option>Accompagnements</option><option>Desserts</option><option>Boissons</option>
+          </select>
+        </div>
+        <div class="form-group"><label for="pStock">Stock initial</label><input class="field" id="pStock" type="number" min="0" value="40"></div>
+        <div class="form-group"><label for="pEmoji">Emoji</label><input class="field" id="pEmoji" value="🍽️" maxlength="4"></div>
+        <div class="form-group full"><label for="pDesc">Description</label><input class="field" id="pDesc" maxlength="120"></div>
+        <div class="form-group full"><label for="pImage">Adresse de l'image (facultatif)</label><input class="field" id="pImage" type="url" placeholder="https://…"></div>
+      </div>
+      <button class="btn btn-primary" style="margin-top:15px">Ajouter le produit</button>
+    </form>
+  </div>
+  <div class="panel" style="margin-top:18px">
+    <h3>Produits existants</h3>
+    <div class="admin-table-wrap"><table class="admin-table">
+      <thead><tr><th>Produit</th><th>Catégorie</th><th>Prix</th><th>Stock</th><th>Disponibilité</th><th>Action</th></tr></thead>
+      <tbody>${products.map(p=>`<tr>
+        <td>${escapeHTML(p.emoji||'🍽️')} ${escapeHTML(p.name)}</td>
+        <td>${escapeHTML(p.category)}</td>
+        <td>${money(p.price)}</td>
+        <td>${p.stock??0}</td>
+        <td>${p.available?'Disponible':'Indisponible'}</td>
+        <td><button class="btn btn-small ${p.available?'btn-danger':'btn-success'}" onclick="toggleProduct('${p.id}')">${p.available?'Désactiver':'Activer'}</button></td>
+      </tr>`).join('')}</tbody>
+    </table></div>
+  </div>`;
+}
+
+function saveProduct(event){
+  event.preventDefault();
+  const name=document.getElementById('pName').value.trim();
+  const price=Number(document.getElementById('pPrice').value);
+  if(!name||!Number.isFinite(price)||price<0)return toast('Vérifie le nom et le prix.');
+  const product={
+    id:'custom-'+Date.now(),
+    name,
+    price,
+    category:document.getElementById('pCategory').value,
+    stock:Math.max(0,Number(document.getElementById('pStock').value)||0),
+    emoji:document.getElementById('pEmoji').value||'🍽️',
+    desc:document.getElementById('pDesc').value.trim(),
+    image:document.getElementById('pImage').value.trim(),
+    available:true
+  };
+  products.push(product);
+  saveAll();
+  renderAdmin();
+  renderProducts();
+  renderMenuBuilder();
+  toast('Produit ajouté à la carte !');
+}
+
+function toggleProduct(id){
+  const p=productById(id);
+  if(!p)return;
+  p.available=!p.available;
+  saveAll();
+  renderAdmin();
+  renderProducts();
+  renderMenuBuilder();
+  toast(p.name+' : '+(p.available?'disponible':'indisponible'));
+}
+
+function renderStock(){
+  return `<h2>Gestion des stocks</h2>
+  <p class="muted">Surveille les quantités et ajuste les stocks de chaque produit.</p>
+  <div class="panel"><div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead><tr><th>Produit</th><th>Stock</th><th>État</th><th>Ajustement</th></tr></thead>
+      <tbody>${products.map(p=>`<tr>
+        <td>${escapeHTML(p.emoji||'🍽️')} ${escapeHTML(p.name)}</td>
+        <td><strong>${p.stock??0}</strong></td>
+        <td><span class="status ${(p.stock??0)<=0?'refused':(p.stock??0)<=8?'new':'ready'}">${(p.stock??0)<=0?'Rupture':(p.stock??0)<=8?'Stock faible':'Disponible'}</span></td>
+        <td><div class="qty">
+          <button onclick="adjustStock('${p.id}',-5)">−5</button>
+          <button onclick="adjustStock('${p.id}',-1)">−1</button>
+          <button onclick="adjustStock('${p.id}',1)">+1</button>
+          <button onclick="adjustStock('${p.id}',5)">+5</button>
+        </div></td>
+      </tr>`).join('')}</tbody>
+    </table>
+  </div></div>`;
+}
+
+function adjustStock(id,delta){
+  const p=productById(id);
+  if(!p)return;
+  p.stock=Math.max(0,(Number(p.stock)||0)+delta);
+  if(p.stock===0)p.available=false;
+  else p.available=true;
+  saveAll();
+  renderAdmin();
+  renderProducts();
+  renderMenuBuilder();
+}
+
+function renderPromoAdmin(){
+  return `<h2>Promotions et codes</h2>
+  <p class="muted">Active ou désactive les codes promotionnels disponibles dans le panier.</p>
+  <div class="panel">
+    ${Object.entries(PROMOS).map(([code,promo])=>`
+      <div class="admin-card">
+        <div class="admin-card-head">
+          <div><h3>${code}</h3><p>${promo.type==='percent'?promo.value+' % de réduction':money(promo.value)+' de réduction'}</p></div>
+          <span class="status ${promo.active===false?'refused':'ready'}">${promo.active===false?'Désactivé':'Actif'}</span>
+        </div>
+        <button class="btn btn-light btn-small" onclick="togglePromo('${code}')">${promo.active===false?'Activer':'Désactiver'}</button>
+      </div>`).join('')}
+  </div>`;
+}
+
+function togglePromo(code){
+  if(!PROMOS[code])return;
+  PROMOS[code].active=PROMOS[code].active===false;
+  localStorage.setItem(STORE.promos,JSON.stringify(PROMOS));
+  renderAdmin();
+}
+
+function init(){
+  renderMenus();
+  renderMenuBuilder();
+  renderProducts();
+  const home=document.getElementById('homeProducts');
+  if(home)home.innerHTML=products.filter(p=>p.available&&p.stock>0).slice(0,3).map(productCard).join('');
+  updateCartCount();
+  renderCart();
+}
+
+init();
+</script>
+</body>
+</html>
