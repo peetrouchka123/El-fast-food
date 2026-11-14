@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El Fast-Food</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f7f5f0;
+      color: #202020;
+    }
+    header {
+      background: #c9232c;
+      color: white;
+      padding: 22px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    header h1 { margin: 0; font-size: 27px; }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 18px;
+      font-weight: bold;
+    }
+    .hero {
+      padding: 75px 7%;
+      background: #202020;
+      color: white;
+      text-align: center;
+    }
+    .hero h2 { font-size: clamp(34px, 6vw, 58px); margin: 0 0 15px; }
+    .hero p { font-size: 18px; color: #ddd; }
+    .button {
+      display: inline-block;
+      margin-top: 18px;
+      padding: 14px 25px;
+      background: #f4c542;
+      color: #202020;
+      text-decoration: none;
+      border-radius: 7px;
+      font-weight: bold;
+    }
+    .intro {
+      max-width: 850px;
+      margin: 45px auto;
+      padding: 0 20px;
+      text-align: center;
+    }
+    .intro h2 { color: #c9232c; }
+    footer {
+      margin-top: 60px;
+      padding: 25px;
+      background: #202020;
+      color: white;
+      text-align: center;
+    }
+    @media (max-width: 600px) {
+      header { justify-content: center; text-align: center; }
+      nav a { margin: 0 8px; }
+      .hero { padding: 55px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🍔 EL FAST-FOOD</h1>
+    <nav>
+      <a href="#accueil">Accueil</a>
+      <a href="#concept">Notre concept</a>
+      <a href="#commander">Commander</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="accueil">
+      <h2>Bienvenue chez El Fast-Food !</h2>
+      <p>Du goût, du plaisir et des bons moments.</p>
+      <a class="button" href="#commander">Découvrir la commande</a>
+    </section>
+
+    <section class="intro" id="concept">
+      <h2>Notre fast-food</h2>
+      <p>
+        Bienvenue dans notre restaurant ! Découvrez notre carte,
+        composez votre commande et profitez de notre service.
+      </p>
+    </section>
+
+    <section class="intro" id="commander">
+      <h2>Bientôt disponible !</h2>
+      <p>Notre espace de commande en ligne arrive très prochainement.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© El Fast-Food — Site de jeu</p>
+  </footer>
+
+</body>
+</html>
