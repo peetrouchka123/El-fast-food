@@ -84,7 +84,20 @@ const baseProducts=[
 {id:'7up',name:'7UP',category:'Boissons',price:3,desc:'Boisson fraîche et pétillante.',emoji:'🥤',image:'https://images.unsplash.com/photo-1629203851122-3726ecdf080e?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
 {id:'juice',name:'Jus de fruit',category:'Boissons',price:3,desc:'Un jus fruité.',emoji:'🧃',image:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
 {id:'coffee',name:'Café',category:'Boissons',price:3,desc:'Un café.',emoji:'☕',image:'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=900&q=80',custom:false,available:true}
-];  let products=loadJSON(STORE.products,baseProducts).map(p=>({...p,stock:Number.isFinite(p.stock)?p.stock:40}));let cart=loadJSON(STORE.cart,[]);let orders=loadJSON(STORE.orders,[]).map(o=>({...o,history:Array.isArray(o.history)?o.history:[{status:o.status||'new',at:o.createdAt||new Date().toISOString()}],etaMinutes:Number.isFinite(o.etaMinutes)?o.etaMinutes:15}));let activeCategory='Tout';let currentRole=null;let adminTab='dashboard';let editingProductId=null;let modalProductId=null;let cashierDraftItems=[];let simulationTimer=null;let simulationCount=0;
+];  const savedProducts=loadJSON(STORE.products,baseProducts);
+
+let products=[
+  ...baseProducts.map(base=>({
+    ...base,
+    ...(savedProducts.find(p=>p.id===base.id)||{})
+  })),
+  ...savedProducts.filter(saved=>
+    !baseProducts.some(base=>base.id===saved.id)
+  )
+].map(p=>({
+  ...p,
+  stock:Number.isFinite(p.stock)?p.stock:40
+}));let cart=loadJSON(STORE.cart,[]);let orders=loadJSON(STORE.orders,[]).map(o=>({...o,history:Array.isArray(o.history)?o.history:[{status:o.status||'new',at:o.createdAt||new Date().toISOString()}],etaMinutes:Number.isFinite(o.etaMinutes)?o.etaMinutes:15}));let activeCategory='Tout';let currentRole=null;let adminTab='dashboard';let editingProductId=null;let modalProductId=null;let cashierDraftItems=[];let simulationTimer=null;let simulationCount=0;
 
 const roles={
   director:{
