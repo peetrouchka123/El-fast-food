@@ -4,653 +4,474 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>El Fast-Food | Le plaisir à chaque bouchée</title>
+<title>El Fast-Food | Commandez en ligne</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
-
 :root {
-  --dark:#063f42;
-  --green:#087477;
-  --mint:#d5f0ef;
-  --yellow:#ffdf83;
-  --cream:#f5fbf9;
-  --red:#e75b4d;
-  --white:#fff;
-  --shadow:0 12px 30px rgba(6,63,66,.10);
+  --red:#e63946; --dark:#202124; --cream:#fffaf3;
+  --orange:#ffb703; --green:#27864b; --gray:#f1f1f1;
 }
-* {box-sizing:border-box}
-html {scroll-behavior:smooth}
-body {
-  margin:0;
-  font-family:'Nunito',Arial,sans-serif;
-  background:var(--cream);
-  color:var(--dark);
-}
-button {font:inherit;cursor:pointer}
-header {
-  position:sticky;
-  top:0;
-  z-index:20;
-  background:rgba(6,63,66,.97);
-  color:white;
-  padding:13px 6%;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-  box-shadow:0 5px 20px #063f4230;
-}
-.logo {
-  font-size:25px;
-  font-weight:900;
-  letter-spacing:-1px;
-  white-space:nowrap;
-}
-.logo span {color:var(--yellow)}
-nav {display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-nav button {
-  border:0;
-  color:white;
-  background:transparent;
-  padding:10px 14px;
-  border-radius:30px;
-  font-weight:800;
-  transition:.2s;
-}
-nav button:hover,nav button.active {
-  background:var(--yellow);
-  color:var(--dark);
-}
-.cart-nav {background:var(--red)!important;color:white!important}
-.page {
-  display:none;
-  animation:appear .4s ease;
-}
-.page.active {display:block}
-@keyframes appear {
-  from {opacity:0;transform:translateY(12px)}
-  to {opacity:1;transform:translateY(0)}
-}
-.hero {
-  margin:30px auto;
-  max-width:1250px;
-  width:90%;
-  min-height:370px;
-  border-radius:30px;
-  background:var(--dark);
-  color:white;
-  padding:55px 7%;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:25px;
-  overflow:hidden;
-  position:relative;
-}
-.hero:after {
-  content:"";
-  position:absolute;
-  width:330px;height:330px;
-  border-radius:50%;
-  background:#0d696b;
-  right:4%;top:25px;
-}
-.hero-content {position:relative;z-index:2;max-width:600px}
-.eyebrow {
-  color:var(--yellow);
-  font-weight:900;
-  letter-spacing:2px;
-  text-transform:uppercase;
-}
-.hero h1 {
-  font-size:clamp(38px,6vw,68px);
-  line-height:1.04;
-  margin:12px 0;
-  font-weight:900;
-}
-.hero p {font-size:19px;color:#d5eeee;max-width:470px}
-.hero-food {
-  position:relative;
-  z-index:2;
-  font-size:clamp(100px,17vw,190px);
-  animation:float 3s ease-in-out infinite;
-  filter:drop-shadow(0 15px 10px #001f2040);
-}
-@keyframes float {
-  0%,100% {transform:translateY(0) rotate(-5deg)}
-  50% {transform:translateY(-13px) rotate(5deg)}
-}
-.primary,.secondary {
-  border:0;
-  padding:14px 23px;
-  border-radius:30px;
-  font-weight:900;
-  transition:transform .2s,box-shadow .2s;
-}
-.primary {background:var(--yellow);color:var(--dark)}
-.secondary {background:var(--dark);color:white}
-.primary:hover,.secondary:hover {
-  transform:translateY(-3px);
-  box-shadow:0 8px 18px #001f2030;
-}
-.section {
-  max-width:1150px;
-  margin:55px auto;
-  padding:0 22px;
-}
-.section-heading {
-  display:flex;
-  justify-content:space-between;
-  align-items:end;
-  gap:15px;
-  margin-bottom:22px;
-}
-.section-heading h2 {font-size:32px;margin:0;font-weight:900}
-.section-heading p {margin:5px 0;color:#598083}
-.highlight-grid {
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:18px;
-}
-.highlight {
-  background:var(--mint);
-  border-radius:23px;
-  padding:25px;
-  transition:.25s;
-}
-.highlight:hover {transform:translateY(-6px);box-shadow:var(--shadow)}
-.highlight .emoji {font-size:42px}
-.highlight h3 {margin:10px 0 5px;font-size:21px}
-.highlight p {margin:0;color:#426f71}
-.promo {
-  background:var(--yellow);
-  border-radius:25px;
-  padding:30px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:20px;
-}
-.promo h2 {margin:0 0 7px;font-size:27px}
-.promo p {margin:0}
-.page-title {
-  text-align:center;
-  padding:45px 15px 25px;
-}
-.page-title h1 {font-size:clamp(34px,5vw,48px);margin:0;font-weight:900}
-.page-title p {color:#598083}
-.filters {
-  display:flex;
-  justify-content:center;
-  gap:9px;
-  flex-wrap:wrap;
-  margin:15px 0 28px;
-}
-.filter {
-  border:2px solid var(--mint);
-  background:white;
-  color:var(--dark);
-  border-radius:30px;
-  padding:10px 17px;
-  font-weight:900;
-}
-.filter.active,.filter:hover {
-  background:var(--dark);
-  color:white;
-  border-color:var(--dark);
-}
-.product-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(215px,1fr));
-  gap:19px;
-}
-.product {
-  background:white;
-  border-radius:23px;
-  overflow:hidden;
-  box-shadow:var(--shadow);
-  transition:transform .25s,box-shadow .25s;
-  display:flex;
-  flex-direction:column;
-}
-.product:hover {transform:translateY(-6px);box-shadow:0 17px 35px #063f4220}
-.product-art {
-  height:145px;
-  background:var(--mint);
-  display:grid;
-  place-items:center;
-  font-size:78px;
-}
-.product-info {padding:17px;display:flex;flex-direction:column;flex:1}
-.product-info h3 {margin:0 0 5px;font-size:20px}
-.product-info p {margin:0 0 13px;color:#668789;font-size:14px;min-height:36px}
-.product-bottom {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:8px;
-  margin-top:auto;
-}
-.price {font-weight:900;font-size:19px}
-.add {
-  border:0;
-  background:var(--yellow);
-  color:var(--dark);
-  border-radius:25px;
-  padding:10px 14px;
-  font-weight:900;
-  transition:.2s;
-}
-.add:hover {background:var(--dark);color:white;transform:scale(1.04)}
-.menu-box,.cart-box {
-  max-width:760px;
-  margin:20px auto 60px;
-  background:white;
-  border-radius:25px;
-  padding:28px;
-  box-shadow:var(--shadow);
-}
-.menu-price {
-  background:var(--yellow);
-  display:inline-block;
-  padding:9px 17px;
-  border-radius:25px;
-  font-weight:900;
-  font-size:20px;
-}
-.menu-box h2 {margin-top:10px;font-size:29px}
-.field {margin:20px 0}
-.field label {display:block;font-weight:900;margin-bottom:7px}
-.field select,.customer-input {
-  width:100%;
-  border:2px solid var(--mint);
-  border-radius:12px;
-  background:var(--cream);
-  padding:13px;
-  font:inherit;
-  color:var(--dark);
-}
-.menu-box .primary {width:100%;margin-top:8px}
-.cart-box {max-width:850px}
-.cart-item {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  border-bottom:1px solid var(--mint);
-  padding:15px 0;
-}
-.cart-item small {display:block;color:#668789}
-.qty {display:flex;align-items:center;gap:8px}
-.qty button {
-  border:0;background:var(--mint);
-  color:var(--dark);width:30px;height:30px;
-  border-radius:50%;font-weight:900;
-}
-.remove {
-  border:0;background:none;color:var(--red);
-  font-weight:900;
-}
-.total-line {
-  display:flex;justify-content:space-between;
-  font-size:25px;font-weight:900;
-  padding:23px 0;
-}
-.empty {
-  text-align:center;
-  padding:35px 10px;
-  color:#668789;
-}
-.empty div {font-size:65px}
-.checkout {width:100%;font-size:17px}
-.confirmation {
-  display:none;
-  background:var(--mint);
-  padding:20px;
-  margin-top:20px;
-  border-radius:15px;
-  white-space:pre-wrap;
-}
-footer {
-  background:var(--dark);
-  color:white;
-  text-align:center;
-  padding:35px 20px;
-  margin-top:60px;
-}
-footer strong {color:var(--yellow)}
-footer p {color:#c6e5e4}
-.toast {
-  position:fixed;
-  bottom:22px;
-  left:50%;
-  transform:translate(-50%,100px);
-  background:var(--dark);
-  color:white;
-  padding:13px 22px;
-  border-radius:30px;
-  z-index:50;
-  transition:.3s;
-  box-shadow:var(--shadow);
-  font-weight:800;
-}
-.toast.show {transform:translate(-50%,0)}
-@media(max-width:700px) {
-  header {justify-content:center;padding:12px}
-  nav {justify-content:center}
-  nav button {padding:8px 10px;font-size:13px}
-  .hero {min-height:330px;padding:35px 25px}
-  .hero-food {font-size:100px}
-  .highlight-grid {grid-template-columns:1fr}
-  .promo {align-items:flex-start;flex-direction:column}
-  .section-heading {align-items:flex-start;flex-direction:column}
-  .cart-item {align-items:flex-start;flex-direction:column}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:var(--cream);color:var(--dark)}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0;border-radius:10px;padding:12px 17px;font-weight:bold}
+button:disabled{opacity:.4;cursor:not-allowed}
+.primary{background:var(--red);color:white}
+.secondary{background:#eee;color:#222}
+header{background:white;position:sticky;top:0;z-index:10;box-shadow:0 2px 12px #0001}
+.nav{max-width:1200px;margin:auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}
+.logo{font-size:25px;font-weight:900;color:var(--red)}
+.logo span{color:var(--dark)}
+nav{display:flex;gap:8px;flex-wrap:wrap}
+nav button{background:transparent}
+nav button:hover{background:#fff0f0;color:var(--red)}
+main{max-width:1200px;margin:auto;padding:25px 20px 70px}
+.page{display:none}.page.active{display:block}
+.hero{background:linear-gradient(110deg,#202124ed,#20212466),url('https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=1400') center/cover;border-radius:22px;padding:65px 35px;color:white;min-height:300px;display:flex;flex-direction:column;justify-content:center}
+.hero h1{font-size:clamp(35px,6vw,60px);margin:0 0 12px}
+.hero p{font-size:18px;max-width:500px;line-height:1.5}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;margin:30px 0 18px}
+.section-title h2{margin:0;font-size:27px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
+.product{background:white;border-radius:17px;overflow:hidden;box-shadow:0 4px 16px #0000000b;display:flex;flex-direction:column}
+.product img{width:100%;height:155px;object-fit:cover;background:#eee}
+.product-content{padding:15px;display:flex;flex-direction:column;flex:1}
+.product h3{margin:0 0 7px}.product p{color:#777;font-size:14px;line-height:1.4;flex:1}
+.price{font-size:20px;font-weight:900;margin:8px 0 12px}
+.product button{width:100%}
+.categories{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}
+.categories button{background:white;border:1px solid #ddd}
+.categories button.selected{background:var(--dark);color:white}
+.panel{background:white;padding:22px;border-radius:17px;box-shadow:0 4px 16px #0000000b;margin-bottom:18px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.muted{color:#777;font-size:14px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:9px;background:white;margin:5px 0 12px}
+label{font-weight:bold;font-size:14px}
+.cart-line{padding:15px 0;border-bottom:1px solid #eee}
+.cart-line:last-child{border:0}
+.qty{display:flex;align-items:center;gap:9px}
+.qty button{padding:6px 11px;background:#eee}
+.total{font-size:23px;font-weight:900}
+.empty{text-align:center;padding:40px 15px;color:#777}
+.badge{padding:5px 9px;border-radius:30px;background:#eee;font-size:12px;font-weight:bold}
+.status-new{background:#fff0c2}.status-accepted{background:#dcecff}
+.status-preparing{background:#ffe2ca}.status-ready{background:#d8f5df}
+.status-done{background:#eee}
+.modal{display:none;position:fixed;inset:0;background:#0009;z-index:30;align-items:center;justify-content:center;padding:15px}
+.modal.open{display:flex}
+.modal-box{background:white;padding:23px;border-radius:18px;width:min(500px,100%);max-height:90vh;overflow:auto}
+.modal-box h2{margin-top:0}
+.option{display:flex;align-items:center;gap:9px;margin:9px 0}
+.option input{width:auto;margin:0}
+.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,100px);background:#222;color:white;padding:14px 20px;border-radius:12px;z-index:50;transition:.3s}
+.toast.show{transform:translate(-50%,0)}
+.admin-head{background:var(--dark);color:white;border-radius:16px;padding:22px;margin-bottom:20px}
+.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.stat{background:white;padding:18px;border-radius:13px}
+.stat strong{font-size:25px;display:block;margin-top:7px}
+.order{background:white;border-radius:14px;padding:18px;margin:12px 0;border:1px solid #eee}
+.order-items{font-size:14px;line-height:1.7;color:#555}
+footer{text-align:center;padding:30px;background:#202124;color:#ddd}
+footer button{background:transparent;color:#ddd;text-decoration:underline}
+@media(max-width:650px){
+ .nav{justify-content:center}.hero{padding:40px 22px;min-height:260px}
+ main{padding:18px 13px 50px}
+ nav{justify-content:center}
+ nav button{padding:9px}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .product img{height:115px}.product-content{padding:11px}
+ .product h3{font-size:16px}.product p{font-size:12px}
 }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">🍔 EL <span>FAST-FOOD</span></div>
+ <div class="nav">
+  <div class="logo">EL <span>FAST-FOOD</span> 🍔</div>
   <nav>
-    <button class="active" data-page="home">Accueil</button>
-    <button data-page="menu-card">Notre carte</button>
-    <button data-page="menus">Nos menus</button>
-    <button class="cart-nav" data-page="basket">🛒 Panier <span id="cart-count">0</span></button>
+   <button onclick="showPage('home')">Accueil</button>
+   <button onclick="showPage('menu')">La carte</button>
+   <button onclick="showPage('cart')">🛒 Panier <span id="cart-count">0</span></button>
+   <button onclick="openLogin()">Administration</button>
   </nav>
+ </div>
 </header>
 
-<!-- PAGE ACCUEIL -->
-<section class="page active" id="home">
-  <div class="hero">
-    <div class="hero-content">
-      <div class="eyebrow">Bienvenue chez nous !</div>
-      <h1>Le plaisir à chaque bouchée.</h1>
-      <p>Des burgers gourmands, des accompagnements délicieux et plein de bonnes choses à découvrir.</p>
-      <button class="primary" onclick="showPage('menu-card')">Découvrir la carte →</button>
-    </div>
-    <div class="hero-food">🍔</div>
-  </div>
-
-  <div class="section">
-    <div class="section-heading">
-      <div><h2>Une petite faim ?</h2><p>Il y a forcément quelque chose pour toi.</p></div>
-    </div>
-    <div class="highlight-grid">
-      <div class="highlight"><div class="emoji">🍔</div><h3>Nos plats</h3><p>Des recettes généreuses et gourmandes.</p></div>
-      <div class="highlight"><div class="emoji">🍟</div><h3>Nos accompagnements</h3><p>Pour compléter ton repas comme tu l'aimes.</p></div>
-      <div class="highlight"><div class="emoji">🍦</div><h3>Nos desserts</h3><p>Une touche sucrée pour terminer.</p></div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="promo">
-      <div><h2>⭐ Le menu à 16,99 €</h2><p>Un plat + un accompagnement + une boisson au choix.</p></div>
-      <button class="secondary" onclick="showPage('menus')">Composer mon menu →</button>
-    </div>
-  </div>
+<main>
+<section id="home" class="page active">
+ <div class="hero">
+  <h1>EL FAST-FOOD</h1>
+  <p>Des recettes généreuses, des produits gourmands et des menus préparés avec envie !</p>
+  <div><button class="primary" onclick="showPage('menu')">Découvrir la carte →</button></div>
+ </div>
+ <div class="section-title"><h2>⭐ Nos incontournables</h2></div>
+ <div id="popular" class="grid"></div>
+ <div class="panel" style="margin-top:25px;text-align:center">
+  <h2>🍟 Le menu à composer</h2>
+  <p>Un plat, un accompagnement et une boisson pour 16,99 €.</p>
+  <button class="primary" onclick="openMenuBuilder()">Composer mon menu</button>
+ </div>
 </section>
 
-<!-- PAGE CARTE -->
-<section class="page" id="menu-card">
-  <div class="page-title">
-    <h1>Notre carte 🍽️</h1>
-    <p>Choisis tes envies et ajoute tes produits au panier.</p>
-  </div>
-  <div class="section">
-    <div class="filters">
-      <button class="filter active" data-filter="Tous">Tout voir</button>
-      <button class="filter" data-filter="Plats">🍔 Plats</button>
-      <button class="filter" data-filter="Desserts">🍦 Desserts</button>
-      <button class="filter" data-filter="Boissons">🥤 Boissons</button>
-      <button class="filter" data-filter="Accompagnements">🍟 Accompagnements</button>
-    </div>
-    <div class="product-grid" id="products"></div>
-  </div>
+<section id="menu" class="page">
+ <div class="section-title"><h2>Notre carte</h2><span class="muted">Les prix sont affichés en euros</span></div>
+ <input id="search" placeholder="🔎 Rechercher un produit..." oninput="renderProducts()">
+ <div class="categories" id="categories"></div>
+ <div id="products" class="grid"></div>
 </section>
 
-<!-- PAGE MENUS -->
-<section class="page" id="menus">
-  <div class="page-title">
-    <h1>Nos menus ⭐</h1>
-    <p>Compose ton repas selon tes envies.</p>
-  </div>
-  <div class="menu-box">
-    <span class="menu-price">16,99 €</span>
-    <h2>Le menu au choix</h2>
-    <p>Choisis un plat, un accompagnement et une boisson.</p>
-    <div class="field">
-      <label for="mainChoice">🍔 Ton plat</label>
-      <select id="mainChoice">
-        <option>Le classique</option><option>Le chicken</option>
-        <option>Pizza</option><option>Sandwich</option><option>Fajitas</option>
-      </select>
-    </div>
-    <div class="field">
-      <label for="sideChoice">🍟 Ton accompagnement</label>
-      <select id="sideChoice">
-        <option>Frites</option><option>Croquettes natures</option>
-        <option>Croquettes au fromage</option>
-      </select>
-    </div>
-    <div class="field">
-      <label for="drinkChoice">🥤 Ta boisson</label>
-      <select id="drinkChoice">
-        <option>Coca</option><option>Ice Tea</option>
-        <option>Schweppes</option><option>7UP</option>
-        <option>Jus de fruit</option><option>Café</option>
-      </select>
-    </div>
-    <button class="primary" onclick="addMenu()">Ajouter mon menu au panier — 16,99 €</button>
-  </div>
+<section id="cart" class="page">
+ <div class="section-title"><h2>🛒 Mon panier</h2></div>
+ <div class="panel">
+  <div id="cart-items"></div>
+  <div id="cart-bottom"></div>
+ </div>
 </section>
 
-<!-- PAGE PANIER -->
-<section class="page" id="basket">
-  <div class="page-title">
-    <h1>Mon panier 🛒</h1>
-    <p>Retrouve ici tous tes produits.</p>
-  </div>
-  <div class="cart-box">
-    <div id="cart-items"></div>
-    <div class="total-line"><span>Total</span><span id="total">0,00 €</span></div>
-    <button class="primary checkout" onclick="validateOrder()">Valider ma commande</button>
-    <div id="confirmation" class="confirmation"></div>
-  </div>
+<section id="confirmation-page" class="page">
+ <div class="panel" style="text-align:center;padding:45px 20px">
+  <h1>🎉 Merci pour votre commande !</h1>
+  <p id="confirmation-text"></p>
+  <button class="primary" onclick="showPage('menu')">Retour à la carte</button>
+ </div>
 </section>
+
+<section id="admin" class="page">
+ <div class="admin-head">
+  <div class="row">
+   <div><h1 style="margin:0">Administration</h1><p id="admin-welcome">Espace équipe</p></div>
+   <button class="secondary" onclick="logout()">Déconnexion</button>
+  </div>
+ </div>
+ <div class="categories" id="admin-tabs">
+  <button class="selected" onclick="adminTab('dashboard',this)">Tableau de bord</button>
+  <button onclick="adminTab('orders',this)">Commandes</button>
+  <button onclick="adminTab('products',this)">Produits</button>
+ </div>
+ <div id="admin-dashboard">
+  <div class="admin-grid">
+   <div class="stat">Commandes<strong id="stat-orders">0</strong></div>
+   <div class="stat">En préparation<strong id="stat-preparing">0</strong></div>
+   <div class="stat">Terminées<strong id="stat-done">0</strong></div>
+   <div class="stat">Total des ventes<strong id="stat-sales">0 €</strong></div>
+  </div>
+  <div class="panel" style="margin-top:18px">
+   <h3>Bienvenue dans votre espace de travail</h3>
+   <p id="role-description" class="muted"></p>
+   <p class="muted">Les statistiques sont calculées à partir des commandes enregistrées sur cet appareil.</p>
+  </div>
+ </div>
+ <div id="admin-orders" style="display:none">
+  <div class="row"><h2>Commandes reçues</h2><button class="secondary" onclick="renderAdmin()">Actualiser</button></div>
+  <div id="orders-list"></div>
+ </div>
+ <div id="admin-products" style="display:none">
+  <h2>Gestion des produits</h2>
+  <p class="muted">Le directeur peut modifier les prix et la disponibilité.</p>
+  <div id="products-admin-list"></div>
+ </div>
+</section>
+</main>
 
 <footer>
-  <div class="logo">🍔 EL <strong>FAST-FOOD</strong></div>
-  <p>Le plaisir à chaque bouchée.</p>
-  <p>© El Fast-Food — Site de jeu</p>
+ <p><strong>EL FAST-FOOD</strong> — Merci de votre visite !</p>
+ <button onclick="openLogin()">Accès équipe</button>
+ <p class="muted">Site de démonstration — aucune transaction bancaire réelle.</p>
 </footer>
 
-<div class="toast" id="toast">Ajouté au panier !</div>
+<div class="modal" id="custom-modal">
+ <div class="modal-box">
+  <div class="row"><h2 id="custom-title">Personnaliser</h2><button class="secondary" onclick="closeModal('custom-modal')">✕</button></div>
+  <div id="custom-options"></div>
+  <label>Instructions particulières</label>
+  <textarea id="custom-note" rows="2" placeholder="Ex. : sauce à part..."></textarea>
+  <div class="row"><strong id="custom-price"></strong><button class="primary" onclick="confirmCustomization()">Ajouter au panier</button></div>
+ </div>
+</div>
+
+<div class="modal" id="menu-modal">
+ <div class="modal-box">
+  <div class="row"><h2>Composer mon menu</h2><button class="secondary" onclick="closeModal('menu-modal')">✕</button></div>
+  <label>Choisir un plat</label><select id="menu-main"></select>
+  <label>Choisir un accompagnement</label><select id="menu-side"></select>
+  <label>Choisir une boisson</label><select id="menu-drink"></select>
+  <p class="total">16,99 €</p>
+  <button class="primary" style="width:100%" onclick="addMenu()">Ajouter le menu</button>
+ </div>
+</div>
+
+<div class="modal" id="login-modal">
+ <div class="modal-box">
+  <div class="row"><h2>🔐 Connexion équipe</h2><button class="secondary" onclick="closeModal('login-modal')">✕</button></div>
+  <label>Rôle</label>
+  <select id="login-role">
+   <option value="director">Directeur</option>
+   <option value="cashier">Caisse</option>
+   <option value="kitchen">Cuisine</option>
+  </select>
+  <label>Code de démonstration</label>
+  <input id="login-pin" type="password" placeholder="Code d'accès">
+  <button class="primary" style="width:100%" onclick="login()">Se connecter</button>
+  <p class="muted">Codes de démonstration : directeur 1234, caisse 2222, cuisine 3333.</p>
+ </div>
+</div>
+
+<div id="toast" class="toast"></div>
 
 <script>
 const products = [
-  {name:"Le classique",category:"Plats",price:12.99,emoji:"🍔",description:"Steak, fromage, salade, tomate et oignon."},
-  {name:"Le chicken",category:"Plats",price:12.99,emoji:"🍔",description:"Poulet pané, fromage, salade, tomate et oignons."},
-  {name:"Pizza",category:"Plats",price:11.99,emoji:"🍕",description:"Sauce tomate, fromage, champignons et jambon."},
-  {name:"Sandwich",category:"Plats",price:9.99,emoji:"🥪",description:"Pain de mie, fromage, jambon et salade."},
-  {name:"Fajitas",category:"Plats",price:11.99,emoji:"🌯",description:"Viande hachée, tomates, haricots rouges et poivrons."},
-  {name:"Glace",category:"Desserts",price:6,emoji:"🍨",description:"Une pause fraîche et gourmande."},
-  {name:"Sunday",category:"Desserts",price:6,emoji:"🍦",description:"Un délicieux dessert glacé."},
-  {name:"Gâteau",category:"Desserts",price:6,emoji:"🍰",description:"Une petite douceur sucrée."},
-  {name:"Croissant",category:"Desserts",price:6,emoji:"🥐",description:"Une gourmandise à savourer."},
-  {name:"Coca",category:"Boissons",price:3,emoji:"🥤",description:"Boisson fraîche."},
-  {name:"Ice Tea",category:"Boissons",price:3,emoji:"🧋",description:"Boisson fraîche."},
-  {name:"Schweppes",category:"Boissons",price:3,emoji:"🥤",description:"Boisson fraîche."},
-  {name:"7UP",category:"Boissons",price:3,emoji:"🥤",description:"Boisson fraîche."},
-  {name:"Jus de fruit",category:"Boissons",price:3,emoji:"🧃",description:"Une boisson fruitée."},
-  {name:"Café",category:"Boissons",price:3,emoji:"☕",description:"Un café chaud."},
-  {name:"Frites",category:"Accompagnements",price:2,emoji:"🍟",description:"Un grand classique."},
-  {name:"Croquettes natures",category:"Accompagnements",price:2,emoji:"🥔",description:"De bonnes croquettes."},
-  {name:"Croquettes au fromage",category:"Accompagnements",price:2,emoji:"🧀",description:"Des croquettes gourmandes."}
+ {id:1,name:"Le classique",category:"Plats",price:12.99,desc:"Un burger généreux et savoureux.",img:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600"},
+ {id:2,name:"Le chicken",category:"Plats",price:12.99,desc:"Poulet croustillant et gourmand.",img:"https://images.unsplash.com/photo-1606755962773-d324e0a13086?w=600"},
+ {id:3,name:"Pizza",category:"Plats",price:11.99,desc:"Une pizza pleine de saveurs.",img:"https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600"},
+ {id:4,name:"Sandwich",category:"Plats",price:9.99,desc:"Un sandwich généreusement garni.",img:"https://images.unsplash.com/photo-1553909489-cd47e0ef937f?w=600"},
+ {id:5,name:"Fajitas",category:"Plats",price:11.99,desc:"Une recette pleine de caractère.",img:"https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600"},
+ {id:6,name:"Glace",category:"Desserts",price:6,desc:"Une pause glacée.",img:"https://images.unsplash.com/photo-1501446529957-6226bd447c46?w=600"},
+ {id:7,name:"Sunday",category:"Desserts",price:6,desc:"Un dessert frais et gourmand.",img:"https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=600"},
+ {id:8,name:"Gâteau",category:"Desserts",price:6,desc:"Une touche sucrée.",img:"https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600"},
+ {id:9,name:"Croissant",category:"Desserts",price:6,desc:"Un grand classique.",img:"https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=600"},
+ {id:10,name:"Coca",category:"Boissons",price:3,desc:"Boisson fraîche.",img:"https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=600"},
+ {id:11,name:"Ice Tea",category:"Boissons",price:3,desc:"Thé glacé.",img:"https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=600"},
+ {id:12,name:"Schweppes",category:"Boissons",price:3,desc:"Boisson pétillante.",img:"https://images.unsplash.com/photo-1513558161293-cdaf765edfd4?w=600"},
+ {id:13,name:"7UP",category:"Boissons",price:3,desc:"Boisson fraîche et pétillante.",img:"https://images.unsplash.com/photo-1543255006-d6395b6f1171?w=600"},
+ {id:14,name:"Jus de fruit",category:"Boissons",price:3,desc:"Jus fruité.",img:"https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=600"},
+ {id:15,name:"Café",category:"Boissons",price:3,desc:"Un café.",img:"https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600"},
+ {id:16,name:"Frites",category:"Accompagnements",price:2,desc:"Des frites dorées.",img:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=600"},
+ {id:17,name:"Croquettes natures",category:"Accompagnements",price:2,desc:"Croquettes croustillantes.",img:"https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?w=600"},
+ {id:18,name:"Croquettes au fromage",category:"Accompagnements",price:2,desc:"Un cœur fondant au fromage.",img:"https://images.unsplash.com/photo-1548340748-6d2b7d7da280?w=600"}
 ];
 
-let cart = [];
+let cart = JSON.parse(localStorage.getItem("elf_cart") || "[]");
+let orders = JSON.parse(localStorage.getItem("elf_orders") || "[]");
+let currentCategory = "Tout";
+let currentProduct = null;
+let currentRole = null;
+let customExtra = 0;
+let customChoices = {};
 
-function showPage(page) {
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById(page).classList.add('active');
-  document.querySelectorAll('nav button').forEach(b=>{
-    b.classList.toggle('active',b.dataset.page===page);
-  });
-  window.scrollTo({top:0,behavior:'smooth'});
-  if(page==='basket') renderCart();
+const roles = {
+ director:{name:"Directeur",description:"Accès complet : commandes, produits, prix et statistiques.",pin:"1234"},
+ cashier:{name:"Caisse",description:"Vous pouvez consulter, accepter et refuser les commandes.",pin:"2222"},
+ kitchen:{name:"Cuisine",description:"Vous pouvez suivre les commandes et gérer leur préparation.",pin:"3333"}
+};
+
+function money(n){return n.toFixed(2).replace(".",",")+" €"}
+function saveCart(){localStorage.setItem("elf_cart",JSON.stringify(cart));updateCount()}
+function saveOrders(){localStorage.setItem("elf_orders",JSON.stringify(orders))}
+function toast(message){
+ const el=document.getElementById("toast");
+ el.textContent=message;el.classList.add("show");
+ clearTimeout(window.toastTimer);
+ window.toastTimer=setTimeout(()=>el.classList.remove("show"),2300);
 }
-
-document.querySelectorAll('nav button').forEach(button=>{
-  button.addEventListener('click',()=>showPage(button.dataset.page));
-});
-
-function renderProducts(category='Tous') {
-  const container=document.getElementById('products');
-  container.innerHTML='';
-  products.filter(p=>category==='Tous'||p.category===category).forEach(p=>{
-    const card=document.createElement('article');
-    card.className='product';
-    const art=document.createElement('div');
-    art.className='product-art';
-    art.textContent=p.emoji;
-    const info=document.createElement('div');
-    info.className='product-info';
-    const h=document.createElement('h3');
-    h.textContent=p.name;
-    const desc=document.createElement('p');
-    desc.textContent=p.description;
-    const bottom=document.createElement('div');
-    bottom.className='product-bottom';
-    const price=document.createElement('span');
-    price.className='price';
-    price.textContent=formatPrice(p.price);
-    const add=document.createElement('button');
-    add.className='add';
-    add.textContent='+ Ajouter';
-    add.addEventListener('click',()=>addProduct(p.name,p.price));
-    bottom.append(price,add);
-    info.append(h,desc,bottom);
-    card.append(art,info);
-    container.append(card);
-  });
+function showPage(id){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ window.scrollTo(0,0);
+ if(id==="cart")renderCart();
+ if(id==="admin")renderAdmin();
 }
-
-document.querySelectorAll('.filter').forEach(button=>{
-  button.addEventListener('click',()=>{
-    document.querySelectorAll('.filter').forEach(b=>b.classList.remove('active'));
-    button.classList.add('active');
-    renderProducts(button.dataset.filter);
-  });
-});
-
-function formatPrice(price) {
-  return price.toFixed(2).replace('.',',')+' €';
+function updateCount(){
+ document.getElementById("cart-count").textContent=cart.reduce((s,p)=>s+p.quantity,0);
 }
-
-function addProduct(name,price) {
-  const existing=cart.find(item=>item.name===name);
-  if(existing) existing.quantity++;
-  else cart.push({name,price,quantity:1});
-  renderCart();
-  showToast(name+' ajouté au panier !');
+function renderProducts(){
+ const search=(document.getElementById("search")?.value||"").toLowerCase();
+ const categories=["Tout","Plats","Desserts","Boissons","Accompagnements"];
+ document.getElementById("categories").innerHTML=categories.map(c=>
+ `<button class="${currentCategory===c?"selected":""}" onclick="chooseCategory('${c}')">${c}</button>`
+ ).join("");
+ const filtered=products.filter(p=>p.available!==false&&
+ (currentCategory==="Tout"||p.category===currentCategory)&&
+ (p.name.toLowerCase().includes(search)||p.desc.toLowerCase().includes(search)));
+ document.getElementById("products").innerHTML=filtered.length?filtered.map(productCard).join():'<div class="empty">Aucun produit trouvé.</div>';
 }
-
-function addMenu() {
-  const main=document.getElementById('mainChoice').value;
-  const side=document.getElementById('sideChoice').value;
-  const drink=document.getElementById('drinkChoice').value;
-  addProduct('Menu : '+main+' + '+side+' + '+drink,16.99);
+function productCard(p){
+ return `<article class="product">
+ <img src="${p.img}" alt="${p.name}" onerror="this.style.display='none'">
+ <div class="product-content"><h3>${p.name}</h3><p>${p.desc}</p>
+ <div class="price">${money(p.price)}</div>
+ <button class="primary" onclick="openCustomize(${p.id})">Personnaliser / Ajouter</button>
+ </div></article>`;
 }
-
-function renderCart() {
-  const container=document.getElementById('cart-items');
-  const totalElement=document.getElementById('total');
-  const count=document.getElementById('cart-count');
-  const confirmation=document.getElementById('confirmation');
-  confirmation.style.display='none';
-
-  let total=0;
-  let number=0;
-  container.innerHTML='';
-
-  if(cart.length===0) {
-    container.innerHTML = '<div class="empty"><div>🛒</div><h3>Ton panier est vide</h3><p>Ajoute quelques gourmandises pour commencer !</p><button class="secondary" id="back-to-card">Voir la carte</button></div>';
-document.getElementById('back-to-card').addEventListener('click', () => showPage('menu-card'));
-return;
+function chooseCategory(c){currentCategory=c;renderProducts()}
+function openCustomize(id){
+ currentProduct=products.find(p=>p.id===id);
+ customExtra=0;customChoices={};
+ document.getElementById("custom-title").textContent=currentProduct.name;
+ document.getElementById("custom-note").value="";
+ const isMain=currentProduct.category==="Plats";
+ let html="";
+ if(isMain){
+  html+=`<h3>Ingrédients</h3>
+  <label class="option"><input type="checkbox" name="ingredient" value="Sans salade"> Sans salade</label>
+  <label class="option"><input type="checkbox" name="ingredient" value="Sans tomate"> Sans tomate</label>
+  <label class="option"><input type="checkbox" name="ingredient" value="Sans oignon"> Sans oignon</label>
+  <label class="option"><input type="checkbox" name="ingredient" value="Sans fromage"> Sans fromage</label>
+  <h3>Sauce</h3><select id="custom-sauce">
+  <option>Mayonnaise</option><option>Ketchup</option><option>Algérienne</option><option>Samouraï</option><option>Barbecue</option><option>Aucune sauce</option></select>
+  <h3>Suppléments</h3>
+  <label class="option"><input type="checkbox" class="extra" value="1.5" data-name="Fromage supplémentaire"> Fromage supplémentaire (+1,50 €)</label>
+  <label class="option"><input type="checkbox" class="extra" value="2" data-name="Steak supplémentaire"> Steak supplémentaire (+2 €)</label>
+  <label class="option"><input type="checkbox" class="extra" value="1" data-name="Bacon supplémentaire"> Bacon supplémentaire (+1 €)</label>`;
+ }else{
+  html='<p class="muted">Tu peux ajouter une instruction particulière à ta commande.</p>';
+ }
+ document.getElementById("custom-options").innerHTML=html;
+ document.querySelectorAll(".extra").forEach(el=>el.addEventListener("change",updateCustomPrice));
+ updateCustomPrice();
+ document.getElementById("custom-modal").classList.add("open");
 }
-  cart.forEach((item,index)=>{
-    total+=item.price*item.quantity;
-    number+=item.quantity;
-    const line=document.createElement('div');
-    line.className='cart-item';
-    const name=document.createElement('div');
-    const strong=document.createElement('strong');
-    strong.textContent=item.name;
-    const small=document.createElement('small');
-    small.textContent=formatPrice(item.price)+' l’unité';
-    name.append(strong,small);
-
-    const controls=document.createElement('div');
-    controls.className='qty';
-    const minus=document.createElement('button');
-    minus.textContent='−';
-    minus.onclick=()=>changeQuantity(index,-1);
-    const qty=document.createElement('strong');
-    qty.textContent=item.quantity;
-    const plus=document.createElement('button');
-    plus.textContent='+';
-    plus.onclick=()=>changeQuantity(index,1);
-    const price=document.createElement('strong');
-    price.textContent=formatPrice(item.price*item.quantity);
-    const remove=document.createElement('button');
-    remove.className='remove';
-    remove.textContent='Supprimer';
-    remove.onclick=()=>removeItem(index);
-    controls.append(minus,qty,plus,price,remove);
-    line.append(name,controls);
-    container.append(line);
-  });
-
-  totalElement.textContent=formatPrice(total);
-  count.textContent=number;
+function updateCustomPrice(){
+ customExtra=[...document.querySelectorAll(".extra:checked")].reduce((s,e)=>s+Number(e.value),0);
+ document.getElementById("custom-price").textContent=money(currentProduct.price+customExtra);
 }
-
-function changeQuantity(index,amount) {
-  cart[index].quantity+=amount;
-  if(cart[index].quantity<=0) cart.splice(index,1);
-  renderCart();
+function confirmCustomization(){
+ const ingredients=[...document.querySelectorAll('input[name="ingredient"]:checked')].map(e=>e.value);
+ const extras=[...document.querySelectorAll(".extra:checked")].map(e=>e.dataset.name);
+ const sauce=document.getElementById("custom-sauce")?.value||"";
+ const note=document.getElementById("custom-note").value.trim();
+ let details=[...ingredients,...extras];
+ if(sauce)details.push("Sauce : "+sauce);
+ if(note)details.push("Note : "+note);
+ const label=details.length?details.join(" / "):"Classique";
+ const key=currentProduct.id+"-"+label;
+ const existing=cart.find(i=>i.key===key);
+ if(existing)existing.quantity++;
+ else cart.push({key,id:currentProduct.id,name:currentProduct.name,price:currentProduct.price+customExtra,quantity:1,details:label});
+ saveCart();closeModal("custom-modal");toast(currentProduct.name+" ajouté au panier !");
 }
-function removeItem(index) {
-  cart.splice(index,1);
-  renderCart();
+function openMenuBuilder(){
+ const main=products.filter(p=>p.category==="Plats");
+ const sides=products.filter(p=>p.category==="Accompagnements");
+ const drinks=products.filter(p=>p.category==="Boissons");
+ document.getElementById("menu-main").innerHTML=main.map(p=>`<option>${p.name}</option>`).join("");
+ document.getElementById("menu-side").innerHTML=sides.map(p=>`<option>${p.name}</option>`).join("");
+ document.getElementById("menu-drink").innerHTML=drinks.map(p=>`<option>${p.name}</option>`).join("");
+ document.getElementById("menu-modal").classList.add("open");
 }
-function validateOrder() {
-  if(cart.length===0) {
-    alert('Ton panier est vide !');
-    return;
+function addMenu(){
+ const details=[document.getElementById("menu-main").value,document.getElementById("menu-side").value,document.getElementById("menu-drink").value].join(" + ");
+ const key="menu-"+details;
+ const existing=cart.find(i=>i.key===key);
+ if(existing)existing.quantity++;
+ else cart.push({key,name:"Menu : "+details,price:16.99,quantity:1,details:"Menu composé"});
+ saveCart();closeModal("menu-modal");toast("Menu ajouté au panier !");
+}
+function cartTotal(){return cart.reduce((s,i)=>s+i.price*i.quantity,0)}
+function renderCart(){
+ const box=document.getElementById("cart-items");
+ const bottom=document.getElementById("cart-bottom");
+ if(!cart.length){
+  box.innerHTML='<div class="empty"><h2>🛒 Ton panier est vide</h2><p>Ajoute quelques gourmandises pour commencer !</p><button class="primary" onclick="showPage(\'menu\')">Voir la carte</button></div>';
+  bottom.innerHTML="";return;
+ }
+ box.innerHTML=cart.map((item,index)=>`
+ <div class="cart-line">
+  <div class="row"><div><strong>${item.name}</strong><div class="muted">${item.details||""}</div><div>${money(item.price)} l'unité</div></div>
+  <div class="qty"><button onclick="changeQty(${index},-1)">−</button><strong>${item.quantity}</strong><button onclick="changeQty(${index},1)">+</button><button class="secondary" onclick="removeItem(${index})">🗑</button></div>
+  </div>
+ </div>`).join("");
+ bottom.innerHTML=`<div class="row" style="margin-top:20px"><span class="total">Total : ${money(cartTotal())}</span><button class="primary" onclick="placeOrder()">Valider ma commande</button></div><p class="muted">Commande de démonstration, sans paiement réel.</p>`;
+}
+function changeQty(index,delta){
+ cart[index].quantity+=delta;
+ if(cart[index].quantity<=0)cart.splice(index,1);
+ saveCart();renderCart();
+}
+function removeItem(index){cart.splice(index,1);saveCart();renderCart()}
+function placeOrder(){
+ if(!cart.length)return;
+ const order={
+  id:Date.now(),number:orders.length+1,
+  date:new Date().toLocaleString("fr-FR"),
+  items:JSON.parse(JSON.stringify(cart)),
+  total:cartTotal(),status:"Nouvelle"
+ };
+ orders.unshift(order);saveOrders();
+ cart=[];saveCart();
+ document.getElementById("confirmation-text").textContent="Commande n°"+order.number+" enregistrée. Merci et à bientôt !";
+ showPage("confirmation-page");
+}
+function closeModal(id){document.getElementById(id).classList.remove("open")}
+function openLogin(){document.getElementById("login-pin").value="";document.getElementById("login-modal").classList.add("open")}
+function login(){
+ const role=document.getElementById("login-role").value;
+ const pin=document.getElementById("login-pin").value;
+ if(pin!==roles[role].pin){toast("Code incorrect.");return}
+ currentRole=role;
+ closeModal("login-modal");
+ document.getElementById("admin-welcome").textContent="Connecté : "+roles[role].name;
+ document.getElementById("role-description").textContent=roles[role].description;
+ document.querySelectorAll("#admin-tabs button").forEach(b=>b.style.display="inline-block");
+ document.querySelectorAll("#admin-tabs button")[2].style.display=role==="director"?"inline-block":"none";
+ showPage("admin");renderAdmin();
+}
+function logout(){currentRole=null;showPage("home");toast("Déconnexion effectuée.")}
+function adminTab(tab,button){
+ ["dashboard","orders","products"].forEach(t=>document.getElementById("admin-"+t).style.display=t===tab?"block":"none");
+ document.querySelectorAll("#admin-tabs button").forEach(b=>b.classList.remove("selected"));
+ if(button)button.classList.add("selected");
+ if(tab==="orders")renderOrders();
+ if(tab==="products")renderProductAdmin();
+}
+function renderAdmin(){
+ if(!currentRole){showPage("home");return}
+ const sales=orders.filter(o=>o.status==="Terminée").reduce((s,o)=>s+o.total,0);
+ document.getElementById("stat-orders").textContent=orders.length;
+ document.getElementById("stat-preparing").textContent=orders.filter(o=>o.status==="En préparation").length;
+ document.getElementById("stat-done").textContent=orders.filter(o=>o.status==="Terminée").length;
+ document.getElementById("stat-sales").textContent=money(sales);
+ renderOrders();renderProductAdmin();
+}
+function renderOrders(){
+ const list=document.getElementById("orders-list");
+ if(!orders.length){list.innerHTML='<div class="empty">Aucune commande pour le moment.</div>';return}
+ list.innerHTML=orders.map(o=>{
+  const statusClass={"Nouvelle":"status-new","Acceptée":"status-accepted","En préparation":"status-preparing","Prête":"status-ready","Terminée":"status-done","Refusée":"status-done"}[o.status]||"";
+  let actions="";
+  if(currentRole==="director"||currentRole==="cashier"){
+   if(o.status==="Nouvelle")actions+=`<button class="primary" onclick="setStatus(${o.id},'Acceptée')">Accepter</button><button class="secondary" onclick="setStatus(${o.id},'Refusée')">Refuser</button>`;
   }
-  let total=cart.reduce((sum,item)=>sum+item.price*item.quantity,0);
-  let summary='🍔 COMMANDE EL FAST-FOOD\\n\\n';
-  cart.forEach(item=>{
-    summary+=item.quantity+' x '+item.name+'\\n';
-  });
-  summary+='\\nTOTAL : '+formatPrice(total);
-  summary+='\\n\\nCommande de démonstration.';
-  const confirmation=document.getElementById('confirmation');
-  confirmation.textContent=summary;
-  confirmation.style.display='block';
+  if(currentRole==="director"||currentRole==="kitchen"){
+   if(["Acceptée","En préparation"].includes(o.status))actions+=`<button class="primary" onclick="setStatus(${o.id},'En préparation')">En préparation</button>`;
+   if(o.status==="En préparation")actions+=`<button class="primary" onclick="setStatus(${o.id},'Prête')">Commande prête</button>`;
+   if(o.status==="Prête")actions+=`<button class="primary" onclick="setStatus(${o.id},'Terminée')">Terminée</button>`;
+  }
+  return `<div class="order">
+   <div class="row"><div><strong>Commande n°${o.number}</strong><div class="muted">${o.date}</div></div><span class="badge ${statusClass}">${o.status}</span></div>
+   <div class="order-items">${o.items.map(i=>`${i.quantity} × ${i.name} — ${money(i.price*i.quantity)}<br><small>${i.details||""}</small>`).join("<br>")}</div>
+   <div class="row" style="margin-top:12px"><strong>${money(o.total)}</strong><div class="row">${actions}</div></div>
+  </div>`;
+ }).join("");
 }
-function showToast(message) {
-  const toast=document.getElementById('toast');
-  toast.textContent=message;
-  toast.classList.add('show');
-  clearTimeout(window.toastTimer);
-  window.toastTimer=setTimeout(()=>toast.classList.remove('show'),2000);
+function setStatus(id,status){
+ const order=orders.find(o=>o.id===id);
+ if(!order)return;
+ order.status=status;saveOrders();renderAdmin();toast("Commande mise à jour.");
 }
-
-renderProducts();
-renderCart();
+function renderProductAdmin(){
+ const box=document.getElementById("products-admin-list");
+ if(currentRole!=="director"){box.innerHTML="<p>Accès réservé au directeur.</p>";return}
+ box.innerHTML=products.map(p=>`
+ <div class="order">
+  <div class="row"><strong>${p.name}</strong><span class="badge">${p.category}</span></div>
+  <label>Prix (€)</label><input type="number" min="0" step="0.01" id="price-${p.id}" value="${p.price}">
+  <div class="row"><label><input type="checkbox" id="available-${p.id}" ${p.available===false?"":"checked"} style="width:auto"> Disponible</label>
+  <button class="primary" onclick="saveProduct(${p.id})">Enregistrer</button></div>
+ </div>`).join("");
+}
+function saveProduct(id){
+ const p=products.find(x=>x.id===id);
+ p.price=Number(document.getElementById("price-"+id).value);
+ p.available=document.getElementById("available-"+id).checked;
+ toast("Produit modifié sur cet appareil.");
+ renderProductAdmin();renderProducts();
+}
+function init(){
+ renderProducts();
+ document.getElementById("popular").innerHTML=products.filter(p=>[1,2,3,6].includes(p.id)).map(productCard).join("");
+ updateCount();
+}
+init();
 </script>
 </body>
 </html>
