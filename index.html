@@ -76,8 +76,28 @@ const baseProducts=[
 {id:'juice',name:'Jus de fruit',category:'Boissons',price:3,desc:'Un jus fruité.',emoji:'🧃',image:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
 {id:'coffee',name:'Café',category:'Boissons',price:3,desc:'Un café.',emoji:'☕',image:'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=900&q=80',custom:false,available:true}
 ];  let products=loadJSON(STORE.products,baseProducts).map(p=>({...p,stock:Number.isFinite(p.stock)?p.stock:40}));let cart=loadJSON(STORE.cart,[]);let orders=loadJSON(STORE.orders,[]).map(o=>({...o,history:Array.isArray(o.history)?o.history:[{status:o.status||'new',at:o.createdAt||new Date().toISOString()}],etaMinutes:Number.isFinite(o.etaMinutes)?o.etaMinutes:15}));let activeCategory='Tout';let currentRole=null;let adminTab='dashboard';let editingProductId=null;let modalProductId=null;let cashierDraftItems=[];let simulationTimer=null;let simulationCount=0;
-const roles={director:{label:'Directeur',pin:'1234',tabs:['dashboard','orders','simulation','products','stock','promos','team'],permissions:['Voir les statistiques','Gérer les commandes','Modifier la carte','Consulter les rôles']},cashier:{label:'Caisse',pin:'2222',tabs:['orders'],permissions:['Consulter les commandes','Accepter ou refuser une commande']},kitchen:{label:'Cuisine',pin:'3333',tabs:['orders'],permissions:['Voir les commandes acceptées','Préparer et terminer les commandes']}};
-function loadJSON(key,fallback){try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):structuredClone(fallback)}catch(e){return structuredClone(fallback)}}
+
+const roles={
+  director:{
+    label:'Directeur',
+    pin:'1234',
+    tabs:['dashboard','orders','simulation','products','stock','promos','team'],
+    permissions:['Voir les statistiques','Gérer les commandes','Modifier la carte','Consulter les rôles']
+  },
+  cashier:{
+    label:'Caisse',
+    pin:'2222',
+    tabs:['cashier','orders'],
+    permissions:['Prendre des commandes','Consulter les commandes','Accepter ou refuser une commande']
+  },
+  kitchen:{
+    label:'Cuisine',
+    pin:'3333',
+    tabs:['orders'],
+    permissions:['Voir les commandes acceptées','Préparer et terminer les commandes']
+  }
+};
+
 function saveAll(){localStorage.setItem(STORE.cart,JSON.stringify(cart));localStorage.setItem(STORE.orders,JSON.stringify(orders));localStorage.setItem(STORE.products,JSON.stringify(products));localStorage.setItem(STORE.reviews,JSON.stringify(reviews));localStorage.setItem(STORE.team,JSON.stringify(teamMembers));}
 function money(n){return Number(n||0).toLocaleString('fr-FR',{style:'currency',currency:'EUR'})}
 function makeOrderId(){let id;do{id='EL-'+String(Date.now()).slice(-6)+'-'+Math.random().toString(36).slice(2,5).toUpperCase()}while(orders.some(o=>o.id===id));return id}
@@ -113,11 +133,213 @@ function submitReview(event,orderId){event.preventDefault();const order=orders.f
 function renderMenus(){const root=document.getElementById('menuGrid');const menus=[{name:'Menu Classique',emoji:'🍔',desc:'Un burger, des frites et une boisson.',price:16.99,items:['Burger au choix','Frites','Boisson']},{name:'Menu Gourmand',emoji:'🍗',desc:'Une formule généreuse pour les grandes faims.',price:16.99,items:['Plat au choix','Accompagnement','Boisson']},{name:'Menu Douceur',emoji:'🍦',desc:'Une formule avec une touche sucrée.',price:16.99,items:['Plat au choix','Accompagnement','Dessert'] }];root.innerHTML=menus.map(m=>`<article class="menu-card"><div class="menu-emoji">${m.emoji}</div><h3>${m.name}</h3><p>${m.desc}</p><ul>${m.items.map(i=>`<li>${i}</li>`).join('')}</ul><div class="menu-price">${money(m.price)}</div><button class="btn btn-primary" onclick="showPage('menus');document.getElementById('menuMain').focus()">Composer cette formule</button></article>`).join('')}
 function renderMenuBuilder(){const main=document.getElementById('menuMain'),side=document.getElementById('menuSide'),drink=document.getElementById('menuDrink');if(!main||!side||!drink)return;const fill=(el,items)=>{const old=el.value;el.innerHTML=items.map(p=>`<option value="${p.id}">${escapeHTML(p.name)}</option>`).join('');if(items.some(p=>p.id===old))el.value=old};fill(main,products.filter(p=>p.available&&['Burgers','Plats'].includes(p.category)));fill(side,products.filter(p=>p.available&&p.category==='Accompagnements'));fill(drink,products.filter(p=>p.available&&p.category==='Boissons'))}
 function addComposedMenu(){const ids=['menuMain','menuSide','menuDrink'].map(id=>document.getElementById(id).value);const chosen=ids.map(productById);if(chosen.some(p=>!p))return toast('Choisis un plat, un accompagnement et une boisson.');const details='Menu : '+chosen.map(p=>p.name).join(' + ');addToCart({key:'menu-'+Date.now(),id:chosen[0].id,name:'Menu EL composé',price:16.99,details,quantity:1})}
-function renderAdmin(){const root=document.getElementById('adminRoot');if(!currentRole){root.innerHTML=`<div class="panel admin-login"><h2>Connexion équipe</h2><p class="muted">Choisis ton rôle et entre le code de démonstration.</p><form onsubmit="loginAdmin(event)"><div class="form-group"><label for="roleSelect">Rôle</label><select class="field" id="roleSelect"><option value="director">Directeur</option><option value="cashier">Caisse</option><option value="kitchen">Cuisine</option></select></div><div class="form-group" style="margin-top:13px"><label for="adminPin">Code de démonstration</label><input class="field" id="adminPin" type="password" inputmode="numeric" maxlength="8" required></div><button class="btn btn-primary" style="width:100%;margin-top:16px">Se connecter</button></form><div class="notice" style="margin-top:15px">Codes de démonstration : Directeur 1234 · Caisse 2222 · Cuisine 3333. Ils ne sont pas sécurisés.</div></div>`;return}const role=roles[currentRole];if(!role.tabs.includes(adminTab))adminTab=role.tabs[0];root.innerHTML=`<div class="admin-shell"><aside class="admin-side"><div class="admin-user"><strong>${role.label}</strong><span>Session de démonstration</span></div><div class="admin-nav">${role.tabs.map(t=>`<button class="${adminTab===t?'active':''}" onclick="setAdminTab('${t}')">${({dashboard:'📊 Tableau de bord',orders:'🧾 Commandes',simulation:'🤖 Clients automatiques',products:'🍔 Carte & produits',stock:'📦 Gestion des stocks',promos:'🏷️ Promotions',team:'👥 Équipe'})[t]}</button>`).join('')}<button onclick="logoutAdmin()">↪ Déconnexion</button></div></aside><div class="admin-main">${adminTab==='dashboard'?renderDashboard():adminTab==='orders'?renderAdminOrders():adminTab==='simulation'?renderSimulation():adminTab==='products'?renderAdminProducts():adminTab==='stock'?renderStock():adminTab==='promos'?renderPromoAdmin():renderTeam()}</div></div>`}
+function renderAdmin(){const root=document.getElementById('adminRoot');if(!currentRole){root.innerHTML=`<div class="panel admin-login"><h2>Connexion équipe</h2><p class="muted">Choisis ton rôle et entre le code de démonstration.</p><form onsubmit="loginAdmin(event)"><div class="form-group"><label for="roleSelect">Rôle</label><select class="field" id="roleSelect"><option value="director">Directeur</option><option value="cashier">Caisse</option><option value="kitchen">Cuisine</option></select></div><div class="form-group" style="margin-top:13px"><label for="adminPin">Code de démonstration</label><input class="field" id="adminPin" type="password" inputmode="numeric" maxlength="8" required></div><button class="btn btn-primary" style="width:100%;margin-top:16px">Se connecter</button></form><div class="notice" style="margin-top:15px">Codes de démonstration : Directeur 1234 · Caisse 2222 · Cuisine 3333. Ils ne sont pas sécurisés.</div></div>`;return}const role=roles[currentRole];if(!role.tabs.includes(adminTab))adminTab=role.tabs[0];root.innerHTML=`<div class="admin-shell"><aside class="admin-side"><div class="admin-user"><strong>${role.label}</strong><span>Session de démonstration</span></div><div class="admin-nav">${role.tabs.map(t=>`<button class="${adminTab===t?'active':''}" onclick="setAdminTab('${t}')">${({dashboard:'📊 Tableau de bord',cashier:'🛒 Nouvelle commande',orders:'🧾 Commandes',simulation:'🤖 Clients automatiques',products:'🍔 Carte & produits',stock:'📦 Gestion des stocks',promos:'🏷️ Promotions',team:'👥 Équipe'})[t]}</button>`).join('')}<button onclick="logoutAdmin()">↪ Déconnexion</button></div></aside><div class="admin-main">${adminTab==='dashboard'?renderDashboard():adminTab==='cashier'?renderCashier():adminTab==='orders'?renderAdminOrders():adminTab==='simulation'?renderSimulation():adminTab==='products'?renderAdminProducts():adminTab==='stock'?renderStock():adminTab==='promos'?renderPromoAdmin():renderTeam()}</div></div>`}
 function loginAdmin(event){event.preventDefault();const role=document.getElementById('roleSelect').value;const pin=document.getElementById('adminPin').value;if(roles[role].pin!==pin){toast('Code incorrect.');return}currentRole=role;adminTab=roles[role].tabs[0];renderAdmin();toast('Connexion réussie.')}
 function logoutAdmin(){currentRole=null;renderAdmin();toast('Déconnexion effectuée.')}
 function setAdminTab(tab){if(!currentRole||!roles[currentRole].tabs.includes(tab))return;adminTab=tab;renderAdmin()}
-function renderDashboard(){const today=new Date().toDateString();const todays=orders.filter(o=>new Date(o.createdAt).toDateString()===today);const revenue=todays.filter(o=>o.status!=='refused').reduce((s,o)=>s+o.total,0);const low=products.filter(p=>p.stock<=5);return `<h2>Tableau de bord</h2><div class="stats"><div class="stat"><span>Commandes aujourd'hui</span><strong>${todays.length}</strong></div><div class="stat"><span>À traiter</span><strong>${orders.filter(o=>['new','accepted','preparing'].includes(o.status)).length}</strong></div><div class="stat"><span>Chiffre d'affaires estimé</span><strong>${money(revenue)}</strong></div><div class="stat"><span>Alertes de stock</span><strong>${low.length}</strong></div></div><div class="panel"><h3 style="margin-top:0">Dernières commandes</h3>${orders.length?orders.slice(0,5).map(o=>`<div class="admin-card"><div class="admin-card-head"><div><strong>${escapeHTML(o.id)} · ${escapeHTML(o.name)}</strong><p>${new Date(o.createdAt).toLocaleString('fr-FR')}</p></div><span class="status ${o.status}">${statusLabel(o.status)}</span></div><p>${money(o.total)} · ${o.items.reduce((s,i)=>s+i.quantity,0)} article(s)</p></div>`).join(''):'<p class="muted">Aucune commande pour le moment.</p>'}</div><div class="panel" style="margin-top:15px"><h3>Stocks à surveiller</h3>${low.length?low.map(p=>`<p>${escapeHTML(p.name)} : <strong>${p.stock}</strong> en stock</p>`).join(''):'<p class="muted">Aucune alerte de stock.</p>'}</div>`}function renderAdminOrders(){
+function renderDashboard(){const today=new Date().toDateString();const todays=orders.filter(o=>new Date(o.createdAt).toDateString()===today);const revenue=todays.filter(o=>o.status!=='refused').reduce((s,o)=>s+o.total,0);const low=products.filter(p=>p.stock<=5);return `<h2>Tableau de bord</h2><div class="stats"><div class="stat"><span>Commandes aujourd'hui</span><strong>${todays.length}</strong></div><div class="stat"><span>À traiter</span><strong>${orders.filter(o=>['new','accepted','preparing'].includes(o.status)).length}</strong></div><div class="stat"><span>Chiffre d'affaires estimé</span><strong>${money(revenue)}</strong></div><div class="stat"><span>Alertes de stock</span><strong>${low.length}</strong></div></div><div class="panel"><h3 style="margin-top:0">Dernières commandes</h3>${orders.length?orders.slice(0,5).map(o=>`<div class="admin-card"><div class="admin-card-head"><div><strong>${escapeHTML(o.id)} · ${escapeHTML(o.name)}</strong><p>${new Date(o.createdAt).toLocaleString('fr-FR')}</p></div><span class="status ${o.status}">${statusLabel(o.status)}</span></div><p>${money(o.total)} · ${o.items.reduce((s,i)=>s+i.quantity,0)} article(s)</p></div>`).join(''):'<p class="muted">Aucune commande pour le moment.</p>'}</div><div class="panel" style="margin-top:15px"><h3>Stocks à surveiller</h3>${low.length?low.map(p=>`<p>${escapeHTML(p.name)} : <strong>${p.stock}</strong> en stock</p>`).join(''):'<p class="muted">Aucune alerte de stock.</p>'}</div>`}
+let cashierCategory='Tout';
+
+function renderCashier(){
+  const categories=['Tout',...new Set(products.map(p=>p.category))];
+  const available=products.filter(p=>
+    p.available && p.stock>0 &&
+    (cashierCategory==='Tout'||p.category===cashierCategory)
+  );
+
+  const total=cashierDraftItems.reduce((sum,item)=>{
+    const p=products.find(x=>x.id===item.id);
+    return sum+(p?p.price*item.quantity:0);
+  },0);
+
+  return `
+    <h2>🛒 Nouvelle commande</h2>
+    <p class="muted">Prise de commande au comptoir</p>
+
+    <div class="admin-card">
+      <h3>1. Choisir les produits</h3>
+      <div class="admin-actions">
+        ${categories.map(c=>`
+          <button class="btn ${cashierCategory===c?'btn-primary':'btn-secondary'}"
+            onclick="cashierCategory='${escapeHTML(c)}';renderAdmin()">
+            ${escapeHTML(c)}
+          </button>
+        `).join('')}
+      </div>
+
+      <div class="cashier-products">
+        ${available.length?available.map(p=>{
+          const item=cashierDraftItems.find(i=>i.id===p.id);
+          return `
+            <div class="admin-card">
+              <div class="admin-card-head">
+                <div>
+                  <strong>${p.emoji||'🍽️'} ${escapeHTML(p.name)}</strong>
+                  <p>${money(p.price)} · Stock : ${p.stock}</p>
+                </div>
+                <button class="btn btn-primary"
+                  onclick="cashierAdd('${p.id}')">+ Ajouter</button>
+              </div>
+              ${item?`<p>Dans le panier : ${item.quantity}</p>`:''}
+            </div>
+          `;
+        }).join(''):'<p>Aucun produit disponible dans cette catégorie.</p>'}
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <h3>2. Panier</h3>
+      ${cashierDraftItems.length?cashierDraftItems.map(item=>{
+        const p=products.find(x=>x.id===item.id);
+        if(!p)return '';
+        return `
+          <div class="admin-card-head">
+            <div>
+              <strong>${escapeHTML(p.name)}</strong>
+              <p>${money(p.price)} × ${item.quantity}</p>
+            </div>
+            <div class="admin-actions">
+              <button class="btn btn-secondary"
+                onclick="cashierChange('${p.id}',-1)">−</button>
+              <strong>${item.quantity}</strong>
+              <button class="btn btn-secondary"
+                onclick="cashierChange('${p.id}',1)">+</button>
+            </div>
+          </div>
+        `;
+      }).join(''):'<p class="muted">Le panier est vide.</p>'}
+
+      <hr>
+      <div class="admin-card-head">
+        <strong>Total à payer</strong>
+        <h2>${money(total)}</h2>
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <h3>3. Informations client</h3>
+      <div class="form-group">
+        <label for="cashierCustomerName">Nom du client</label>
+        <input class="field" id="cashierCustomerName"
+          placeholder="Ex : Client comptoir">
+      </div>
+      <div class="form-group" style="margin-top:12px">
+        <label for="cashierMode">Mode de commande</label>
+        <select class="field" id="cashierMode">
+          <option value="Sur place">Sur place</option>
+          <option value="À emporter">À emporter</option>
+        </select>
+      </div>
+
+      <button class="btn btn-primary"
+        style="width:100%;margin-top:16px"
+        onclick="cashierSubmit()"
+        ${cashierDraftItems.length?'':'disabled'}>
+        Valider la commande · ${money(total)}
+      </button>
+
+      <button class="btn btn-secondary"
+        style="width:100%;margin-top:8px"
+        onclick="cashierClear()">
+        Vider le panier
+      </button>
+    </div>
+  `;
+}
+
+function cashierAdd(id){
+  const p=products.find(x=>x.id===id);
+  if(!p||!p.available||p.stock<=0){
+    toast('Produit indisponible.');
+    return;
+  }
+  const item=cashierDraftItems.find(i=>i.id===id);
+  if(item){
+    if(item.quantity>=p.stock){
+      toast('Stock insuffisant.');
+      return;
+    }
+    item.quantity++;
+  }else{
+    cashierDraftItems.push({id:p.id,name:p.name,price:p.price,quantity:1});
+  }
+  renderAdmin();
+}
+
+function cashierChange(id,change){
+  const item=cashierDraftItems.find(i=>i.id===id);
+  const p=products.find(x=>x.id===id);
+  if(!item||!p)return;
+
+  item.quantity+=change;
+  if(item.quantity<=0){
+    cashierDraftItems=cashierDraftItems.filter(i=>i.id!==id);
+  }else if(item.quantity>p.stock){
+    item.quantity=p.stock;
+    toast('Stock maximum atteint.');
+  }
+  renderAdmin();
+}
+
+function cashierClear(){
+  cashierDraftItems=[];
+  renderAdmin();
+}
+
+function cashierSubmit(){
+  if(!cashierDraftItems.length){
+    toast('Le panier est vide.');
+    return;
+  }
+
+  for(const item of cashierDraftItems){
+    const p=products.find(x=>x.id===item.id);
+    if(!p||!p.available||p.stock<item.quantity){
+      toast('Stock insuffisant pour '+item.name+'.');
+      renderAdmin();
+      return;
+    }
+  }
+
+  const name=document.getElementById('cashierCustomerName').value.trim();
+  if(!name){
+    toast('Entre le nom du client.');
+    return;
+  }
+
+  const now=new Date().toISOString();
+  const items=cashierDraftItems.map(i=>({...i}));
+  const total=items.reduce((sum,i)=>sum+i.price*i.quantity,0);
+
+  const order={
+    id:makeOrderId(),
+    name,
+    mode:document.getElementById('cashierMode').value,
+    note:'',
+    items,
+    total,
+    promo:null,
+    status:'new',
+    createdAt:now,
+    etaMinutes:15,
+    history:[{status:'new',at:now}],
+    source:'cashier'
+  };
+
+  orders.unshift(order);
+
+  items.forEach(item=>{
+    const p=products.find(x=>x.id===item.id);
+    if(p)p.stock=Math.max(0,p.stock-item.quantity);
+  });
+
+  cashierDraftItems=[];
+  saveAll();
+  renderAdmin();
+  renderProducts();
+  toast('Commande caisse enregistrée : '+order.id);
+}
+function renderAdminOrders(){
   let visible=orders;
   if(currentRole==='kitchen')visible=orders.filter(o=>['accepted','preparing','ready'].includes(o.status));
   return `<h2>Gestion des commandes</h2>
