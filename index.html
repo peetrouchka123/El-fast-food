@@ -1,1087 +1,2554 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#123d2c">
-<meta name="description" content="EL Fast-Food — burgers, menus et commandes dans une ambiance jungle moderne.">
-<title>EL Fast-Food — La pause jungle</title>
+<meta name="theme-color" content="#10251c">
+<meta name="description" content="EL FAST-FOOD - Découvrez notre carte et composez votre commande.">
+<title>EL FAST-FOOD | Le goût de la jungle</title>
+
 <style>
-:root{--ink:#17352b;--muted:#66786d;--paper:#f7f8f1;--soft:#eaf0e5;--line:#dce6d8;--orange:#d89b36;--orange-dark:#a86d18;--green:#24734d;--red:#b8443c;--shadow:0 14px 38px #153c2814;--radius:20px;--forest:#123d2c;--leaf:#2f8050;--lime:#a9c96a}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #ff9b76;outline-offset:2px}a{color:inherit;text-decoration:none}.hidden{display:none!important}.muted{color:var(--muted)}.small{font-size:.86rem}.container{width:min(1160px,calc(100% - 36px));margin:auto}
-.topbar{background:#123d2c;color:#fff;text-align:center;padding:8px 12px;font-size:.82rem;letter-spacing:.03em}.header{position:sticky;top:0;z-index:30;background:#f7f8f1ed;backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}.nav{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{display:flex;align-items:center;gap:10px;font-weight:950;font-size:1.25rem;letter-spacing:-.06em}.brand-mark{width:40px;height:40px;border-radius:13px;background:var(--forest);color:white;display:grid;place-items:center;font-size:1.25rem}.navlinks{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.navlinks button{border:0;background:transparent;padding:10px 12px;border-radius:12px;font-weight:750;color:#555}.navlinks button:hover,.navlinks button.active{background:var(--soft);color:var(--ink)}.navlinks .cart-link{background:var(--ink);color:white}.cart-count{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 5px;border-radius:20px;background:var(--orange);color:white;font-size:.75rem;margin-left:4px}
-.page{display:none;min-height:60vh;padding:34px 0 70px}.page.active{display:block}.hero{min-height:460px;border-radius:30px;overflow:hidden;background:linear-gradient(90deg,#102f23ed 0%,#123d2cb8 48%,#123d2c18 100%),url('https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=1800&q=85') center/cover;display:flex;align-items:center;color:#fff;padding:clamp(28px,7vw,82px);box-shadow:var(--shadow)}.hero-content{max-width:560px}.hero .eyebrow{color:#c4df8b}.eyebrow{font-weight:850;color:var(--leaf);text-transform:uppercase;letter-spacing:.14em;font-size:.76rem}.hero h1{font-size:clamp(2.7rem,6vw,5.4rem);line-height:.98;letter-spacing:-.07em;margin:14px 0 18px}.hero p{font-size:1.08rem;line-height:1.65;color:#f0ece7;max-width:460px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}.btn{border:0;border-radius:13px;padding:12px 18px;font-weight:850;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.18s transform,.18s background}.btn:hover{transform:translateY(-2px)}.btn-primary{background:var(--leaf);color:white}.btn-primary:hover{background:var(--forest)}.btn-dark{background:var(--ink);color:white}.btn-light{background:white;color:var(--ink);border:1px solid var(--line)}.btn-danger{background:#fff0ee;color:var(--red)}.btn-success{background:#eaf7f0;color:var(--green)}.btn-small{padding:8px 11px;border-radius:10px;font-size:.86rem}.section-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin:42px 0 20px}.section-head h2,.page-title{font-size:clamp(1.8rem,4vw,2.7rem);letter-spacing:-.055em;margin:0}.section-head p{margin:7px 0 0;color:var(--muted)}
-.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.feature{padding:22px;border:1px solid var(--line);border-radius:var(--radius);background:white}.feature .emoji{font-size:1.8rem}.feature h3{margin:12px 0 6px}.feature p{margin:0;color:var(--muted);line-height:1.55}.promo{margin-top:26px;padding:26px;border-radius:22px;background:#e9f0dc;display:flex;justify-content:space-between;align-items:center;gap:20px}.promo h3{margin:0 0 5px;font-size:1.4rem}.promo p{margin:0;color:#75584b}
-.filters{display:flex;gap:9px;flex-wrap:wrap;margin:20px 0}.chip{border:1px solid var(--line);background:white;border-radius:30px;padding:9px 15px;font-weight:750;color:#5b5752}.chip.active,.chip:hover{background:var(--ink);border-color:var(--ink);color:white}.toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:20px 0}.field{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:12px;background:white;color:var(--ink)}.search{max-width:360px}.product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.product{background:white;border:1px solid var(--line);border-radius:19px;overflow:hidden;box-shadow:0 4px 18px #21170d08;display:flex;flex-direction:column}.product-photo{height:190px;background:linear-gradient(135deg,#dcebd1,#f3edcf);position:relative;overflow:hidden;display:grid;place-items:center}.product-photo img{width:100%;height:100%;object-fit:cover;display:block}.product-photo .fallback{font-size:3.5rem;position:absolute}.product-body{padding:16px;display:flex;flex-direction:column;flex:1}.product-top{display:flex;justify-content:space-between;gap:10px;align-items:start}.product h3{margin:0;font-size:1.08rem}.price{font-weight:950;color:var(--orange-dark);white-space:nowrap}.product p{color:var(--muted);font-size:.9rem;line-height:1.45;margin:9px 0 15px}.product .btn{margin-top:auto;width:100%}.tag{font-size:.72rem;font-weight:850;background:#edf3e5;color:#28613d;border-radius:20px;padding:5px 8px;display:inline-block;margin-bottom:9px;width:max-content}
-.menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.menu-card{border:1px solid var(--line);border-radius:20px;background:white;padding:22px;box-shadow:var(--shadow)}.menu-card .menu-emoji{font-size:2.2rem}.menu-card h3{margin:12px 0 5px}.menu-card p{color:var(--muted);line-height:1.5;min-height:48px}.menu-price{font-size:1.65rem;font-weight:950;color:var(--orange-dark);margin:14px 0}.menu-card ul{padding-left:18px;color:#5f5a54;line-height:1.8}
-.panel{background:white;border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow)}.two-col{display:grid;grid-template-columns:1.25fr .75fr;gap:20px;align-items:start}.cart-row{display:grid;grid-template-columns:1fr auto;gap:15px;padding:16px 0;border-bottom:1px solid var(--line)}.cart-row:last-child{border:0}.cart-row h3{margin:0 0 5px;font-size:1rem}.cart-row p{margin:0;color:var(--muted);font-size:.86rem;line-height:1.5}.qty{display:flex;align-items:center;gap:8px;margin-top:10px}.qty button{width:29px;height:29px;border:1px solid var(--line);background:white;border-radius:9px;font-weight:900}.summary-line{display:flex;justify-content:space-between;gap:12px;margin:12px 0;color:#57524c}.summary-total{border-top:1px solid var(--line);padding-top:15px;margin-top:15px;font-size:1.2rem;font-weight:950}.empty{text-align:center;padding:45px 15px;color:var(--muted)}.empty .emoji{font-size:3rem}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.form-group{display:flex;flex-direction:column;gap:7px}.form-group label{font-size:.87rem;font-weight:800}.form-group.full{grid-column:1/-1}.form-group textarea{min-height:85px;resize:vertical}.notice{border-radius:13px;padding:13px 15px;background:#fff4e9;color:#80502c;line-height:1.5;font-size:.9rem}.success-box{padding:28px;border-radius:20px;background:#eaf7f0;text-align:center}.success-box h2{color:var(--green)}
-/* Administration */
-.admin-login{max-width:470px;margin:35px auto}.admin-shell{display:grid;grid-template-columns:230px 1fr;gap:18px;align-items:start}.admin-side{background:linear-gradient(160deg,#123d2c,#1d6040);color:white;border-radius:20px;padding:17px;position:sticky;top:96px}.admin-user{padding:10px 8px 18px;border-bottom:1px solid #ffffff20;margin-bottom:12px}.admin-user strong{display:block;font-size:1.05rem}.admin-user span{color:#c9c4be;font-size:.82rem}.admin-nav{display:grid;gap:6px}.admin-nav button{background:transparent;border:0;color:#ddd;text-align:left;padding:11px 12px;border-radius:11px;font-weight:750}.admin-nav button.active,.admin-nav button:hover{background:#ffffff18;color:white}.admin-main{min-width:0}.admin-main h2{margin:0 0 18px;font-size:1.8rem;letter-spacing:-.04em}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}.stat{background:white;border:1px solid var(--line);border-radius:16px;padding:17px}.stat span{display:block;color:var(--muted);font-size:.82rem}.stat strong{display:block;font-size:1.65rem;margin-top:5px}.admin-table-wrap{overflow-x:auto}.admin-table{width:100%;border-collapse:collapse;min-width:620px}.admin-table th,.admin-table td{text-align:left;padding:13px 11px;border-bottom:1px solid var(--line);font-size:.9rem;vertical-align:middle}.admin-table th{color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.06em}.status{display:inline-block;border-radius:30px;padding:5px 9px;font-size:.75rem;font-weight:850;background:#f1eee9;color:#655e56}.status.new{background:#fff0e2;color:#a85b1a}.status.accepted,.status.preparing{background:#eaf1ff;color:#315da8}.status.ready,.status.done{background:#e8f7ef;color:#23764f}.status.refused{background:#fff0ee;color:#b83c34}.admin-card{border:1px solid var(--line);border-radius:16px;padding:17px;margin:12px 0;background:white}.admin-card-head{display:flex;justify-content:space-between;gap:12px;align-items:start}.admin-card h3{margin:0 0 5px}.admin-card p{margin:4px 0;color:var(--muted);font-size:.88rem}.admin-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.role-card{border:1px solid var(--line);border-radius:15px;padding:15px}.role-card h3{margin:0 0 7px}.role-card p{font-size:.85rem;color:var(--muted);line-height:1.45}.toggle{display:flex;align-items:center;gap:8px}.cashier-items{display:grid;gap:8px;margin:12px 0}.cashier-item{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 12px;background:var(--soft);border-radius:11px}.sim-status{display:flex;align-items:center;gap:9px;font-weight:850}.sim-dot{width:10px;height:10px;border-radius:50%;background:#aaa}.sim-dot.running{background:#24845d;box-shadow:0 0 0 5px #24845d20}.footer{background:#171717;color:white;padding:35px 0;margin-top:20px}.footer-inner{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.footer p{color:#bbb;margin:7px 0}.toast{position:fixed;right:20px;bottom:20px;z-index:100;background:#191919;color:white;padding:13px 17px;border-radius:13px;box-shadow:var(--shadow);opacity:0;transform:translateY(12px);pointer-events:none;transition:.2s}.toast.show{opacity:1;transform:translateY(0)}.modal-backdrop{position:fixed;inset:0;background:#15151599;z-index:80;display:grid;place-items:center;padding:18px}.modal{width:min(560px,100%);max-height:90vh;overflow:auto;background:white;border-radius:22px;padding:24px;box-shadow:0 20px 70px #0004}.modal-head{display:flex;justify-content:space-between;align-items:center;gap:15px}.modal-head h2{margin:0}.icon-btn{border:0;background:var(--soft);border-radius:10px;width:36px;height:36px;font-size:1.2rem}.check-list{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}.check-list label{display:flex;gap:8px;align-items:center;font-size:.9rem}.modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:20px}
+/* =====================================
+   EL FAST-FOOD V2
+   DESIGN GLOBAL ET RESPONSIVE
+===================================== */
 
-/* ==================================
-   VERSION MOBILE - EL FAST-FOOD
-================================== */
+:root {
+  --bg: #0c1913;
+  --surface: #14271d;
+  --surface-light: #1c3528;
+  --primary: #a5df50;
+  --primary-dark: #7ebc32;
+  --text: #f5f5eb;
+  --muted: #a5b5a9;
+  --border: rgba(255,255,255,.09);
+  --danger: #f16c6c;
+  --success: #70d69a;
+  --warning: #f3c76b;
+  --radius: 18px;
+  --shadow: 0 12px 35px rgba(0,0,0,.22);
+}
 
-@media (max-width: 760px) {
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5;
+}
+
+button, input, select, textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.container {
+  width: min(1200px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
+/* HEADER */
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(12,25,19,.94);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  min-height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+.logo span {
+  color: var(--primary);
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.navigation a {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+  transition: .2s;
+}
+
+.navigation a:hover,
+.navigation a.active {
+  color: var(--primary);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* BOUTONS */
+
+.btn {
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 19px;
+  font-weight: 800;
+  transition: .2s;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #142015;
+}
+
+.btn-secondary {
+  background: var(--surface-light);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-danger {
+  background: rgba(241,108,108,.15);
+  color: var(--danger);
+}
+
+.btn-small {
+  padding: 8px 13px;
+  font-size: 13px;
+}
+
+/* TITRES */
+
+.section {
+  padding: 55px 0;
+}
+
+.section-heading {
+  margin-bottom: 28px;
+}
+
+.section-heading h2 {
+  font-size: clamp(25px, 4vw, 36px);
+  margin-bottom: 7px;
+}
+
+.section-heading p {
+  color: var(--muted);
+}
+
+.eyebrow {
+  display: inline-block;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+/* CARTES */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.card-content {
+  padding: 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+/* FORMULAIRES */
+
+input, select, textarea {
+  width: 100%;
+  padding: 13px 15px;
+  border-radius: 11px;
+  background: #0e2017;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #829187;
+}
+
+.form-group {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* BADGES */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 30px;
+  font-size: 11px;
+  font-weight: 800;
+  background: rgba(165,223,80,.13);
+  color: var(--primary);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+/* SECTIONS ET AFFICHAGE */
+
+.page {
+  display: none;
+  animation: fadeIn .25s ease;
+}
+
+.page.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(7px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 45px 20px;
+  color: var(--muted);
+}
+
+.divider {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 20px 0;
+}
+
+/* PIED DE PAGE */
+
+footer {
+  margin-top: 60px;
+  padding: 30px 0;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  text-align: center;
+  font-size: 13px;
+}
+
+/* =====================================
+   VERSION MOBILE
+===================================== */
+
+@media (max-width: 800px) {
   .container {
-    width: calc(100% - 24px);
+    width: min(100% - 28px, 600px);
   }
 
-  /* Navigation */
-  .nav {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
+  .header-inner {
+    min-height: 65px;
+    flex-wrap: wrap;
     padding: 12px 0;
   }
 
-  .navlinks {
-    flex-wrap: nowrap;
+  .logo {
+    font-size: 21px;
+  }
+
+  .navigation {
+    order: 3;
+    width: 100%;
     overflow-x: auto;
-    max-width: 100%;
-    padding-bottom: 5px;
+    gap: 20px;
+    padding: 8px 0 3px;
+    scrollbar-width: none;
   }
 
-  .navlinks button {
-    flex: 0 0 auto;
+  .navigation::-webkit-scrollbar {
+    display: none;
+  }
+
+  .navigation a {
     white-space: nowrap;
-    font-size: .86rem;
-    padding: 9px 11px;
+    font-size: 13px;
   }
 
-  /* Pages et accueil */
-  .page {
-    padding: 24px 0 48px;
-  }
-
-  .hero {
-    min-height: 400px;
-    padding: 28px 22px;
-    border-radius: 22px;
-  }
-
-  /* Cartes et produits */
-  .feature-grid,
-  .menu-grid,
-  .product-grid {
+  .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
   }
 
-  .product-photo {
-    height: 150px;
+  .section {
+    padding: 35px 0;
   }
 
-  /* Mise en page générale */
-  .two-col {
-    grid-template-columns: 1fr;
+  .card-content {
+    padding: 15px;
   }
 
-  .promo,
-  .section-head {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .toolbar > * {
-    flex: 1 1 100%;
-    max-width: none !important;
-  }
-
-  .search {
-    max-width: none;
-  }
-
-  /* Administration */
-  .admin-shell {
-    grid-template-columns: 1fr;
-  }
-
-  .admin-side {
-    position: static;
-  }
-
-  .admin-nav {
-    display: flex;
-    overflow-x: auto;
-  }
-
-  .admin-nav button {
-    flex: 0 0 auto;
-    white-space: nowrap;
-  }
-
-  .stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .role-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .btn {
+    min-height: 44px;
   }
 }
 
 @media (max-width: 480px) {
-  .feature-grid,
-  .menu-grid,
-  .product-grid,
-  .role-grid {
+  .container {
+    width: calc(100% - 24px);
+  }
+
+  .grid {
     grid-template-columns: 1fr;
   }
 
-  .hero h1 {
-    font-size: 2.8rem;
+  .section-heading h2 {
+    font-size: 26px;
   }
 
-  .panel {
-    padding: 16px;
-  }
-
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .form-group.full {
-    grid-column: auto;
-  }
-
-  .cart-row {
-    grid-template-columns: 1fr;
-  }
-
-  .admin-card-head {
-    flex-direction: column;
-  }
-
-  .stats {
-    gap: 8px;
-  }
-
-  .stat {
-    padding: 12px;
-  }
-
-  .stat strong {
-    font-size: 1.35rem;
-  }
-
-  .modal {
-    padding: 18px;
-  }
-
-  .check-list {
-    grid-template-columns: 1fr;
+  .header-actions .btn {
+    padding: 10px 12px;
+    font-size: 12px;
   }
 }
 </style>
-</head><body>
-<div class="topbar">🍔 EL FAST-FOOD · Le goût de la jungle, le plaisir en plus !</div>
-<header class="header"><div class="container nav">
-  <a class="brand" href="#accueil" onclick="showPage('accueil');return false"><span class="brand-mark">EL</span><span>EL FAST-FOOD</span></a>
-  <nav class="navlinks" aria-label="Navigation principale">
-    <button data-page="accueil" onclick="showPage('accueil')">Accueil</button>
-    <button data-page="carte" onclick="showPage('carte')">La carte</button>
-    <button data-page="menus" onclick="showPage('menus')">Nos menus</button>
-    <button data-page="commande" onclick="showPage('commande')">Commander</button>
-    <button data-page="suivi" onclick="showPage('suivi')">Suivi</button>
-    <button data-page="espace" onclick="showPage('espace')">Mon espace</button>
-    <button class="cart-link" data-page="panier" onclick="showPage('panier')">Panier <span class="cart-count" id="cartCount">0</span></button>
-    <button data-page="admin" onclick="showPage('admin')">Administration</button>
-  </nav>
-</div></header>
+</head>
+
+<body>
+
+<header>
+  <div class="container header-inner">
+    <a href="#accueil" class="logo" onclick="showPage('accueil')">
+      EL <span>FAST-FOOD</span>
+    </a>
+
+    <nav class="navigation">
+      <a href="#accueil" class="active" onclick="showPage('accueil')">Accueil</a>
+      <a href="#carte" onclick="showPage('carte')">La carte</a>
+      <a href="#menus" onclick="showPage('menus')">Nos menus</a>
+      <a href="#suivi" onclick="showPage('suivi')">Suivi</a>
+      <a href="#client" onclick="showPage('client')">Mon compte</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="btn btn-secondary" onclick="showPage('panier')">
+        🛒 <span id="cart-count">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
 <main>
-<section class="page active" id="page-accueil"><div class="container">
-  <div class="hero"><div class="hero-content"><div class="eyebrow">Bienvenue chez EL</div><h1>La pause qui fait plaisir.</h1><p>Des recettes généreuses, des menus gourmands et une commande simple en quelques clics. À toi de composer ton repas !</p><div class="actions"><button class="btn btn-primary" onclick="showPage('carte')">Découvrir la carte →</button><button class="btn btn-light" onclick="showPage('menus')">Voir les menus</button></div></div></div>
-  <div class="section-head"><div><h2>Pourquoi choisir EL ?</h2><p>Une expérience simple, gourmande et conviviale.</p></div></div>
-  <div class="feature-grid"><article class="feature"><div class="emoji">🍟</div><h3>Des recettes généreuses</h3><p>Burgers, sandwichs, accompagnements et desserts pour toutes les envies.</p></article><article class="feature"><div class="emoji">🧾</div><h3>Une commande facile</h3><p>Personnalise certains produits, ajoute-les au panier et vérifie ton récapitulatif.</p></article><article class="feature"><div class="emoji">⚡</div><h3>Un suivi clair</h3><p>Retrouve le numéro et l'état de ta commande après validation.</p></article></div>
-  <div class="promo"><div><h3>Le menu EL à 16,99 €</h3><p>Un plat, un accompagnement et une boisson au choix.</p></div><button class="btn btn-primary" onclick="showPage('menus')">Composer mon menu</button></div>
-  <div class="section-head"><div><h2>Les incontournables</h2><p>Une petite sélection pour commencer.</p></div><button class="btn btn-light" onclick="showPage('carte')">Toute la carte →</button></div><div class="product-grid" id="homeProducts"></div>
-</div></section>
-<section class="page" id="page-carte"><div class="container"><div class="eyebrow">À découvrir</div><h1 class="page-title">La carte</h1><p class="muted">Choisis tes produits et personnalise les plats qui le permettent.</p><div class="toolbar"><input class="field search" id="searchInput" placeholder="Rechercher un produit…" oninput="renderProducts()"><select class="field" style="max-width:220px" id="sortSelect" onchange="renderProducts()"><option value="default">Tri : recommandé</option><option value="low">Prix croissant</option><option value="high">Prix décroissant</option><option value="az">Nom A → Z</option></select></div><div class="filters" id="categoryFilters"></div><div class="product-grid" id="productGrid"></div></div></section>
-<section class="page" id="page-menus"><div class="container"><div class="eyebrow">Les formules</div><h1 class="page-title">Nos menus</h1><p class="muted">Une formule complète, à composer selon tes envies.</p><div class="menu-grid" id="menuGrid"></div><div class="panel" style="margin-top:22px"><h2 style="margin-top:0">Composer un menu EL</h2><div class="form-grid"><div class="form-group"><label for="menuMain">Plat principal</label><select class="field" id="menuMain"></select></div><div class="form-group"><label for="menuSide">Accompagnement</label><select class="field" id="menuSide"></select></div><div class="form-group"><label for="menuDrink">Boisson</label><select class="field" id="menuDrink"></select></div><div class="form-group"><label>Prix du menu</label><div class="field" style="font-weight:950;color:var(--orange-dark)">16,99 €</div></div></div><button class="btn btn-primary" style="margin-top:15px" onclick="addComposedMenu()">Ajouter le menu au panier</button></div></div></section>
-<section class="page" id="page-commande"><div class="container"><div class="eyebrow">À toi de jouer</div><h1 class="page-title">Passer une commande</h1><p class="muted">Ajoute tes produits depuis la carte ou compose un menu, puis valide ton panier.</p><div class="feature-grid" style="margin-top:24px"><article class="feature"><div class="emoji">🍔</div><h3>Étape 1 · Choisis</h3><p>Parcours la carte et sélectionne tes produits.</p><button class="btn btn-dark" style="margin-top:16px" onclick="showPage('carte')">Voir la carte</button></article><article class="feature"><div class="emoji">🥤</div><h3>Étape 2 · Compose</h3><p>Crée une formule avec un plat, un accompagnement et une boisson.</p><button class="btn btn-dark" style="margin-top:16px" onclick="showPage('menus')">Composer un menu</button></article><article class="feature"><div class="emoji">🛍️</div><h3>Étape 3 · Vérifie</h3><p>Contrôle les quantités et le récapitulatif avant de confirmer.</p><button class="btn btn-primary" style="margin-top:16px" onclick="showPage('panier')">Ouvrir mon panier</button></article></div></div></section><section class="page" id="page-panier"><div class="container"><div class="eyebrow">Presque prêt !</div><h1 class="page-title">Mon panier</h1><div id="cartContent" style="margin-top:22px"></div></div></section>
-<section class="page" id="page-suivi"><div class="container"><div class="eyebrow">Où en est ta commande ?</div><h1 class="page-title">Suivi de commande</h1><div class="panel" style="max-width:650px;margin-top:22px"><div class="form-group"><label for="trackingCode">Numéro de commande</label><input class="field" id="trackingCode" placeholder="Ex. EL-1042"></div><button class="btn btn-primary" style="margin-top:12px" onclick="trackOrder()">Rechercher</button><div id="trackingResult" style="margin-top:18px"></div></div><div class="notice" style="max-width:650px;margin-top:16px">Le suivi fonctionne sur ce navigateur dans cette version de démonstration. Les commandes ne sont pas partagées automatiquement entre plusieurs appareils.</div></div></section>
-<section class="page" id="page-espace"><div class="container"><div class="eyebrow">Ton espace EL</div><h1 class="page-title">Mon espace client</h1><p class="muted">Retrouve tes commandes, tes points fidélité et laisse un avis. Utilise toujours le même pseudo fictif.</p><div class="panel" style="max-width:760px;margin-top:22px"><div class="form-grid"><div class="form-group"><label for="profileName">Mon pseudo</label><input class="field" id="profileName" maxlength="24" placeholder="Ex. Alex"></div><div class="form-group" style="align-self:end"><button class="btn btn-primary" onclick="loadCustomerSpace()">Afficher mon espace</button></div></div><div id="customerSpace" style="margin-top:20px"></div></div><div class="panel" style="max-width:760px;margin-top:18px"><h2 style="margin-top:0">Donner mon avis</h2><p class="muted small">Réservé aux commandes terminées. Avis fictifs pour cette démonstration.</p><div id="reviewArea"><p class="muted">Recherche d'abord ton pseudo pour afficher tes commandes.</p></div></div></div></section>
-<section class="page" id="page-admin"><div class="container"><div class="eyebrow">Espace réservé à l'équipe</div><h1 class="page-title">Administration</h1><div id="adminRoot"></div></div></section>
+
+  <!-- ACCUEIL -->
+  <section id="accueil" class="page active">
+    <div class="container section">
+      <div class="card" style="padding:clamp(25px,6vw,65px);background:linear-gradient(120deg,#183b29,#102218);">
+        <span class="eyebrow">Bienvenue chez nous</span>
+        <h1 style="font-size:clamp(36px,7vw,65px);line-height:1.05;margin-bottom:20px;">
+          LE GOÛT DE LA <span style="color:var(--primary)">JUNGLE.</span>
+        </h1>
+        <p class="muted" style="max-width:550px;margin-bottom:25px;">
+          Des recettes généreuses, des ingrédients savoureux et une expérience gourmande unique.
+        </p>
+        <button class="btn btn-primary" onclick="showPage('carte')">
+          Découvrir notre carte →
+        </button>
+      </div>
+
+      <div class="section-heading" style="margin-top:45px;">
+        <span class="eyebrow">Notre univers</span>
+        <h2>Bienvenue dans notre restaurant</h2>
+        <p>Découvre toutes nos spécialités.</p>
+      </div>
+
+      <div class="grid">
+        <div class="card card-content">
+          <div style="font-size:35px;margin-bottom:12px;">🍔</div>
+          <h3>Nos burgers</h3>
+          <p class="muted">Des recettes gourmandes et généreuses.</p>
+        </div>
+        <div class="card card-content">
+          <div style="font-size:35px;margin-bottom:12px;">🍕</div>
+          <h3>Nos pizzas</h3>
+          <p class="muted">Des pizzas pour tous les goûts.</p>
+        </div>
+        <div class="card card-content">
+          <div style="font-size:35px;margin-bottom:12px;">🍟</div>
+          <h3>Nos accompagnements</h3>
+          <p class="muted">Pour compléter ton repas.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CARTE -->
+  <section id="carte" class="page">
+    <div class="container section">
+      <div class="section-heading">
+        <span class="eyebrow">À découvrir</span>
+        <h2>Notre carte</h2>
+        <p>Retrouve toutes nos spécialités.</p>
+      </div>
+
+      <div id="categories" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:25px;"></div>
+      <div id="products" class="grid"></div>
+    </div>
+  </section>
+
+  <!-- MENUS -->
+  <section id="menus" class="page">
+    <div class="container section">
+      <div class="section-heading">
+        <span class="eyebrow">À composer</span>
+        <h2>Nos menus</h2>
+        <p>Compose ton repas selon tes envies.</p>
+      </div>
+      <div id="menu-builder"></div>
+    </div>
+  </section>
+
+  <!-- PANIER -->
+  <section id="panier" class="page">
+    <div class="container section">
+      <div class="section-heading">
+        <span class="eyebrow">Ta sélection</span>
+        <h2>Mon panier</h2>
+        <p>Vérifie ta commande avant de continuer.</p>
+      </div>
+      <div id="cart-content"></div>
+    </div>
+  </section>
+
+  <!-- COMMANDE -->
+  <section id="commande" class="page">
+    <div class="container section">
+      <div class="section-heading">
+        <span class="eyebrow">Dernière étape</span>
+        <h2>Finaliser ma commande</h2>
+      </div>
+      <div id="checkout-content"></div>
+    </div>
+  </section>
+
+  <!-- SUIVI -->
+  <section id="suivi" class="page">
+    <div class="container section">
+      <div class="section-heading">
+        <span class="eyebrow">En temps réel sur cet appareil</span>
+        <h2>Suivre ma commande</h2>
+        <p>Retrouve l'avancement de tes commandes.</p>
+      </div>
+      <div id="tracking-content"></div>
+    </div>
+  </section>
+
+  <!-- ESPACE CLIENT -->
+  <section id="client" class="page">
+    <div class="container section">
+      <div class="section-heading">
+        <span class="eyebrow">Ton espace personnel</span>
+        <h2>Mon compte</h2>
+      </div>
+      <div id="customer-content"></div>
+    </div>
+  </section>
+
+  <!-- ADMINISTRATION -->
+  <section id="administration" class="page">
+    <div class="container section">
+      <div class="section-heading">
+        <span class="eyebrow">Espace professionnel</span>
+        <h2>Administration</h2>
+        <p>Gère ton restaurant depuis un seul endroit.</p>
+      </div>
+      <div id="admin-content"></div>
+    </div>
+  </section>
+
 </main>
-<footer class="footer"><div class="container footer-inner"><div><div class="brand"><span class="brand-mark">EL</span><span>EL FAST-FOOD</span></div><p>Une pause gourmande au cœur de la jungle.</p></div><div><strong>Navigation</strong><p><a href="#carte" onclick="showPage('carte');return false">La carte</a> · <a href="#menus" onclick="showPage('menus');return false">Les menus</a> · <a href="#admin" onclick="showPage('admin');return false">Administration</a></p><p class="small">Site de démonstration — aucune transaction réelle.</p></div></div></footer>
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
-<div class="modal-backdrop hidden" id="productModal" onclick="if(event.target===this)closeProductModal()"><div class="modal"><div class="modal-head"><h2 id="modalProductName">Personnaliser</h2><button class="icon-btn" onclick="closeProductModal()" aria-label="Fermer">×</button></div><div id="modalProductContent"></div></div></div>
+
+<footer>
+  <div class="container">
+    <div class="logo">EL <span>FAST-FOOD</span></div>
+    <p style="margin-top:10px;">Le goût de la jungle.</p>
+    <p style="margin-top:8px;">© 2026 EL FAST-FOOD — Version 2.0</p>
+  </div>
+</footer>
+</body>
+
 <script>
 'use strict';
-const STORE={cart:'elff_cart_v3',orders:'elff_orders_v3',products:'elff_products_v3',reviews:'elff_reviews_v1',team:'elff_team_v1',promos:'elff_promos_v1'};
-function loadJSON(key,fallback){
-  try{
-    const raw=localStorage.getItem(key);
-    return raw?JSON.parse(raw):JSON.parse(JSON.stringify(fallback));
-  }catch(e){
-    return JSON.parse(JSON.stringify(fallback));
+
+/* =====================================
+   EL FAST-FOOD V2
+   MOTEUR PRINCIPAL
+===================================== */
+
+/* 1. OUTILS DE SAUVEGARDE */
+
+function loadJSON(key, fallback) {
+  try {
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : fallback;
+  } catch (error) {
+    return fallback;
   }
 }
 
-const PROMOS=loadJSON(STORE.promos,{JUNGLE10:{type:'percent',value:10,label:'-10 %',active:true},WELCOME5:{type:'fixed',value:5,label:'-5 €',active:true}});
-let activePromo=null;let customerPseudo='';let reviews=loadJSON(STORE.reviews,[]);let teamMembers=loadJSON(STORE.team,['Directeur','Responsable caisse','Responsable cuisine','Équipier polyvalent']);
-const baseProducts=[
-{id:'classic',name:'Le Classique',category:'Burgers',price:12.99,desc:'Steak haché, cheddar, salade et sauce maison.',emoji:'🍔',image:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=80',custom:true,available:true},
-{id:'chicken',name:'Le Chicken',category:'Burgers',price:12.99,desc:'Poulet croustillant, salade fraîche et sauce crémeuse.',emoji:'🍗',image:'https://images.unsplash.com/photo-1606755962773-d324e0a13086?auto=format&fit=crop&w=900&q=80',custom:true,available:true},
-{id:'pizza',name:'Pizza',category:'Plats',price:11.99,desc:'Une pizza généreuse, tomate et fromage.',emoji:'🍕',image:'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
-{id:'sandwich',name:'Sandwich',category:'Plats',price:9.99,desc:'Un sandwich gourmand préparé à la commande.',emoji:'🥪',image:'https://images.unsplash.com/photo-1553902000-e036a7a58b3a?auto=format&fit=crop&w=900&q=80',custom:true,available:true},
-{id:'fajitas',name:'Fajitas',category:'Plats',price:11.99,desc:'Poulet épicé, légumes et galette moelleuse.',emoji:'🌯',image:'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=900&q=80',custom:true,available:true},
-{id:'fries',name:'Frites',category:'Accompagnements',price:2,desc:'Une portion de frites dorées.',emoji:'🍟',image:'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
-{id:'nuggets',name:'Croquettes natures',category:'Accompagnements',price:2,desc:'De petites bouchées croustillantes.',emoji:'🍗',image:'https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
-{id:'cheese-bites',name:'Croquettes au fromage',category:'Accompagnements',price:2,desc:'Des bouchées fondantes au fromage.',emoji:'🧀',image:'https://images.unsplash.com/photo-1531749668029-2db88e4276c7?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
-{id:'icecream',name:'Glace',category:'Desserts',price:6,desc:'Une pause fraîche et sucrée.',emoji:'🍦',image:'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
-{id:'sundae',name:'Sunday',category:'Desserts',price:6,desc:'Glace et nappage gourmand.',emoji:'🍨',image:'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
-{id:'cake',name:'Gâteau',category:'Desserts',price:6,desc:'Une part de gâteau pour finir en douceur.',emoji:'🍰',image:'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
-{id:'croissant',name:'Croissant',category:'Desserts',price:6,desc:'Un croissant doré et croustillant.',emoji:'🥐',image:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
-{id:'coca',name:'Coca-Cola',category:'Boissons',price:3,desc:'Boisson fraîche.',emoji:'🥤',image:'https://images.unsplash.com/photo-1554866585-cd94860890b7?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
-{id:'icetea',name:'Ice Tea',category:'Boissons',price:3,desc:'Thé glacé.',emoji:'🧋',image:'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
-{id:'schweppes',name:'Schweppes',category:'Boissons',price:3,desc:'Boisson pétillante.',emoji:'🥤',image:'https://images.unsplash.com/photo-1581006852262-e4307cf6283a?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
-{id:'7up',name:'7UP',category:'Boissons',price:3,desc:'Boisson fraîche et pétillante.',emoji:'🥤',image:'https://images.unsplash.com/photo-1629203851122-3726ecdf080e?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
-{id:'juice',name:'Jus de fruit',category:'Boissons',price:3,desc:'Un jus fruité.',emoji:'🧃',image:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
-{id:'coffee',name:'Café',category:'Boissons',price:3,desc:'Un café.',emoji:'☕',image:'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=900&q=80',custom:false,available:true}
-];  let products=loadJSON(STORE.products,baseProducts).map(p=>({...p,stock:Number.isFinite(p.stock)?p.stock:40}));let cart=loadJSON(STORE.cart,[]);let orders=loadJSON(STORE.orders,[]).map(o=>({...o,history:Array.isArray(o.history)?o.history:[{status:o.status||'new',at:o.createdAt||new Date().toISOString()}],etaMinutes:Number.isFinite(o.etaMinutes)?o.etaMinutes:15}));let activeCategory='Tout';let currentRole=null;let adminTab='dashboard';let editingProductId=null;let modalProductId=null;let cashierDraftItems=[];let simulationTimer=null;let simulationCount=0;
+function saveJSON(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
 
-const roles={
-  director:{
-    label:'Directeur',
-    pin:'1234',
-    tabs:['dashboard','orders','simulation','products','stock','promos','team'],
-    permissions:['Voir les statistiques','Gérer les commandes','Modifier la carte','Consulter les rôles']
+function createId() {
+  return Date.now().toString(36) +
+    Math.random().toString(36).slice(2, 8);
+}
+
+function formatPrice(price) {
+  return Number(price).toFixed(2).replace('.', ',') + ' €';
+}
+
+/* 2. DONNÉES DU RESTAURANT */
+
+const defaultProducts = [
+  {
+    id: 'burger1',
+    name: 'EL Burger',
+    category: 'Burgers',
+    description: 'Notre burger signature avec steak, fromage et sauce maison.',
+    price: 9.90,
+    stock: 30,
+    available: true,
+    emoji: '🍔'
   },
-  cashier:{
-    label:'Caisse',
-    pin:'2222',
-    tabs:['cashier','orders'],
-    permissions:['Prendre des commandes','Consulter les commandes','Accepter ou refuser une commande']
+  {
+    id: 'burger2',
+    name: 'Cheese Burger',
+    category: 'Burgers',
+    description: 'Un burger gourmand au fromage fondant.',
+    price: 8.50,
+    stock: 25,
+    available: true,
+    emoji: '🍔'
   },
-  kitchen:{
-    label:'Cuisine',
-    pin:'3333',
-    tabs:['orders'],
-    permissions:['Voir les commandes acceptées','Préparer et terminer les commandes']
+  {
+    id: 'burger3',
+    name: 'Double Burger',
+    category: 'Burgers',
+    description: 'Deux steaks, du fromage et une sauce généreuse.',
+    price: 11.90,
+    stock: 20,
+    available: true,
+    emoji: '🍔'
+  },
+  {
+    id: 'pizza1',
+    name: 'Pizza Margherita',
+    category: 'Pizzas',
+    description: 'Tomate, mozzarella et basilic.',
+    price: 10.90,
+    stock: 15,
+    available: true,
+    emoji: '🍕'
+  },
+  {
+    id: 'pizza2',
+    name: 'Pizza Royale',
+    category: 'Pizzas',
+    description: 'Jambon, champignons et mozzarella.',
+    price: 12.90,
+    stock: 15,
+    available: true,
+    emoji: '🍕'
+  },
+  {
+    id: 'pizza3',
+    name: 'Pizza 4 Fromages',
+    category: 'Pizzas',
+    description: 'Un mélange de quatre fromages.',
+    price: 13.50,
+    stock: 12,
+    available: true,
+    emoji: '🍕'
+  },
+  {
+    id: 'side1',
+    name: 'Frites',
+    category: 'Accompagnements',
+    description: 'Une portion de frites croustillantes.',
+    price: 3.00,
+    stock: 40,
+    available: true,
+    emoji: '🍟'
+  },
+  {
+    id: 'side2',
+    name: 'Nuggets',
+    category: 'Accompagnements',
+    description: '6 nuggets dorés.',
+    price: 4.90,
+    stock: 30,
+    available: true,
+    emoji: '🍗'
+  },
+  {
+    id: 'drink1',
+    name: 'Cola',
+    category: 'Boissons',
+    description: 'Canette de 33 cl.',
+    price: 2.50,
+    stock: 50,
+    available: true,
+    emoji: '🥤'
+  },
+  {
+    id: 'drink2',
+    name: 'Eau',
+    category: 'Boissons',
+    description: 'Bouteille d’eau de 50 cl.',
+    price: 1.50,
+    stock: 50,
+    available: true,
+    emoji: '💧'
+  },
+  {
+    id: 'dessert1',
+    name: 'Brownie',
+    category: 'Desserts',
+    description: 'Brownie au chocolat.',
+    price: 3.90,
+    stock: 20,
+    available: true,
+    emoji: '🍫'
+  },
+  {
+    id: 'dessert2',
+    name: 'Glace',
+    category: 'Desserts',
+    description: 'Une pause glacée gourmande.',
+    price: 3.50,
+    stock: 20,
+    available: true,
+    emoji: '🍨'
   }
-};
+];
 
-function loadJSON(key,fallback){try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):structuredClone(fallback)}catch(e){return structuredClone(fallback)}}
-function saveAll(){localStorage.setItem(STORE.cart,JSON.stringify(cart));localStorage.setItem(STORE.orders,JSON.stringify(orders));localStorage.setItem(STORE.products,JSON.stringify(products));localStorage.setItem(STORE.reviews,JSON.stringify(reviews));localStorage.setItem(STORE.team,JSON.stringify(teamMembers));}
-function money(n){return Number(n||0).toLocaleString('fr-FR',{style:'currency',currency:'EUR'})}
-function makeOrderId(){let id;do{id='EL-'+String(Date.now()).slice(-6)+'-'+Math.random().toString(36).slice(2,5).toUpperCase()}while(orders.some(o=>o.id===id));return id}
-function escapeHTML(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function toast(message){const el=document.getElementById('toast');el.textContent=message;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),2300)}
-function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+id));document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));if(id==='panier')renderCart();if(id==='admin')renderAdmin();if(id==='menus')renderMenuBuilder();if(id==='espace'&&customerPseudo){document.getElementById('profileName').value=customerPseudo;loadCustomerSpace()}window.scrollTo({top:0,behavior:'smooth'})}
-function productById(id){return products.find(p=>p.id===id)}
-function productCard(p){return `<article class="product"><div class="product-photo"><span class="fallback">${escapeHTML(p.emoji||'🍽️')}</span><img src="${escapeHTML(p.image||'')}" alt="${escapeHTML(p.name)}" loading="lazy" onerror="this.style.display='none'"></div><div class="product-body"><span class="tag">${escapeHTML(p.category)}</span><div class="product-top"><h3>${escapeHTML(p.name)}</h3><span class="price">${money(p.price)}</span></div><p>${escapeHTML(p.desc)}</p><button class="btn btn-primary" onclick="${p.custom?'openProductModal(\''+p.id+'\')':'addSimpleProduct(\''+p.id+'\')'}">${p.custom?'Personnaliser':'Ajouter au panier'}</button></div></article>`}
-function renderProducts(){const q=(document.getElementById('searchInput')?.value||'').trim().toLowerCase();let list=products.filter(p=>p.available&&p.stock>0&&(activeCategory==='Tout'||p.category===activeCategory)&&(`${p.name} ${p.desc} ${p.category}`).toLowerCase().includes(q));const sort=document.getElementById('sortSelect')?.value||'default';if(sort==='low')list.sort((a,b)=>a.price-b.price);if(sort==='high')list.sort((a,b)=>b.price-a.price);if(sort==='az')list.sort((a,b)=>a.name.localeCompare(b.name,'fr'));document.getElementById('productGrid').innerHTML=list.length?list.map(productCard).join(''):'<div class="empty" style="grid-column:1/-1">Aucun produit ne correspond à ta recherche.</div>';const categories=['Tout',...new Set(products.map(p=>p.category))];document.getElementById('categoryFilters').innerHTML=categories.map(c=>`<button class="chip ${activeCategory===c?'active':''}" onclick="setCategory('${escapeHTML(c)}')">${escapeHTML(c)}</button>`).join('')}
-function setCategory(c){activeCategory=c;renderProducts()}
-function addSimpleProduct(id){const p=productById(id);if(!p||!p.available)return toast('Ce produit est indisponible.');addToCart({key:id,id:p.id,name:p.name,price:Number(p.price),details:'',quantity:1});}
-function openProductModal(id){const p=productById(id);if(!p||!p.available)return;modalProductId=id;document.getElementById('modalProductName').textContent='Personnaliser · '+p.name;document.getElementById('modalProductContent').innerHTML=`<p class="muted">${escapeHTML(p.desc)}</p><div class="form-group"><label for="sauce">Sauce</label><select id="sauce" class="field"><option>Maison</option><option>Barbecue</option><option>Mayonnaise</option><option>Ketchup</option><option>Sans sauce</option></select></div><p style="font-weight:850;margin-bottom:7px">À retirer</p><div class="check-list">${['Salade','Tomate','Oignon','Fromage'].map(x=>`<label><input type="checkbox" value="${x}" class="remove-item"> ${x}</label>`).join('')}</div><p style="font-weight:850;margin-bottom:7px">Suppléments</p><div class="check-list"><label><input type="checkbox" value="Fromage supplémentaire" data-extra="1.5" class="extra-item"> Fromage (+1,50 €)</label><label><input type="checkbox" value="Steak supplémentaire" data-extra="2" class="extra-item"> Steak (+2 €)</label><label><input type="checkbox" value="Bacon" data-extra="1" class="extra-item"> Bacon (+1 €)</label></div><div class="form-group"><label for="productNote">Note particulière (facultatif)</label><textarea id="productNote" class="field" placeholder="Ex. bien grillé…"></textarea></div><p id="modalPrice" class="price" style="font-size:1.2rem;margin-top:14px">${money(p.price)}</p><div class="modal-actions"><button class="btn btn-light" onclick="closeProductModal()">Annuler</button><button class="btn btn-primary" onclick="confirmCustomization()">Ajouter au panier</button></div>`;document.getElementById('productModal').classList.remove('hidden');document.querySelectorAll('.extra-item').forEach(el=>el.addEventListener('change',updateModalPrice))}
-function updateModalPrice(){const p=productById(modalProductId);const extras=[...document.querySelectorAll('.extra-item:checked')].reduce((s,e)=>s+Number(e.dataset.extra),0);document.getElementById('modalPrice').textContent=money(Number(p.price)+extras)}
-function closeProductModal(){document.getElementById('productModal').classList.add('hidden');modalProductId=null}
-function confirmCustomization(){const p=productById(modalProductId);if(!p)return;const removed=[...document.querySelectorAll('.remove-item:checked')].map(e=>e.value);const extras=[...document.querySelectorAll('.extra-item:checked')];const extraNames=extras.map(e=>e.value);const price=Number(p.price)+extras.reduce((s,e)=>s+Number(e.dataset.extra),0);const sauce=document.getElementById('sauce').value;const note=document.getElementById('productNote').value.trim();const details=[`Sauce : ${sauce}`,removed.length?'Sans : '+removed.join(', '):'',extraNames.length?'Suppléments : '+extraNames.join(', '):'',note?'Note : '+note:''].filter(Boolean).join(' · ');const key=p.id+'-'+Date.now();addToCart({key,id:p.id,name:p.name,price,details,quantity:1});closeProductModal()}
-function addToCart(item){const p=productById(item.id);if(p&&p.stock<=0)return toast('Ce produit est momentanément en rupture.');cart.push(item);saveAll();updateCartCount();toast(item.name+' ajouté au panier !')}
-function updateCartCount(){document.getElementById('cartCount').textContent=cart.reduce((s,i)=>s+i.quantity,0)}
-function cartTotal(){return cart.reduce((s,i)=>s+i.price*i.quantity,0)}
-function discountAmount(){if(!activePromo)return 0;const sub=cartTotal();return activePromo.type==='percent'?Math.round(sub*activePromo.value)/100:Math.min(sub,activePromo.value)}function renderCart(){const root=document.getElementById('cartContent');if(!cart.length){root.innerHTML='<div class="panel empty"><div class="emoji">🛍️</div><h2>Ton panier est vide</h2><p>Il est temps de choisir quelque chose de bon !</p><button class="btn btn-primary" onclick="showPage(\'carte\')">Découvrir la carte</button></div>';return}root.innerHTML=`<div class="two-col"><div class="panel"><h2 style="margin-top:0">Tes produits</h2>${cart.map((i,index)=>`<div class="cart-row"><div><h3>${escapeHTML(i.name)}</h3>${i.details?`<p>${escapeHTML(i.details)}</p>`:''}<p>${money(i.price)} l'unité</p><div class="qty"><button onclick="changeQty(${index},-1)">−</button><strong>${i.quantity}</strong><button onclick="changeQty(${index},1)">+</button><button class="btn btn-danger btn-small" onclick="removeCartItem(${index})">Retirer</button></div></div><strong>${money(i.price*i.quantity)}</strong></div>`).join('')}</div><div class="panel"><h2 style="margin-top:0">Récapitulatif</h2><div class="summary-line"><span>Sous-total</span><strong>${money(cartTotal())}</strong></div><div class="form-group"><label for="promoCode">Code promotionnel</label><div style="display:flex;gap:8px"><input id="promoCode" class="field" placeholder="Ex. JUNGLE10"><button class="btn btn-dark" onclick="applyPromo()">Appliquer</button></div></div>${activePromo?`<p class="small" style="color:var(--green)">Code ${escapeHTML(activePromo.code)} appliqué : -${money(discountAmount())}</p>`:''}<div class="summary-line"><span>Réduction</span><strong>-${money(discountAmount())}</strong></div><div class="summary-line summary-total"><span>Total</span><strong>${money(Math.max(0,cartTotal()-discountAmount()))}</strong></div><button class="btn btn-primary" style="width:100%;margin-top:15px" onclick="showCheckout()">Valider ma commande →</button><p class="muted small">Démonstration : aucun paiement réel ne sera effectué.</p></div></div>`}
-function changeQty(index,delta){if(!cart[index])return;cart[index].quantity+=delta;if(cart[index].quantity<=0)cart.splice(index,1);saveAll();updateCartCount();renderCart()}
-function removeCartItem(index){cart.splice(index,1);saveAll();updateCartCount();renderCart()}
-function applyPromo(){const code=(document.getElementById('promoCode')?.value||'').trim().toUpperCase();const promo=PROMOS[code];if(!promo||!promo.active){activePromo=null;toast('Code promotionnel invalide.');renderCart();return}activePromo={...promo,code};toast('Réduction appliquée !');renderCart()}
-function showCheckout(){if(!cart.length)return;const root=document.getElementById('cartContent');root.innerHTML=`<div class="two-col"><div class="panel"><h2 style="margin-top:0">Tes informations</h2><form id="checkoutForm" onsubmit="submitOrder(event)"><div class="form-grid"><div class="form-group"><label for="customerName">Prénom ou pseudo</label><input class="field" id="customerName" maxlength="30" required placeholder="Ton prénom"></div><div class="form-group"><label for="customerMode">Mode de commande</label><select class="field" id="customerMode"><option>À emporter</option><option>Sur place</option></select></div><div class="form-group full"><label for="customerNote">Note pour la commande (facultatif)</label><textarea class="field" id="customerNote" maxlength="250" placeholder="Une précision pour l'équipe…"></textarea></div></div><div class="notice" style="margin-top:15px">Ce site est une démonstration. N'indique pas ton nom complet, ton adresse, ton téléphone ou des informations personnelles.</div><button class="btn btn-primary" style="width:100%;margin-top:16px" type="submit">Confirmer la commande</button></form></div><div class="panel"><h2 style="margin-top:0">Ton récapitulatif</h2>${cart.map(i=>`<div class="summary-line"><span>${i.quantity} × ${escapeHTML(i.name)}</span><strong>${money(i.price*i.quantity)}</strong></div>`).join('')}<div class="summary-line"><span>Sous-total</span><strong>${money(cartTotal())}</strong></div><div class="summary-line"><span>Réduction</span><strong>-${money(discountAmount())}</strong></div><div class="summary-line summary-total"><span>Total</span><strong>${money(cartTotal()-discountAmount())}</strong></div></div></div>`}
-function submitOrder(event){event.preventDefault();if(!cart.length)return;const name=document.getElementById('customerName').value.trim();if(!name)return;const now=new Date().toISOString();const items=cart.map(i=>({...i}));const order={id:makeOrderId(),name,mode:document.getElementById('customerMode').value,note:document.getElementById('customerNote').value.trim(),items,total:Math.max(0,cartTotal()-discountAmount()),promo:activePromo?.code||null,status:'new',createdAt:now,etaMinutes:15,history:[{status:'new',at:now}]};orders.unshift(order);items.forEach(i=>{const p=productById(i.id);if(p)p.stock=Math.max(0,p.stock-i.quantity)});cart=[];activePromo=null;saveAll();updateCartCount();document.getElementById('cartContent').innerHTML=`<div class="success-box"><div style="font-size:3rem">🎉</div><h2>Commande confirmée !</h2><p>Merci ${escapeHTML(name)} !</p><p>Ton numéro de commande :</p><h2>${escapeHTML(order.id)}</h2><p>Temps estimé : environ ${order.etaMinutes} minutes.</p><button class="btn btn-primary" onclick="document.getElementById('trackingCode').value='${escapeHTML(order.id)}';showPage('suivi');trackOrder()">Suivre ma commande</button></div>`;toast('Commande enregistrée !')}
-function statusLabel(status){return({new:'Nouvelle',accepted:'Acceptée',preparing:'En préparation',ready:'Prête',done:'Terminée',refused:'Refusée'})[status]||status}
-function statusDescription(status){return({new:'Commande envoyée à l’équipe',accepted:'Commande acceptée',preparing:'Préparation en cuisine',ready:'Commande prête à récupérer',done:'Commande terminée',refused:'Commande refusée'})[status]||'Mise à jour'}
-function trackOrder(){const code=document.getElementById('trackingCode').value.trim().toUpperCase();const order=orders.find(o=>o.id.toUpperCase()===code);const root=document.getElementById('trackingResult');if(!order){root.innerHTML='<p class="notice">Aucune commande trouvée avec ce numéro sur ce navigateur.</p>';return}const stages=['new','accepted','preparing','ready','done'];const index=stages.indexOf(order.status);const progress=order.status==='refused'?0:Math.max(0,index)/(stages.length-1)*100;root.innerHTML=`<div class="admin-card"><div class="admin-card-head"><div><strong>${escapeHTML(order.id)}</strong><p>${escapeHTML(order.name)} · ${new Date(order.createdAt).toLocaleString('fr-FR')}</p></div><span class="status ${order.status}">${statusLabel(order.status)}</span></div><p>Temps estimé : ${order.status==='ready'||order.status==='done'?'Commande prête':order.status==='refused'?'Non disponible':order.etaMinutes+' minutes environ'}</p><div style="height:10px;background:#edf0e9;border-radius:20px;overflow:hidden;margin:15px 0"><div style="height:100%;width:${progress}%;background:var(--leaf);border-radius:20px"></div></div><div class="small muted">${order.status==='refused'?'La commande a été refusée.':statusDescription(order.status)}</div><h3>Historique</h3>${order.history.map(h=>`<div class="summary-line"><span>${statusDescription(h.status)}</span><span class="small muted">${new Date(h.at).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</span></div>`).join('')}<button class="btn btn-light btn-small" onclick="enableOrderNotification('${escapeHTML(order.id)}')">Activer une alerte de commande prête</button></div>`}
-function enableOrderNotification(orderId){if(!('Notification'in window))return toast('Les notifications ne sont pas disponibles.');Notification.requestPermission().then(permission=>{if(permission==='granted'){localStorage.setItem('elff_notify_order',orderId);toast('Alerte activée sur cet appareil.')}else toast('Autorisation refusée.')})}
-if(window.addEventListener)window.addEventListener('storage',event=>{if(event.key!==STORE.orders||!event.newValue)return;const watched=localStorage.getItem('elff_notify_order');if(!watched)return;try{const updated=JSON.parse(event.newValue),order=updated.find(o=>o.id===watched);if(order&&order.status==='ready'&&'Notification'in window&&Notification.permission==='granted'){new Notification('EL Fast-Food · Commande prête',{body:'La commande '+order.id+' est prête à être récupérée.'});localStorage.removeItem('elff_notify_order')}}catch(e){}});function loadCustomerSpace(){customerPseudo=(document.getElementById('profileName').value||'').trim();const root=document.getElementById('customerSpace');if(!customerPseudo){root.innerHTML='<p class="notice">Entre un pseudo pour afficher tes commandes.</p>';return}const mine=orders.filter(o=>o.name.toLowerCase()===customerPseudo.toLowerCase());const points=mine.filter(o=>['ready','done'].includes(o.status)).reduce((s,o)=>s+Math.floor(o.total),0);root.innerHTML=`<div class="stats"><div class="stat"><span>Commandes</span><strong>${mine.length}</strong></div><div class="stat"><span>Points fidélité</span><strong>${points}</strong></div></div><h3>Mon historique</h3>${mine.length?mine.map(o=>`<div class="admin-card"><div class="admin-card-head"><div><strong>${escapeHTML(o.id)}</strong><p>${new Date(o.createdAt).toLocaleDateString('fr-FR')} · ${money(o.total)}</p></div><span class="status ${o.status}">${statusLabel(o.status)}</span></div><div class="admin-actions"><button class="btn btn-light btn-small" onclick="document.getElementById('trackingCode').value='${escapeHTML(o.id)}';showPage('suivi');trackOrder()">Suivre</button>${['ready','done'].includes(o.status)?`<button class="btn btn-primary btn-small" onclick="showReviewForm('${escapeHTML(o.id)}')">Donner un avis</button>`:''}</div></div>`).join(''):'<p class="muted">Aucune commande trouvée avec ce pseudo sur cet appareil.</p>'}`}
-function showReviewForm(orderId){const order=orders.find(o=>o.id===orderId);if(!order||!['ready','done'].includes(order.status))return;document.getElementById('reviewArea').innerHTML=`<form onsubmit="submitReview(event,'${escapeHTML(orderId)}')"><p>Commande ${escapeHTML(orderId)}</p><div class="form-group"><label for="reviewRating">Ta note</label><select id="reviewRating" class="field"><option value="5">★★★★★ — Excellent</option><option value="4">★★★★☆ — Très bien</option><option value="3">★★★☆☆ — Bien</option><option value="2">★★☆☆☆ — Moyen</option><option value="1">★☆☆☆☆ — À améliorer</option></select></div><div class="form-group" style="margin-top:12px"><label for="reviewText">Ton commentaire (facultatif)</label><textarea id="reviewText" class="field" maxlength="300"></textarea></div><button class="btn btn-primary" style="margin-top:12px">Envoyer mon avis</button></form>`}
-function submitReview(event,orderId){event.preventDefault();const order=orders.find(o=>o.id===orderId);if(!order)return;if(reviews.some(r=>r.orderId===orderId))return toast('Un avis existe déjà pour cette commande.');reviews.unshift({orderId,name:customerPseudo,rating:Number(document.getElementById('reviewRating').value),text:document.getElementById('reviewText').value.trim(),at:new Date().toISOString()});saveAll();document.getElementById('reviewArea').innerHTML='<p class="success-box">Merci pour ton avis !</p>';toast('Avis enregistré.')}
-function renderMenus(){const root=document.getElementById('menuGrid');const menus=[{name:'Menu Classique',emoji:'🍔',desc:'Un burger, des frites et une boisson.',price:16.99,items:['Burger au choix','Frites','Boisson']},{name:'Menu Gourmand',emoji:'🍗',desc:'Une formule généreuse pour les grandes faims.',price:16.99,items:['Plat au choix','Accompagnement','Boisson']},{name:'Menu Douceur',emoji:'🍦',desc:'Une formule avec une touche sucrée.',price:16.99,items:['Plat au choix','Accompagnement','Dessert'] }];root.innerHTML=menus.map(m=>`<article class="menu-card"><div class="menu-emoji">${m.emoji}</div><h3>${m.name}</h3><p>${m.desc}</p><ul>${m.items.map(i=>`<li>${i}</li>`).join('')}</ul><div class="menu-price">${money(m.price)}</div><button class="btn btn-primary" onclick="showPage('menus');document.getElementById('menuMain').focus()">Composer cette formule</button></article>`).join('')}
-function renderMenuBuilder(){const main=document.getElementById('menuMain'),side=document.getElementById('menuSide'),drink=document.getElementById('menuDrink');if(!main||!side||!drink)return;const fill=(el,items)=>{const old=el.value;el.innerHTML=items.map(p=>`<option value="${p.id}">${escapeHTML(p.name)}</option>`).join('');if(items.some(p=>p.id===old))el.value=old};fill(main,products.filter(p=>p.available&&['Burgers','Plats'].includes(p.category)));fill(side,products.filter(p=>p.available&&p.category==='Accompagnements'));fill(drink,products.filter(p=>p.available&&p.category==='Boissons'))}
-function addComposedMenu(){const ids=['menuMain','menuSide','menuDrink'].map(id=>document.getElementById(id).value);const chosen=ids.map(productById);if(chosen.some(p=>!p))return toast('Choisis un plat, un accompagnement et une boisson.');const details='Menu : '+chosen.map(p=>p.name).join(' + ');addToCart({key:'menu-'+Date.now(),id:chosen[0].id,name:'Menu EL composé',price:16.99,details,quantity:1})}
-function renderAdmin(){const root=document.getElementById('adminRoot');if(!currentRole){root.innerHTML=`<div class="panel admin-login"><h2>Connexion équipe</h2><p class="muted">Choisis ton rôle et entre le code de démonstration.</p><form onsubmit="loginAdmin(event)"><div class="form-group"><label for="roleSelect">Rôle</label><select class="field" id="roleSelect"><option value="director">Directeur</option><option value="cashier">Caisse</option><option value="kitchen">Cuisine</option></select></div><div class="form-group" style="margin-top:13px"><label for="adminPin">Code de démonstration</label><input class="field" id="adminPin" type="password" inputmode="numeric" maxlength="8" required></div><button class="btn btn-primary" style="width:100%;margin-top:16px">Se connecter</button></form><div class="notice" style="margin-top:15px">Codes de démonstration : Directeur 1234 · Caisse 2222 · Cuisine 3333. Ils ne sont pas sécurisés.</div></div>`;return}const role=roles[currentRole];if(!role.tabs.includes(adminTab))adminTab=role.tabs[0];root.innerHTML=`<div class="admin-shell"><aside class="admin-side"><div class="admin-user"><strong>${role.label}</strong><span>Session de démonstration</span></div><div class="admin-nav">${role.tabs.map(t=>`<button class="${adminTab===t?'active':''}" onclick="setAdminTab('${t}')">${({dashboard:'📊 Tableau de bord',cashier:'🛒 Nouvelle commande',orders:'🧾 Commandes',simulation:'🤖 Clients automatiques',products:'🍔 Carte & produits',stock:'📦 Gestion des stocks',promos:'🏷️ Promotions',team:'👥 Équipe'})[t]}</button>`).join('')}<button onclick="logoutAdmin()">↪ Déconnexion</button></div></aside><div class="admin-main">${adminTab==='dashboard'?renderDashboard():adminTab==='cashier'?renderCashier():adminTab==='orders'?renderAdminOrders():adminTab==='simulation'?renderSimulation():adminTab==='products'?renderAdminProducts():adminTab==='stock'?renderStock():adminTab==='promos'?renderPromoAdmin():renderTeam()}</div></div>`}
-function loginAdmin(event){event.preventDefault();const role=document.getElementById('roleSelect').value;const pin=document.getElementById('adminPin').value;if(roles[role].pin!==pin){toast('Code incorrect.');return}currentRole=role;adminTab=roles[role].tabs[0];renderAdmin();toast('Connexion réussie.')}
-function logoutAdmin(){currentRole=null;renderAdmin();toast('Déconnexion effectuée.')}
-function setAdminTab(tab){if(!currentRole||!roles[currentRole].tabs.includes(tab))return;adminTab=tab;renderAdmin()}
-function renderDashboard(){const today=new Date().toDateString();const todays=orders.filter(o=>new Date(o.createdAt).toDateString()===today);const revenue=todays.filter(o=>o.status!=='refused').reduce((s,o)=>s+o.total,0);const low=products.filter(p=>p.stock<=5);return `<h2>Tableau de bord</h2><div class="stats"><div class="stat"><span>Commandes aujourd'hui</span><strong>${todays.length}</strong></div><div class="stat"><span>À traiter</span><strong>${orders.filter(o=>['new','accepted','preparing'].includes(o.status)).length}</strong></div><div class="stat"><span>Chiffre d'affaires estimé</span><strong>${money(revenue)}</strong></div><div class="stat"><span>Alertes de stock</span><strong>${low.length}</strong></div></div><div class="panel"><h3 style="margin-top:0">Dernières commandes</h3>${orders.length?orders.slice(0,5).map(o=>`<div class="admin-card"><div class="admin-card-head"><div><strong>${escapeHTML(o.id)} · ${escapeHTML(o.name)}</strong><p>${new Date(o.createdAt).toLocaleString('fr-FR')}</p></div><span class="status ${o.status}">${statusLabel(o.status)}</span></div><p>${money(o.total)} · ${o.items.reduce((s,i)=>s+i.quantity,0)} article(s)</p></div>`).join(''):'<p class="muted">Aucune commande pour le moment.</p>'}</div><div class="panel" style="margin-top:15px"><h3>Stocks à surveiller</h3>${low.length?low.map(p=>`<p>${escapeHTML(p.name)} : <strong>${p.stock}</strong> en stock</p>`).join(''):'<p class="muted">Aucune alerte de stock.</p>'}</div>`}
-let cashierCategory='Tout';
+let products = loadJSON('elf_products', null);
 
-function renderCashier(){
-  const categories=['Tout',...new Set(products.map(p=>p.category))];
-  const available=products.filter(p=>
-    p.available && p.stock>0 &&
-    (cashierCategory==='Tout'||p.category===cashierCategory)
+if (!Array.isArray(products)) {
+  products = defaultProducts;
+  saveJSON('elf_products', products);
+}
+
+let cart = loadJSON('elf_cart', []);
+if (!Array.isArray(cart)) cart = [];
+
+let orders = loadJSON('elf_orders', []);
+if (!Array.isArray(orders)) orders = [];
+
+let activeCategory = 'Tout';
+
+/* 3. NAVIGATION */
+
+function showPage(pageId) {
+  const target = document.getElementById(pageId);
+
+  if (!target) return;
+
+  document.querySelectorAll('.page').forEach(page => {
+    page.classList.remove('active');
+  });
+
+  target.classList.add('active');
+
+  document.querySelectorAll('.navigation a').forEach(link => {
+    link.classList.toggle(
+      'active',
+      link.getAttribute('href') === '#' + pageId
+    );
+  });
+
+  if (pageId === 'carte') renderProducts();
+  if (pageId === 'panier') renderCart();
+  if (pageId === 'menus') renderMenuBuilder();
+  if (pageId === 'suivi') renderTracking();
+  if (pageId === 'client') renderCustomerSpace();
+  if (pageId === 'administration') renderAdmin();
+
+  window.location.hash = pageId;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* 4. CATÉGORIES */
+
+function getCategories() {
+  return [
+    'Tout',
+    ...new Set(products.map(product => product.category))
+  ];
+}
+
+function renderCategories() {
+  const container = document.getElementById('categories');
+  if (!container) return;
+
+  container.innerHTML = getCategories().map(category => `
+    <button
+      class="btn ${activeCategory === category ? 'btn-primary' : 'btn-secondary'}"
+      onclick="setCategory('${category.replace(/'/g, "\\'")}')"
+    >
+      ${category}
+    </button>
+  `).join('');
+}
+
+function setCategory(category) {
+  activeCategory = category;
+  renderProducts();
+}
+
+/* 5. AFFICHAGE DES PRODUITS */
+
+function renderProducts() {
+  renderCategories();
+
+  const container = document.getElementById('products');
+  if (!container) return;
+
+  const visibleProducts = products.filter(product =>
+    product.available &&
+    (activeCategory === 'Tout' || product.category === activeCategory)
   );
 
-  const total=cashierDraftItems.reduce((sum,item)=>{
-    const p=products.find(x=>x.id===item.id);
-    return sum+(p?p.price*item.quantity:0);
-  },0);
+  if (!visibleProducts.length) {
+    container.innerHTML = `
+      <div class="empty-state card" style="grid-column:1/-1">
+        <div style="font-size:40px;">🍃</div>
+        <h3>Aucun produit disponible</h3>
+        <p>Reviens bientôt découvrir nos spécialités.</p>
+      </div>
+    `;
+    return;
+  }
 
-  return `
-    <h2>🛒 Nouvelle commande</h2>
-    <p class="muted">Prise de commande au comptoir</p>
-
-    <div class="admin-card">
-      <h3>1. Choisir les produits</h3>
-      <div class="admin-actions">
-        ${categories.map(c=>`
-          <button class="btn ${cashierCategory===c?'btn-primary':'btn-secondary'}"
-            onclick="cashierCategory='${escapeHTML(c)}';renderAdmin()">
-            ${escapeHTML(c)}
+  container.innerHTML = visibleProducts.map(product => `
+    <article class="card">
+      <div style="height:145px;display:grid;place-items:center;background:var(--surface-light);font-size:65px;">
+        ${product.emoji || '🍽️'}
+      </div>
+      <div class="card-content">
+        <span class="badge">${product.category}</span>
+        <h3 style="margin:10px 0 5px;">${escapeHTML(product.name)}</h3>
+        <p class="muted" style="font-size:13px;min-height:40px;">
+          ${escapeHTML(product.description || '')}
+        </p>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:15px;">
+          <strong style="color:var(--primary);font-size:19px;">
+            ${formatPrice(product.price)}
+          </strong>
+          <button class="btn btn-primary btn-small"
+            onclick="addToCart('${product.id}')"
+            ${product.stock <= 0 ? 'disabled' : ''}>
+            ${product.stock > 0 ? 'Ajouter +' : 'Épuisé'}
           </button>
-        `).join('')}
+        </div>
       </div>
+    </article>
+  `).join('');
+}
 
-      <div class="cashier-products">
-        ${available.length?available.map(p=>{
-          const item=cashierDraftItems.find(i=>i.id===p.id);
-          return `
-            <div class="admin-card">
-              <div class="admin-card-head">
-                <div>
-                  <strong>${p.emoji||'🍽️'} ${escapeHTML(p.name)}</strong>
-                  <p>${money(p.price)} · Stock : ${p.stock}</p>
-                </div>
-                <button class="btn btn-primary"
-                  onclick="cashierAdd('${p.id}')">+ Ajouter</button>
-              </div>
-              ${item?`<p>Dans le panier : ${item.quantity}</p>`:''}
-            </div>
-          `;
-        }).join(''):'<p>Aucun produit disponible dans cette catégorie.</p>'}
+/* 6. SÉCURITÉ DU TEXTE AFFICHÉ */
+
+function escapeHTML(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  })[char]);
+}
+
+/* 7. PANIER */
+
+function saveCart() {
+  saveJSON('elf_cart', cart);
+  updateCartCount();
+}
+
+function updateCartCount() {
+  const count = cart.reduce((total, item) => total + item.quantity, 0);
+  const element = document.getElementById('cart-count');
+
+  if (element) element.textContent = count;
+}
+
+function addToCart(productId) {
+  const product = products.find(item => item.id === productId);
+
+  if (!product || !product.available) return;
+
+  const existing = cart.find(item => item.id === productId);
+  const quantityInCart = existing ? existing.quantity : 0;
+
+  if (quantityInCart >= product.stock) {
+    alert('Stock insuffisant pour ce produit.');
+    return;
+  }
+
+  if (existing) {
+    existing.quantity++;
+  } else {
+    cart.push({
+      id: product.id,
+      quantity: 1
+    });
+  }
+
+  saveCart();
+  renderCart();
+
+  alert(product.name + ' ajouté au panier !');
+}
+
+function changeQty(productId, delta) {
+  const item = cart.find(item => item.id === productId);
+  const product = products.find(product => product.id === productId);
+
+  if (!item || !product) return;
+
+  const newQuantity = item.quantity + delta;
+
+  if (newQuantity <= 0) {
+    cart = cart.filter(cartItem => cartItem.id !== productId);
+  } else if (newQuantity > product.stock) {
+    alert('Stock insuffisant.');
+    return;
+  } else {
+    item.quantity = newQuantity;
+  }
+
+  saveCart();
+  renderCart();
+}
+
+function getCartTotal() {
+  return cart.reduce((total, item) => {
+    const product = products.find(product => product.id === item.id);
+    return total + (product ? product.price * item.quantity : 0);
+  }, 0);
+}
+
+/* 8. AFFICHAGE DU PANIER */
+
+function renderCart() {
+  const container = document.getElementById('cart-content');
+  if (!container) return;
+
+  if (!cart.length) {
+    container.innerHTML = `
+      <div class="card empty-state">
+        <div style="font-size:45px;">🛒</div>
+        <h3>Ton panier est vide</h3>
+        <p>Découvre notre carte pour ajouter des produits.</p>
+        <button class="btn btn-primary" style="margin-top:15px;"
+          onclick="showPage('carte')">
+          Découvrir la carte
+        </button>
       </div>
-    </div>
+    `;
+    return;
+  }
 
-    <div class="admin-card">
-      <h3>2. Panier</h3>
-      ${cashierDraftItems.length?cashierDraftItems.map(item=>{
-        const p=products.find(x=>x.id===item.id);
-        if(!p)return '';
+  const validItems = cart.filter(item =>
+    products.some(product => product.id === item.id)
+  );
+
+  cart = validItems;
+
+  container.innerHTML = `
+    <div class="card card-content">
+      ${cart.map(item => {
+        const product = products.find(product => product.id === item.id);
+
         return `
-          <div class="admin-card-head">
-            <div>
-              <strong>${escapeHTML(p.name)}</strong>
-              <p>${money(p.price)} × ${item.quantity}</p>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 0;border-bottom:1px solid var(--border);">
+            <div style="min-width:0;">
+              <strong>${escapeHTML(product.name)}</strong>
+              <p class="muted">${formatPrice(product.price)} l'unité</p>
             </div>
-            <div class="admin-actions">
-              <button class="btn btn-secondary"
-                onclick="cashierChange('${p.id}',-1)">−</button>
+
+            <div style="display:flex;align-items:center;gap:9px;">
+              <button class="btn btn-secondary btn-small"
+                onclick="changeQty('${product.id}',-1)">−</button>
               <strong>${item.quantity}</strong>
-              <button class="btn btn-secondary"
-                onclick="cashierChange('${p.id}',1)">+</button>
+              <button class="btn btn-secondary btn-small"
+                onclick="changeQty('${product.id}',1)">+</button>
             </div>
+
+            <strong>${formatPrice(product.price * item.quantity)}</strong>
           </div>
         `;
-      }).join(''):'<p class="muted">Le panier est vide.</p>'}
+      }).join('')}
 
-      <hr>
-      <div class="admin-card-head">
-        <strong>Total à payer</strong>
-        <h2>${money(total)}</h2>
-      </div>
-    </div>
-
-    <div class="admin-card">
-      <h3>3. Informations client</h3>
-      <div class="form-group">
-        <label for="cashierCustomerName">Nom du client</label>
-        <input class="field" id="cashierCustomerName"
-          placeholder="Ex : Client comptoir">
-      </div>
-      <div class="form-group" style="margin-top:12px">
-        <label for="cashierMode">Mode de commande</label>
-        <select class="field" id="cashierMode">
-          <option value="Sur place">Sur place</option>
-          <option value="À emporter">À emporter</option>
-        </select>
+      <div style="display:flex;justify-content:space-between;margin-top:20px;font-size:22px;">
+        <strong>Total</strong>
+        <strong style="color:var(--primary);">${formatPrice(getCartTotal())}</strong>
       </div>
 
       <button class="btn btn-primary"
-        style="width:100%;margin-top:16px"
-        onclick="cashierSubmit()"
-        ${cashierDraftItems.length?'':'disabled'}>
-        Valider la commande · ${money(total)}
+        style="width:100%;margin-top:20px;"
+        onclick="showPage('commande')">
+        Continuer ma commande →
       </button>
 
       <button class="btn btn-secondary"
-        style="width:100%;margin-top:8px"
-        onclick="cashierClear()">
+        style="width:100%;margin-top:10px;"
+        onclick="clearCart()">
         Vider le panier
       </button>
     </div>
   `;
 }
 
-function cashierAdd(id){
-  const p=products.find(x=>x.id===id);
-  if(!p||!p.available||p.stock<=0){
-    toast('Produit indisponible.');
+function clearCart() {
+  if (!confirm('Vider entièrement le panier ?')) return;
+
+  cart = [];
+  saveCart();
+  renderCart();
+}
+
+/* 9. PREMIER AFFICHAGE */
+
+function initializeSite() {
+  updateCartCount();
+  renderProducts();
+  renderCart();
+
+  const page = window.location.hash.replace('#', '');
+  const allowedPages = [
+    'accueil', 'carte', 'menus', 'panier',
+    'commande', 'suivi', 'client'
+  ];
+
+  showPage(allowedPages.includes(page) ? page : 'accueil');
+}
+
+document.addEventListener('DOMContentLoaded', initializeSite);
+
+</script>
+
+/* =====================================
+   10. MENUS PERSONNALISABLES
+===================================== */
+
+let selectedMenu = {
+  burger: 'burger1',
+  side: 'side1',
+  drink: 'drink1'
+};
+
+function getMenuProducts(category) {
+  return products.filter(product =>
+    product.category === category &&
+    product.available &&
+    product.stock > 0
+  );
+}
+
+function getSelectedMenuProduct(type) {
+  const productId = selectedMenu[type];
+  return products.find(product => product.id === productId);
+}
+
+function renderMenuBuilder() {
+  const container = document.getElementById('menu-builder');
+  if (!container) return;
+
+  const burgerProducts = getMenuProducts('Burgers');
+  const sideProducts = getMenuProducts('Accompagnements');
+  const drinkProducts = getMenuProducts('Boissons');
+
+  if (!burgerProducts.length || !sideProducts.length || !drinkProducts.length) {
+    container.innerHTML = `
+      <div class="card empty-state">
+        <div style="font-size:40px;">🍃</div>
+        <h3>Menu indisponible</h3>
+        <p>Certains produits sont momentanément indisponibles.</p>
+      </div>
+    `;
     return;
   }
-  const item=cashierDraftItems.find(i=>i.id===id);
-  if(item){
-    if(item.quantity>=p.stock){
-      toast('Stock insuffisant.');
+
+  // Sélectionne un produit disponible si l'ancien choix n'existe plus.
+  if (!burgerProducts.some(p => p.id === selectedMenu.burger)) {
+    selectedMenu.burger = burgerProducts[0].id;
+  }
+
+  if (!sideProducts.some(p => p.id === selectedMenu.side)) {
+    selectedMenu.side = sideProducts[0].id;
+  }
+
+  if (!drinkProducts.some(p => p.id === selectedMenu.drink)) {
+    selectedMenu.drink = drinkProducts[0].id;
+  }
+
+  const burger = getSelectedMenuProduct('burger');
+  const side = getSelectedMenuProduct('side');
+  const drink = getSelectedMenuProduct('drink');
+
+  const total = burger.price + side.price + drink.price;
+
+  function createOptions(list, selectedId) {
+    return list.map(product => `
+      <option value="${escapeHTML(product.id)}"
+        ${product.id === selectedId ? 'selected' : ''}>
+        ${escapeHTML(product.name)} — ${formatPrice(product.price)}
+      </option>
+    `).join('');
+  }
+
+  container.innerHTML = `
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));">
+
+      <div class="card card-content">
+        <div style="font-size:35px;margin-bottom:12px;">🍔</div>
+        <h3>1. Ton burger</h3>
+        <p class="muted" style="margin:8px 0 15px;">Choisis ton burger préféré.</p>
+        <select id="menu-burger">
+          ${createOptions(burgerProducts, selectedMenu.burger)}
+        </select>
+      </div>
+
+      <div class="card card-content">
+        <div style="font-size:35px;margin-bottom:12px;">🍟</div>
+        <h3>2. Ton accompagnement</h3>
+        <p class="muted" style="margin:8px 0 15px;">Frites ou autre gourmandise.</p>
+        <select id="menu-side">
+          ${createOptions(sideProducts, selectedMenu.side)}
+        </select>
+      </div>
+
+      <div class="card card-content">
+        <div style="font-size:35px;margin-bottom:12px;">🥤</div>
+        <h3>3. Ta boisson</h3>
+        <p class="muted" style="margin:8px 0 15px;">Choisis ta boisson.</p>
+        <select id="menu-drink">
+          ${createOptions(drinkProducts, selectedMenu.drink)}
+        </select>
+      </div>
+
+    </div>
+
+    <div class="card card-content" style="margin-top:25px;">
+      <span class="eyebrow">Ton menu personnalisé</span>
+      <h2 style="margin-bottom:15px;">Mon menu EL</h2>
+
+      <div id="menu-summary" class="muted">
+        ${escapeHTML(burger.name)} + ${escapeHTML(side.name)} + ${escapeHTML(drink.name)}
+      </div>
+
+      <hr class="divider">
+
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;">
+        <div>
+          <p class="muted">Prix total des produits</p>
+          <strong id="menu-total" style="font-size:27px;color:var(--primary);">
+            ${formatPrice(total)}
+          </strong>
+        </div>
+
+        <button class="btn btn-primary" onclick="addComposedMenu()">
+          Ajouter mon menu →
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('menu-burger').addEventListener('change', event => {
+    selectedMenu.burger = event.target.value;
+    renderMenuBuilder();
+  });
+
+  document.getElementById('menu-side').addEventListener('change', event => {
+    selectedMenu.side = event.target.value;
+    renderMenuBuilder();
+  });
+
+  document.getElementById('menu-drink').addEventListener('change', event => {
+    selectedMenu.drink = event.target.value;
+    renderMenuBuilder();
+  });
+}
+
+/* 11. AJOUT DU MENU AU PANIER */
+
+function addComposedMenu() {
+  const selectedProducts = [
+    getSelectedMenuProduct('burger'),
+    getSelectedMenuProduct('side'),
+    getSelectedMenuProduct('drink')
+  ];
+
+  if (selectedProducts.some(product =>
+    !product || !product.available || product.stock <= 0
+  )) {
+    alert('Un des produits sélectionnés n’est plus disponible.');
+    renderMenuBuilder();
+    return;
+  }
+
+  // Vérifie tous les stocks avant de modifier le panier.
+  for (const product of selectedProducts) {
+    const existing = cart.find(item => item.id === product.id);
+    const quantityInCart = existing ? existing.quantity : 0;
+
+    if (quantityInCart + 1 > product.stock) {
+      alert('Stock insuffisant pour : ' + product.name);
       return;
     }
-    item.quantity++;
-  }else{
-    cashierDraftItems.push({id:p.id,name:p.name,price:p.price,quantity:1});
   }
-  renderAdmin();
+
+  // Ajoute les trois produits au panier.
+  selectedProducts.forEach(product => {
+    const existing = cart.find(item => item.id === product.id);
+
+    if (existing) {
+      existing.quantity++;
+    } else {
+      cart.push({
+        id: product.id,
+        quantity: 1
+      });
+    }
+  });
+
+  saveCart();
+  renderCart();
+
+  alert('Ton menu a été ajouté au panier !');
+
+  showPage('panier');
 }
 
-function cashierChange(id,change){
-  const item=cashierDraftItems.find(i=>i.id===id);
-  const p=products.find(x=>x.id===id);
-  if(!item||!p)return;
+<script>
+/* =====================================
+   PARTIE 5 — VALIDATION DES COMMANDES
+===================================== */
 
-  item.quantity+=change;
-  if(item.quantity<=0){
-    cashierDraftItems=cashierDraftItems.filter(i=>i.id!==id);
-  }else if(item.quantity>p.stock){
-    item.quantity=p.stock;
-    toast('Stock maximum atteint.');
-  }
-  renderAdmin();
-}
+function renderCheckout() {
+  const container = document.getElementById('checkout-content');
+  if (!container) return;
 
-function cashierClear(){
-  cashierDraftItems=[];
-  renderAdmin();
-}
-
-function cashierSubmit(){
-  if(!cashierDraftItems.length){
-    toast('Le panier est vide.');
+  if (!cart.length) {
+    container.innerHTML = `
+      <div class="card empty-state">
+        <h3>Ton panier est vide</h3>
+        <button class="btn btn-primary" onclick="showPage('carte')">
+          Voir la carte
+        </button>
+      </div>
+    `;
     return;
   }
 
-  for(const item of cashierDraftItems){
-    const p=products.find(x=>x.id===item.id);
-    if(!p||!p.available||p.stock<item.quantity){
-      toast('Stock insuffisant pour '+item.name+'.');
-      renderAdmin();
-      return;
+  container.innerHTML = `
+    <div class="card card-content">
+      <h3>Récapitulatif</h3>
+      ${cart.map(item => {
+        const product = products.find(p => p.id === item.id);
+        const name = product ? product.name : item.name;
+        const price = product ? product.price : item.price;
+
+        return `
+          <p style="padding:8px 0;border-bottom:1px solid var(--border);">
+            ${escapeHTML(name)} × ${item.quantity}
+            <strong style="float:right;">${formatPrice(price * item.quantity)}</strong>
+          </p>
+        `;
+      }).join('')}
+
+      <h2 style="margin-top:18px;color:var(--primary);">
+        Total : ${formatPrice(getCartTotal())}
+      </h2>
+
+      <hr class="divider">
+
+      <form id="checkout-form" onsubmit="submitOrder(event)">
+        <div class="form-group">
+          <label for="customer-name">Nom complet</label>
+          <input id="customer-name" name="customerName"
+            required maxlength="60" placeholder="Ton nom">
+        </div>
+
+        <div class="form-group">
+          <label for="customer-phone">Téléphone</label>
+          <input id="customer-phone" name="phone"
+            required type="tel" maxlength="20"
+            placeholder="Ton numéro de téléphone">
+        </div>
+
+        <div class="form-group">
+          <label for="order-type">Mode de commande</label>
+          <select id="order-type" name="orderType" required>
+            <option value="Sur place">Sur place</option>
+            <option value="À emporter">À emporter</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="order-note">Informations complémentaires</label>
+          <textarea id="order-note" name="note"
+            maxlength="300" rows="3"
+            placeholder="Précisions éventuelles..."></textarea>
+        </div>
+
+        <button class="btn btn-primary" type="submit"
+          style="width:100%;">
+          Confirmer ma commande
+        </button>
+      </form>
+    </div>
+  `;
+}
+
+function generateOrderNumber() {
+  return 'EL-' + Date.now().toString().slice(-8);
+}
+
+function submitOrder(event) {
+  event.preventDefault();
+
+  const form = document.getElementById('checkout-form');
+  if (!form || !form.reportValidity()) return;
+
+  if (!cart.length) {
+    alert('Ton panier est vide.');
+    showPage('carte');
+    return;
+  }
+
+  // Vérification du stock avant toute commande
+  for (const item of cart) {
+    if (item.components) {
+      for (const component of item.components) {
+        const product = products.find(p => p.id === component.id);
+
+        if (!product || !product.available || product.stock < 1) {
+          alert('Un composant de ton menu n’est plus disponible.');
+          return;
+        }
+      }
+    } else {
+      const product = products.find(p => p.id === item.id);
+
+      if (!product || !product.available || product.stock < item.quantity) {
+        alert('Stock insuffisant pour ' + (product?.name || item.name));
+        return;
+      }
     }
   }
 
-  const name=document.getElementById('cashierCustomerName').value.trim();
-  if(!name){
-    toast('Entre le nom du client.');
-    return;
-  }
+  const data = new FormData(form);
 
-  const now=new Date().toISOString();
-  const items=cashierDraftItems.map(i=>({...i}));
-  const total=items.reduce((sum,i)=>sum+i.price*i.quantity,0);
-
-  const order={
-    id:makeOrderId(),
-    name,
-    mode:document.getElementById('cashierMode').value,
-    note:'',
-    items,
-    total,
-    promo:null,
-    status:'new',
-    createdAt:now,
-    etaMinutes:15,
-    history:[{status:'new',at:now}],
-    source:'cashier'
+  const order = {
+    id: createId(),
+    number: generateOrderNumber(),
+    customerName: String(data.get('customerName')).trim(),
+    phone: String(data.get('phone')).trim(),
+    type: data.get('orderType'),
+    note: String(data.get('note') || '').trim(),
+    items: JSON.parse(JSON.stringify(cart)),
+    total: getCartTotal(),
+    status: 'received',
+    createdAt: new Date().toISOString(),
+    simulated: false
   };
+
+  // Déduction du stock
+  for (const item of cart) {
+    if (item.components) {
+      item.components.forEach(component => {
+        const product = products.find(p => p.id === component.id);
+        product.stock--;
+      });
+    } else {
+      const product = products.find(p => p.id === item.id);
+      product.stock -= item.quantity;
+    }
+  }
 
   orders.unshift(order);
 
-  items.forEach(item=>{
-    const p=products.find(x=>x.id===item.id);
-    if(p)p.stock=Math.max(0,p.stock-item.quantity);
-  });
+  saveJSON('elf_products', products);
+  saveJSON('elf_orders', orders);
 
-  cashierDraftItems=[];
-  saveAll();
-  renderAdmin();
-  renderProducts();
-  toast('Commande caisse enregistrée : '+order.id);
+  cart = [];
+  saveCart();
+
+  alert('Commande confirmée ! Numéro : ' + order.number);
+
+  showPage('suivi');
+  renderTracking();
 }
-function renderAdminOrders(){
-  let visible=orders;
-  if(currentRole==='kitchen')visible=orders.filter(o=>['accepted','preparing','ready'].includes(o.status));
-  return `<h2>Gestion des commandes</h2>
-  <p class="muted">Toutes les commandes enregistrées sur cet appareil.</p>
-  ${visible.length?visible.map(o=>`
-    <article class="admin-card">
-      <div class="admin-card-head">
-        <div><h3>${escapeHTML(o.id)} · ${escapeHTML(o.name)}</h3>
-        <p>${new Date(o.createdAt).toLocaleString('fr-FR')} · ${escapeHTML(o.mode||'Commande')} · ${money(o.total)}</p></div>
-        <span class="status ${o.status}">${statusLabel(o.status)}</span>
+
+function renderCheckoutPage() {
+  renderCheckout();
+}
+
+// Compatibilité avec le panier de la partie 3
+renderCart = function() {
+  const container = document.getElementById('cart-content');
+  if (!container) return;
+
+  if (!cart.length) {
+    container.innerHTML = `
+      <div class="card empty-state">
+        <div style="font-size:45px;">🛒</div>
+        <h3>Ton panier est vide</h3>
+        <button class="btn btn-primary" onclick="showPage('carte')">
+          Découvrir la carte
+        </button>
       </div>
-      <p>${o.items.map(i=>`<strong>${i.quantity} × ${escapeHTML(i.name)}</strong>`).join('<br>')}</p>
-      ${o.note||o.comment?`<p class="muted">Note : ${escapeHTML(o.note||o.comment)}</p>`:''}
-      <div class="admin-actions">${orderButtons(o)}</div>
-    </article>`).join(''):'<div class="panel empty"><h3>Aucune commande à afficher</h3></div>'}`;
-}
-
-function orderButtons(o){
-  let buttons='';
-  if(currentRole==='cashier'&&o.status==='new'){
-    buttons+=`<button class="btn btn-success btn-small" onclick="setOrderStatus('${o.id}','accepted')">Accepter</button>
-    <button class="btn btn-danger btn-small" onclick="setOrderStatus('${o.id}','refused')">Refuser</button>`;
+    `;
+    return;
   }
-  if(currentRole==='kitchen'&&o.status==='accepted'){
-    buttons+=`<button class="btn btn-primary btn-small" onclick="setOrderStatus('${o.id}','preparing')">Commencer la préparation</button>`;
-  }
-  if(currentRole==='kitchen'&&o.status==='preparing'){
-    buttons+=`<button class="btn btn-success btn-small" onclick="setOrderStatus('${o.id}','ready')">Commande prête</button>`;
-  }
-  if(currentRole==='cashier'&&o.status==='ready'){
-    buttons+=`<button class="btn btn-success btn-small" onclick="setOrderStatus('${o.id}','done')">Commande remise</button>`;
-  }
-  if(currentRole==='director'&&o.status!=='done'&&o.status!=='refused'){
-    buttons+=`<button class="btn btn-light btn-small" onclick="setOrderStatus('${o.id}','done')">Clôturer</button>`;
-  }
-  if(currentRole==='director'){
-    buttons+=`<button class="btn btn-danger btn-small" onclick="deleteOrder('${o.id}')">Supprimer</button>`;
-  }
-  return buttons||'<span class="muted small">Aucune action disponible.</span>';
-}
 
-function setOrderStatus(id,status){
-  const o=orders.find(x=>x.id===id);
-  if(!o)return;
-  o.status=status;
-  o.history=o.history||[];
-  o.history.push({status,at:new Date().toISOString()});
-  if(status==='done'&&!o.loyaltyAwarded){
-    o.loyaltyAwarded=true;
-    o.pointsEarned=Math.floor(o.total);
-  }
-  saveAll();
-  renderAdmin();
-  renderProducts();
-  toast('Commande mise à jour : '+statusLabel(status));
-}
+  container.innerHTML = `
+    <div class="card card-content">
+      ${cart.map(item => {
+        const product = products.find(p => p.id === item.id);
+        const name = product ? product.name : item.name;
+        const price = product ? product.price : item.price;
 
-function deleteOrder(id){
-  if(!confirm('Supprimer cette commande ?'))return;
-  orders=orders.filter(o=>o.id!==id);
-  saveAll();
-  renderAdmin();
-  toast('Commande supprimée.');
-}
+        return `
+          <div style="padding:15px 0;border-bottom:1px solid var(--border);">
+            <strong>${escapeHTML(name)}</strong>
+            ${item.components ? `
+              <p class="muted">
+                ${item.components.map(c => escapeHTML(c.name)).join(' + ')}
+              </p>
+            ` : ''}
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <button class="btn btn-secondary btn-small"
+                  onclick="changeQty('${item.id}',-1)">−</button>
+                ${item.quantity}
+                <button class="btn btn-secondary btn-small"
+                  onclick="changeQty('${item.id}',1)">+</button>
+              </div>
+              <strong>${formatPrice(price * item.quantity)}</strong>
+            </div>
+          </div>
+        `;
+      }).join('')}
 
-function renderAdminProducts(){
-  return `<h2>Gestion de la carte</h2>
-  <div class="panel">
-    <h3>Ajouter un produit</h3>
-    <form onsubmit="saveProduct(event)">
-      <div class="form-grid">
-        <div class="form-group"><label for="pName">Nom</label><input class="field" id="pName" required maxlength="40"></div>
-        <div class="form-group"><label for="pPrice">Prix (€)</label><input class="field" id="pPrice" type="number" min="0" step="0.01" required></div>
-        <div class="form-group"><label for="pCategory">Catégorie</label>
-          <select class="field" id="pCategory">
-            <option>Burgers</option><option>Plats</option><option>Accompagnements</option><option>Desserts</option><option>Boissons</option>
-          </select>
-        </div>
-        <div class="form-group"><label for="pStock">Stock initial</label><input class="field" id="pStock" type="number" min="0" value="40"></div>
-        <div class="form-group"><label for="pEmoji">Emoji</label><input class="field" id="pEmoji" value="🍽️" maxlength="4"></div>
-        <div class="form-group full"><label for="pDesc">Description</label><input class="field" id="pDesc" maxlength="120"></div>
-        <div class="form-group full"><label for="pImage">Adresse de l'image (facultatif)</label><input class="field" id="pImage" type="url" placeholder="https://…"></div>
-      </div>
-      <button class="btn btn-primary" style="margin-top:15px">Ajouter le produit</button>
-    </form>
-  </div>
-  <div class="panel" style="margin-top:18px">
-    <h3>Produits existants</h3>
-    <div class="admin-table-wrap"><table class="admin-table">
-      <thead><tr><th>Produit</th><th>Catégorie</th><th>Prix</th><th>Stock</th><th>Disponibilité</th><th>Action</th></tr></thead>
-      <tbody>${products.map(p=>`<tr>
-        <td>${escapeHTML(p.emoji||'🍽️')} ${escapeHTML(p.name)}</td>
-        <td>${escapeHTML(p.category)}</td>
-        <td>${money(p.price)}</td>
-        <td>${p.stock??0}</td>
-        <td>${p.available?'Disponible':'Indisponible'}</td>
-        <td><button class="btn btn-small ${p.available?'btn-danger':'btn-success'}" onclick="toggleProduct('${p.id}')">${p.available?'Désactiver':'Activer'}</button></td>
-      </tr>`).join('')}</tbody>
-    </table></div>
-  </div>`;
-}
+      <h2 style="margin-top:20px;color:var(--primary);">
+        Total : ${formatPrice(getCartTotal())}
+      </h2>
 
-function saveProduct(event){
-  event.preventDefault();
-  const name=document.getElementById('pName').value.trim();
-  const price=Number(document.getElementById('pPrice').value);
-  if(!name||!Number.isFinite(price)||price<0)return toast('Vérifie le nom et le prix.');
-  const product={
-    id:'custom-'+Date.now(),
-    name,
-    price,
-    category:document.getElementById('pCategory').value,
-    stock:Math.max(0,Number(document.getElementById('pStock').value)||0),
-    emoji:document.getElementById('pEmoji').value||'🍽️',
-    desc:document.getElementById('pDesc').value.trim(),
-    image:document.getElementById('pImage').value.trim(),
-    available:true
-  };
-  products.push(product);
-  saveAll();
-  renderAdmin();
-  renderProducts();
-  renderMenuBuilder();
-  toast('Produit ajouté à la carte !');
-}
+      <button class="btn btn-primary"
+        style="width:100%;margin-top:20px;"
+        onclick="showPage('commande');renderCheckout();">
+        Continuer ma commande →
+      </button>
 
-function toggleProduct(id){
-  const p=productById(id);
-  if(!p)return;
-  p.available=!p.available;
-  saveAll();
-  renderAdmin();
-  renderProducts();
-  renderMenuBuilder();
-  toast(p.name+' : '+(p.available?'disponible':'indisponible'));
-}
-
-function renderStock(){
-  return `<h2>Gestion des stocks</h2>
-  <p class="muted">Surveille les quantités et ajuste les stocks de chaque produit.</p>
-  <div class="panel"><div class="admin-table-wrap">
-    <table class="admin-table">
-      <thead><tr><th>Produit</th><th>Stock</th><th>État</th><th>Ajustement</th></tr></thead>
-      <tbody>${products.map(p=>`<tr>
-        <td>${escapeHTML(p.emoji||'🍽️')} ${escapeHTML(p.name)}</td>
-        <td><strong>${p.stock??0}</strong></td>
-        <td><span class="status ${(p.stock??0)<=0?'refused':(p.stock??0)<=8?'new':'ready'}">${(p.stock??0)<=0?'Rupture':(p.stock??0)<=8?'Stock faible':'Disponible'}</span></td>
-        <td><div class="qty">
-          <button onclick="adjustStock('${p.id}',-5)">−5</button>
-          <button onclick="adjustStock('${p.id}',-1)">−1</button>
-          <button onclick="adjustStock('${p.id}',1)">+1</button>
-          <button onclick="adjustStock('${p.id}',5)">+5</button>
-        </div></td>
-      </tr>`).join('')}</tbody>
-    </table>
-  </div></div>`;
-}
-
-function adjustStock(id,delta){
-  const p=productById(id);
-  if(!p)return;
-  p.stock=Math.max(0,(Number(p.stock)||0)+delta);
-  if(p.stock===0)p.available=false;
-  else p.available=true;
-  saveAll();
-  renderAdmin();
-  renderProducts();
-  renderMenuBuilder();
-}
-
-function renderPromoAdmin(){
-  return `<h2>Promotions et codes</h2>
-  <p class="muted">Active ou désactive les codes promotionnels disponibles dans le panier.</p>
-  <div class="panel">
-    ${Object.entries(PROMOS).map(([code,promo])=>`
-      <div class="admin-card">
-        <div class="admin-card-head">
-          <div><h3>${code}</h3><p>${promo.type==='percent'?promo.value+' % de réduction':money(promo.value)+' de réduction'}</p></div>
-          <span class="status ${promo.active===false?'refused':'ready'}">${promo.active===false?'Désactivé':'Actif'}</span>
-        </div>
-        <button class="btn btn-light btn-small" onclick="togglePromo('${code}')">${promo.active===false?'Activer':'Désactiver'}</button>
-      </div>`).join('')}
-  </div>`;
-}
-
-function togglePromo(code){
-  if(!PROMOS[code])return;
-  PROMOS[code].active=PROMOS[code].active===false;
-  localStorage.setItem(STORE.promos,JSON.stringify(PROMOS));
-  renderAdmin();
-}
-
-let simulationTimer = null;
-
-
-let simulationState = {
-  elapsed: 0,
-  running: false,
-  finished: false,
-  paused: false,
-  nextArrival: 10,
-  maxClients: 100,
-  traffic: 'normal',
-  category: 'all',
-  generated: 0,
-  revenue: 0
+      <button class="btn btn-secondary"
+        style="width:100%;margin-top:10px;"
+        onclick="clearCart()">
+        Vider le panier
+      </button>
+    </div>
+  `;
 };
 
-const SIMULATION_DURATION = 1200;
-const SIMULATION_SPEED = 39;
+// Le calcul du panier prend également en charge les menus
+getCartTotal = function() {
+  return cart.reduce((total, item) => {
+    const product = products.find(p => p.id === item.id);
+    const price = product ? product.price : Number(item.price || 0);
+    return total + price * item.quantity;
+  }, 0);
+};
 
-function simulationOrders(){
-  return orders.filter(o => o.simulated);
+// Affichage de la commande à chaque ouverture
+const previousShowPage = showPage;
+
+showPage = function(pageId) {
+  previousShowPage(pageId);
+
+  if (pageId === 'commande') renderCheckout();
+};
+</script>
+
+<script>
+/* =====================================
+   PARTIE 6 — SUIVI DES COMMANDES
+===================================== */
+
+const orderStatuses = [
+  { id: 'received', label: 'Commande reçue', emoji: '📥' },
+  { id: 'accepted', label: 'Commande acceptée', emoji: '✅' },
+  { id: 'preparing', label: 'En préparation', emoji: '👨‍🍳' },
+  { id: 'ready', label: 'Prête', emoji: '🛍️' },
+  { id: 'done', label: 'Terminée', emoji: '🎉' }
+];
+
+function getOrderStatusInfo(status) {
+  return orderStatuses.find(item => item.id === status) ||
+    { id: status, label: 'Statut inconnu', emoji: '❔' };
 }
 
-function simulationClock(){
-  const minutes = Math.min(780, Math.floor(
-    simulationState.elapsed * SIMULATION_SPEED / 60
-  ));
-  const total = 9 * 60 + minutes;
-  return String(Math.floor(total / 60)).padStart(2,'0') + ':' +
-    String(total % 60).padStart(2,'0');
+function renderTracking() {
+  const container = document.getElementById('tracking-content');
+  if (!container) return;
+
+  if (!orders.length) {
+    container.innerHTML = `
+      <div class="card empty-state">
+        <div style="font-size:45px;">📦</div>
+        <h3>Aucune commande pour le moment</h3>
+        <p>Lorsque tu passeras commande, son suivi apparaîtra ici.</p>
+        <button class="btn btn-primary" style="margin-top:15px;"
+          onclick="showPage('carte')">
+          Découvrir la carte
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = orders.map(order => {
+    const status = getOrderStatusInfo(order.status);
+    const currentIndex = orderStatuses.findIndex(
+      item => item.id === order.status
+    );
+    const progress = currentIndex < 0 ? 0 :
+      ((currentIndex + 1) / orderStatuses.length) * 100;
+
+    return `
+      <article class="card card-content" style="margin-bottom:18px;">
+        <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <div>
+            <span class="eyebrow">Commande</span>
+            <h3>${escapeHTML(order.number)}</h3>
+            <p class="muted">${escapeHTML(order.customerName)}</p>
+          </div>
+          <span class="badge">${status.emoji} ${status.label}</span>
+        </div>
+
+        <div style="margin:22px 0 10px;background:var(--surface-light);height:9px;border-radius:20px;overflow:hidden;">
+          <div style="width:${progress}%;height:100%;background:var(--primary);transition:width .3s;"></div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;gap:8px;font-size:11px;color:var(--muted);">
+          <span>Reçue</span>
+          <span>Préparation</span>
+          <span>Prête</span>
+          <span>Terminée</span>
+        </div>
+
+        <hr class="divider">
+
+        <p><strong>Total :</strong> ${formatPrice(order.total)}</p>
+        <p class="muted" style="font-size:13px;">
+          ${new Date(order.createdAt).toLocaleString('fr-FR')}
+        </p>
+
+        <details style="margin-top:15px;">
+          <summary style="cursor:pointer;color:var(--primary);font-weight:700;">
+            Voir les articles
+          </summary>
+          <div style="padding-top:12px;">
+            ${order.items.map(item => `
+              <p style="padding:5px 0;">
+                ${escapeHTML(item.name || products.find(p => p.id === item.id)?.name || 'Article')}
+                × ${item.quantity}
+              </p>
+            `).join('')}
+          </div>
+        </details>
+      </article>
+    `;
+  }).join('');
 }
 
-function renderSimulation(){
-  const simulated = simulationOrders();
+/* Actualisation du suivi après changement de statut */
+function refreshTracking() {
+  renderTracking();
+  renderCustomerSpace();
+}
+</script>
 
-  return `
-    <h2>Simulation de journée</h2>
-    <p class="muted">
-      Reproduis une journée complète chez EL Fast-Food en 20 minutes.
-    </p>
+<script>
+/* =====================================
+   PARTIE 7 — ESPACE CLIENT ET FIDÉLITÉ
+===================================== */
 
-    <div class="stats">
-      <div class="stat">
-        <span>Clients simulés</span>
-        <strong id="simClients">${simulated.length}</strong>
+let customerProfile = loadJSON('elf_customer', {
+  name: '',
+  phone: '',
+  email: ''
+});
+
+if (!customerProfile || typeof customerProfile !== 'object') {
+  customerProfile = { name: '', phone: '', email: '' };
+}
+
+function saveCustomer() {
+  saveJSON('elf_customer', customerProfile);
+}
+
+function getCustomerOrders() {
+  return orders.filter(order =>
+    order.customerName &&
+    customerProfile.name &&
+    order.customerName.toLowerCase() === customerProfile.name.toLowerCase()
+  );
+}
+
+function getCustomerPoints() {
+  return getCustomerOrders().reduce((total, order) => {
+    return total + (order.pointsEarned || 0);
+  }, 0);
+}
+
+function renderCustomerSpace() {
+  const container = document.getElementById('customer-content');
+  if (!container) return;
+
+  if (!customerProfile.name) {
+    container.innerHTML = `
+      <div class="card card-content">
+        <h3>Bienvenue chez EL FAST-FOOD !</h3>
+        <p class="muted" style="margin:8px 0 20px;">
+          Crée ton profil pour retrouver tes commandes et tes points de fidélité sur cet appareil.
+        </p>
+
+        <form onsubmit="saveCustomerProfile(event)">
+          <div class="form-group">
+            <label for="profile-name">Nom</label>
+            <input id="profile-name" required maxlength="60"
+              placeholder="Ton nom">
+          </div>
+
+          <div class="form-group">
+            <label for="profile-phone">Téléphone</label>
+            <input id="profile-phone" type="tel" maxlength="20"
+              placeholder="Ton téléphone">
+          </div>
+
+          <div class="form-group">
+            <label for="profile-email">E-mail (facultatif)</label>
+            <input id="profile-email" type="email" maxlength="100"
+              placeholder="Ton adresse e-mail">
+          </div>
+
+          <button class="btn btn-primary" type="submit"
+            style="width:100%;">
+            Créer mon profil
+          </button>
+        </form>
       </div>
-      <div class="stat">
-        <span>Ventes simulées</span>
-        <strong id="simRevenue">${money(simulated.reduce((s,o)=>s+o.total,0))}</strong>
+    `;
+    return;
+  }
+
+  const customerOrders = getCustomerOrders();
+  const points = getCustomerPoints();
+
+  container.innerHTML = `
+    <div class="grid" style="margin-bottom:22px;">
+      <div class="card card-content">
+        <span class="eyebrow">Mes points</span>
+        <h2 style="color:var(--primary);font-size:32px;">
+          ${points} ⭐
+        </h2>
+        <p class="muted">Points de fidélité</p>
       </div>
-      <div class="stat">
-        <span>Heure simulée</span>
-        <strong id="simClock">${simulationClock()}</strong>
-      </div>
-      <div class="stat">
-        <span>Commandes en attente</span>
-        <strong id="simPending">${simulated.filter(o=>o.status==='new').length}</strong>
+
+      <div class="card card-content">
+        <span class="eyebrow">Mes commandes</span>
+        <h2 style="font-size:32px;">${customerOrders.length}</h2>
+        <p class="muted">Commandes enregistrées</p>
       </div>
     </div>
 
-    <div class="panel">
-      <h3>Déroulement de la journée</h3>
-      <div style="display:flex;justify-content:space-between;gap:10px">
-        <strong>09:00</strong>
-        <strong id="simProgressText">${Math.floor(simulationState.elapsed/SIMULATION_DURATION*100)} %</strong>
-        <strong>22:00</strong>
-      </div>
-      <div style="height:13px;background:var(--border);border-radius:20px;overflow:hidden;margin:12px 0">
-        <div id="simProgress" style="height:100%;width:${simulationState.elapsed/SIMULATION_DURATION*100}%;background:var(--primary);border-radius:20px"></div>
-      </div>
-      <p id="simPeriod" class="muted">${simulationPeriod()}</p>
-      <div class="admin-actions">
-        <button class="btn btn-success" onclick="startSimulation()">▶ Démarrer / Reprendre</button>
-        <button class="btn btn-light" onclick="pauseSimulation()">Ⅱ Pause</button>
-        <button class="btn btn-danger" onclick="stopSimulation()">■ Arrêter</button>
-      </div>
-      <p id="simStatus" class="muted" style="margin-top:12px">
-        ${simulationState.running?'Simulation en cours':simulationState.paused?'Simulation en pause':simulationState.finished?'Journée terminée':'Prêt à démarrer'}
-      </p>
-    </div>
+    <div class="card card-content">
+      <span class="eyebrow">Mon profil</span>
+      <h2>${escapeHTML(customerProfile.name)}</h2>
+      <p class="muted">${escapeHTML(customerProfile.phone || 'Téléphone non renseigné')}</p>
+      <p class="muted">${escapeHTML(customerProfile.email || 'E-mail non renseigné')}</p>
 
-    <div class="panel" style="margin-top:16px">
-      <h3>Personnaliser la simulation</h3>
-
-      <div class="form-grid">
-        <div class="form-group">
-          <label for="simTraffic">Fréquentation</label>
-          <select class="field" id="simTraffic">
-            <option value="low" ${simulationState.traffic==='low'?'selected':''}>Faible</option>
-            <option value="normal" ${simulationState.traffic==='normal'?'selected':''}>Normale</option>
-            <option value="high" ${simulationState.traffic==='high'?'selected':''}>Forte</option>
-            <option value="extreme" ${simulationState.traffic==='extreme'?'selected':''}>Exceptionnelle</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="simMax">Nombre maximum de clients</label>
-          <input class="field" id="simMax" type="number" min="1" max="500" value="${simulationState.maxClients}">
-        </div>
-
-        <div class="form-group full">
-          <label for="simCategory">Catégories de produits</label>
-          <select class="field" id="simCategory">
-            <option value="all" ${simulationState.category==='all'?'selected':''}>Toute la carte</option>
-            <option value="Burgers" ${simulationState.category==='Burgers'?'selected':''}>Burgers</option>
-            <option value="Plats" ${simulationState.category==='Plats'?'selected':''}>Plats</option>
-            <option value="Accompagnements" ${simulationState.category==='Accompagnements'?'selected':''}>Accompagnements</option>
-            <option value="Desserts" ${simulationState.category==='Desserts'?'selected':''}>Desserts</option>
-            <option value="Boissons" ${simulationState.category==='Boissons'?'selected':''}>Boissons</option>
-          </select>
-        </div>
-      </div>
-
-      <button class="btn btn-primary" style="margin-top:14px" onclick="applySimulationSettings()">
-        Appliquer les réglages
+      <button class="btn btn-secondary" style="margin-top:15px;"
+        onclick="editCustomerProfile()">
+        Modifier mon profil
       </button>
-      <p class="muted small">Les réglages peuvent être changés pendant une journée en cours.</p>
     </div>
 
-    <div class="panel" style="margin-top:16px">
-      <h3>Dernières commandes simulées</h3>
-      <div id="simRecent">
-        ${renderSimulationRecent()}
+    <div class="card card-content" style="margin-top:20px;">
+      <span class="eyebrow">Programme fidélité</span>
+      <h3>Chaque euro compte !</h3>
+      <p class="muted" style="margin:8px 0;">
+        Pour chaque euro dépensé, tu gagnes un point après la finalisation de ta commande.
+      </p>
+
+      <div style="background:var(--surface-light);border-radius:12px;padding:16px;margin-top:15px;">
+        <strong style="color:var(--primary);">${points} points disponibles</strong>
+        <p class="muted" style="font-size:13px;margin-top:5px;">
+          100 points = une récompense de 5 € (à valider par le restaurant).
+        </p>
+      </div>
+    </div>
+
+    <div class="card card-content" style="margin-top:20px;">
+      <h3>Mon historique</h3>
+
+      ${customerOrders.length ? customerOrders.map(order => `
+        <div style="padding:14px 0;border-bottom:1px solid var(--border);">
+          <strong>${escapeHTML(order.number)}</strong>
+          <p class="muted">${new Date(order.createdAt).toLocaleDateString('fr-FR')}</p>
+          <p>${formatPrice(order.total)} · ${escapeHTML(getOrderStatusInfo(order.status).label)}</p>
+        </div>
+      `).join('') : `
+        <p class="muted" style="margin-top:12px;">
+          Tu n'as pas encore de commande.
+        </p>
+      `}
+    </div>
+
+    <button class="btn btn-danger" style="margin-top:20px;"
+      onclick="logoutCustomer()">
+      Effacer mon profil de cet appareil
+    </button>
+  `;
+}
+
+function saveCustomerProfile(event) {
+  event.preventDefault();
+
+  const name = document.getElementById('profile-name').value.trim();
+  const phone = document.getElementById('profile-phone').value.trim();
+  const email = document.getElementById('profile-email').value.trim();
+
+  if (!name) return;
+
+  customerProfile = { name, phone, email };
+  saveCustomer();
+
+  renderCustomerSpace();
+  alert('Profil enregistré sur cet appareil !');
+}
+
+function editCustomerProfile() {
+  const name = prompt('Modifier ton nom :', customerProfile.name);
+  if (name === null) return;
+
+  if (!name.trim()) {
+    alert('Le nom ne peut pas être vide.');
+    return;
+  }
+
+  const phone = prompt('Modifier ton téléphone :', customerProfile.phone);
+  if (phone === null) return;
+
+  const email = prompt('Modifier ton e-mail :', customerProfile.email);
+  if (email === null) return;
+
+  customerProfile = {
+    name: name.trim(),
+    phone: phone.trim(),
+    email: email.trim()
+  };
+
+  saveCustomer();
+  renderCustomerSpace();
+}
+
+function logoutCustomer() {
+  if (!confirm('Effacer ton profil de cet appareil ?')) return;
+
+  customerProfile = {
+    name: '',
+    phone: '',
+    email: ''
+  };
+
+  saveCustomer();
+  renderCustomerSpace();
+}
+
+/* Attribution des points à la finalisation */
+function awardCustomerPoints(order) {
+  if (!order || order.status !== 'done') return;
+
+  if (!order.pointsEarned) {
+    order.pointsEarned = Math.floor(order.total);
+    saveJSON('elf_orders', orders);
+  }
+}
+</script>
+
+<script>
+/* =====================================
+   PARTIE 8 — ADMINISTRATION
+===================================== */
+
+let currentRole = null;
+let adminTab = 'dashboard';
+
+const adminRoles = [
+  { id: 'director', name: 'Directeur', pin: '1234', emoji: '👔' },
+  { id: 'kitchen', name: 'Cuisine', pin: '2222', emoji: '👨‍🍳' },
+  { id: 'cashier', name: 'Caisse', pin: '3333', emoji: '💳' }
+];
+
+function renderAdmin() {
+  const container = document.getElementById('admin-content');
+  if (!container) return;
+
+  if (!currentRole) {
+    container.innerHTML = `
+      <div class="card card-content" style="max-width:500px;margin:auto;">
+        <div style="font-size:45px;text-align:center;">🔐</div>
+        <h2 style="text-align:center;margin-bottom:8px;">Connexion professionnelle</h2>
+        <p class="muted" style="text-align:center;margin-bottom:22px;">
+          Choisis ton espace et saisis ton code.
+        </p>
+
+        <form onsubmit="adminLogin(event)">
+          <div class="form-group">
+            <label>Profil</label>
+            <select id="admin-role">
+              ${adminRoles.map(role => `
+                <option value="${role.id}">
+                  ${role.emoji} ${role.name}
+                </option>
+              `).join('')}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Code d'accès</label>
+            <input id="admin-pin" type="password"
+              inputmode="numeric" maxlength="10"
+              required placeholder="Code PIN">
+          </div>
+
+          <button class="btn btn-primary" type="submit" style="width:100%;">
+            Se connecter
+          </button>
+        </form>
+
+        <p class="muted" style="font-size:11px;margin-top:18px;">
+          Version de démonstration : les codes sont inscrits dans le JavaScript
+          et ne sécurisent pas réellement l'administration.
+        </p>
+      </div>
+    `;
+    return;
+  }
+
+  const role = adminRoles.find(item => item.id === currentRole);
+
+  container.innerHTML = `
+    <div class="card card-content" style="margin-bottom:20px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+        <div>
+          <span class="eyebrow">Espace professionnel</span>
+          <h2>${role ? role.emoji + ' ' + role.name : 'Administration'}</h2>
+        </div>
+        <button class="btn btn-secondary btn-small" onclick="adminLogout()">
+          Déconnexion
+        </button>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:9px;overflow-x:auto;padding-bottom:12px;margin-bottom:20px;">
+      ${[
+        ['dashboard','📊 Tableau de bord'],
+        ['orders','📦 Commandes'],
+        ['products','🍔 Produits'],
+        ['stock','📋 Stocks'],
+        ['settings','⚙️ Paramètres']
+      ].map(([id,label]) => `
+        <button class="btn ${adminTab === id ? 'btn-primary' : 'btn-secondary'}"
+          style="white-space:nowrap;"
+          onclick="setAdminTab('${id}')">
+          ${label}
+        </button>
+      `).join('')}
+    </div>
+
+    <div id="admin-tab-content"></div>
+  `;
+
+  renderAdminTab();
+}
+
+function adminLogin(event) {
+  event.preventDefault();
+
+  const roleId = document.getElementById('admin-role').value;
+  const pin = document.getElementById('admin-pin').value;
+
+  const role = adminRoles.find(item =>
+    item.id === roleId && item.pin === pin
+  );
+
+  if (!role) {
+    alert('Code incorrect.');
+    return;
+  }
+
+  currentRole = role.id;
+  adminTab = 'dashboard';
+  renderAdmin();
+
+  alert('Bienvenue dans ton espace ' + role.name + ' !');
+}
+
+function adminLogout() {
+  currentRole = null;
+  adminTab = 'dashboard';
+  renderAdmin();
+}
+
+function setAdminTab(tab) {
+  const allowed = [
+    'dashboard', 'orders', 'products', 'stock', 'settings', 'kitchen'
+  ];
+
+  if (!allowed.includes(tab)) return;
+
+  if (currentRole === 'kitchen' && !['orders'].includes(tab)) {
+    alert('Cet espace est réservé à la gestion des commandes.');
+    return;
+  }
+
+  if (currentRole === 'cashier' && !['orders'].includes(tab)) {
+    alert('Cet espace est réservé à la gestion des commandes.');
+    return;
+  }
+
+  adminTab = tab;
+  renderAdmin();
+}
+
+function renderAdminTab() {
+  const container = document.getElementById('admin-tab-content');
+  if (!container) return;
+
+  if (currentRole === 'kitchen' || currentRole === 'cashier') {
+    renderAdminOrders();
+    return;
+  }
+
+  if (adminTab === 'dashboard') {
+    renderAdminDashboard();
+  } else if (adminTab === 'orders') {
+    renderAdminOrders();
+  } else if (adminTab === 'products') {
+    renderAdminProducts();
+  } else if (adminTab === 'stock') {
+    renderAdminStock();
+  } else if (adminTab === 'settings') {
+    renderAdminSettings();
+  }
+}
+
+function renderAdminDashboard() {
+  const container = document.getElementById('admin-tab-content');
+  if (!container) return;
+
+  const completed = orders.filter(order => order.status === 'done');
+  const revenue = completed.reduce((sum, order) => sum + order.total, 0);
+  const pending = orders.filter(order =>
+    ['received','accepted','preparing'].includes(order.status)
+  ).length;
+
+  container.innerHTML = `
+    <div class="grid">
+      <div class="card card-content">
+        <span class="eyebrow">Commandes</span>
+        <h2 style="font-size:30px;">${orders.length}</h2>
+        <p class="muted">Total enregistré</p>
+      </div>
+
+      <div class="card card-content">
+        <span class="eyebrow">En attente</span>
+        <h2 style="font-size:30px;">${pending}</h2>
+        <p class="muted">À traiter</p>
+      </div>
+
+      <div class="card card-content">
+        <span class="eyebrow">Chiffre d'affaires</span>
+        <h2 style="font-size:30px;color:var(--primary);">
+          ${formatPrice(revenue)}
+        </h2>
+        <p class="muted">Commandes terminées</p>
+      </div>
+
+      <div class="card card-content">
+        <span class="eyebrow">Produits</span>
+        <h2 style="font-size:30px;">${products.length}</h2>
+        <p class="muted">Références au catalogue</p>
+      </div>
+    </div>
+
+    <div class="card card-content" style="margin-top:20px;">
+      <h3>Dernières commandes</h3>
+      ${orders.slice(0,5).map(order => `
+        <div style="padding:12px 0;border-bottom:1px solid var(--border);">
+          <strong>${escapeHTML(order.number)}</strong>
+          <p class="muted">${escapeHTML(order.customerName)}</p>
+          <p>${formatPrice(order.total)} · ${escapeHTML(getOrderStatusInfo(order.status).label)}</p>
+        </div>
+      `).join('') || '<p class="muted">Aucune commande.</p>'}
+    </div>
+  `;
+}
+
+function renderAdminSettings() {
+  const container = document.getElementById('admin-tab-content');
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="card card-content">
+      <h3>Paramètres du restaurant</h3>
+      <p class="muted" style="margin-top:8px;">
+        EL FAST-FOOD V2 — stockage local activé.
+      </p>
+      <hr class="divider">
+      <p>Nombre de produits : ${products.length}</p>
+      <p>Nombre de commandes : ${orders.length}</p>
+      <p>Mode : indépendant sur chaque appareil.</p>
+    </div>
+  `;
+}
+</script>
+
+<script>
+/* =====================================
+   PARTIE 9 — PRODUITS ET STOCKS
+===================================== */
+
+function saveAdminProducts() {
+  localStorage.setItem('elf_products', JSON.stringify(products));
+}
+
+function renderAdminProducts() {
+  const container = document.getElementById('admin-tab-content');
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="card card-content">
+      <h3>➕ Ajouter un produit</h3>
+      <form onsubmit="addAdminProduct(event)">
+        <div class="form-group">
+          <label>Nom du produit</label>
+          <input id="new-product-name" required placeholder="Ex : Burger Jungle">
+        </div>
+        <div class="form-group">
+          <label>Catégorie</label>
+          <input id="new-product-category" required placeholder="Ex : Burgers">
+        </div>
+        <div class="form-group">
+          <label>Prix (€)</label>
+          <input id="new-product-price" type="number" min="0" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label>Stock initial</label>
+          <input id="new-product-stock" type="number" min="0" value="20" required>
+        </div>
+        <button class="btn btn-primary" type="submit">Ajouter le produit</button>
+      </form>
+    </div>
+
+    <div class="card card-content" style="margin-top:20px;">
+      <h3>🍔 Catalogue des produits (${products.length})</h3>
+      <div style="display:grid;gap:14px;margin-top:15px;">
+        ${products.map(product => `
+          <div style="padding:14px;border:1px solid var(--border);border-radius:14px;">
+            <strong>${escapeHTML(product.name)}</strong>
+            <p class="muted">${escapeHTML(product.category || 'Sans catégorie')}</p>
+
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
+              <label style="flex:1;min-width:100px;">
+                <span class="muted">Prix (€)</span>
+                <input type="number" min="0" step="0.01"
+                  id="product-price-${product.id}"
+                  value="${Number(product.price || 0)}">
+              </label>
+              <label style="flex:1;min-width:100px;">
+                <span class="muted">Stock</span>
+                <input type="number" min="0"
+                  id="product-stock-${product.id}"
+                  value="${Number(product.stock || 0)}">
+              </label>
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+              <button class="btn btn-primary btn-small"
+                onclick="saveAdminProduct('${product.id}')">
+                Enregistrer
+              </button>
+              <button class="btn btn-secondary btn-small"
+                onclick="deleteAdminProduct('${product.id}')">
+                Supprimer
+              </button>
+            </div>
+          </div>
+        `).join('')}
       </div>
     </div>
   `;
 }
 
-function simulationPeriod(){
-  const m = Math.floor(simulationState.elapsed*SIMULATION_SPEED/60);
-  const hour = 9 + Math.floor(m/60);
+function addAdminProduct(event) {
+  event.preventDefault();
 
-  if(hour < 11) return '☀️ Matinée calme';
-  if(hour < 14) return '🔥 Coup de feu du midi';
-  if(hour < 18) return '🍟 Après-midi';
-  if(hour < 21) return '🔥 Coup de feu du soir';
-  return '🌙 Fin de journée';
+  const name = document.getElementById('new-product-name').value.trim();
+  const category = document.getElementById('new-product-category').value.trim();
+  const price = Number(document.getElementById('new-product-price').value);
+  const stock = Number(document.getElementById('new-product-stock').value);
+
+  if (!name || !category || !Number.isFinite(price) || price < 0 ||
+      !Number.isInteger(stock) || stock < 0) {
+    alert('Vérifie les informations du produit.');
+    return;
+  }
+
+  products.push({
+    id: 'product_' + Date.now(),
+    name,
+    category,
+    price,
+    stock,
+    description: '',
+    available: true
+  });
+
+  saveAdminProducts();
+  renderAdminProducts();
+  alert('Produit ajouté !');
 }
 
-function renderSimulationRecent(){
-  const recent = simulationOrders().slice().reverse().slice(0,8);
+function saveAdminProduct(productId) {
+  const product = products.find(item => String(item.id) === String(productId));
+  if (!product) return;
 
-  if(!recent.length) return '<p class="muted">Aucune commande simulée pour le moment.</p>';
+  const price = Number(document.getElementById('product-price-' + productId).value);
+  const stock = Number(document.getElementById('product-stock-' + productId).value);
 
-  return recent.map(o=>`
-    <div class="admin-card">
-      <div class="admin-card-head">
-        <strong>${escapeHTML(o.name)}</strong>
-        <span class="status ${o.status}">${statusLabel(o.status)}</span>
+  if (!Number.isFinite(price) || price < 0 ||
+      !Number.isInteger(stock) || stock < 0) {
+    alert('Prix ou stock invalide.');
+    return;
+  }
+
+  product.price = price;
+  product.stock = stock;
+
+  saveAdminProducts();
+  renderAdminProducts();
+  alert('Produit mis à jour !');
+}
+
+function deleteAdminProduct(productId) {
+  const product = products.find(item => String(item.id) === String(productId));
+  if (!product) return;
+
+  if (!confirm('Supprimer définitivement ' + product.name + ' du catalogue ?')) {
+    return;
+  }
+
+  products = products.filter(item => String(item.id) !== String(productId));
+
+  saveAdminProducts();
+  renderAdminProducts();
+}
+
+function renderAdminStock() {
+  const container = document.getElementById('admin-tab-content');
+  if (!container) return;
+
+  const lowStock = products.filter(product => Number(product.stock || 0) <= 5);
+
+  container.innerHTML = `
+    <div class="grid">
+      <div class="card card-content">
+        <span class="eyebrow">Références</span>
+        <h2 style="font-size:30px;">${products.length}</h2>
       </div>
-      <p>${o.items.map(i=>i.quantity+' × '+escapeHTML(i.name)).join(', ')}</p>
-      <strong>${money(o.total)}</strong>
+      <div class="card card-content">
+        <span class="eyebrow">Stocks faibles</span>
+        <h2 style="font-size:30px;">${lowStock.length}</h2>
+      </div>
     </div>
-  `).join('');
+
+    <div class="card card-content" style="margin-top:20px;">
+      <h3>⚠️ Alertes de stock</h3>
+      ${lowStock.map(product => `
+        <p style="padding:10px 0;border-bottom:1px solid var(--border);">
+          <strong>${escapeHTML(product.name)}</strong>
+          <span style="float:right;">${Number(product.stock || 0)} restant(s)</span>
+        </p>
+      `).join('') || '<p class="muted">Aucune alerte. Tous les stocks sont suffisants !</p>'}
+    </div>
+
+    <div class="card card-content" style="margin-top:20px;">
+      <h3>📦 Inventaire complet</h3>
+      ${products.map(product => `
+        <div style="display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);">
+          <span>${escapeHTML(product.name)}</span>
+          <strong>${Number(product.stock || 0)} unités</strong>
+        </div>
+      `).join('') || '<p class="muted">Aucun produit enregistré.</p>'}
+    </div>
+  `;
 }
+</script>
 
-function applySimulationSettings(){
-  const traffic = document.getElementById('simTraffic');
-  const max = document.getElementById('simMax');
-  const category = document.getElementById('simCategory');
+<script>
+/* =====================================
+   PARTIE 10 — GESTION DES COMMANDES
+===================================== */
 
-  if(!traffic||!max||!category) return;
+function renderAdminOrders() {
+  const container = document.getElementById('admin-tab-content');
+  if (!container) return;
 
-  simulationState.traffic = traffic.value;
-  simulationState.maxClients = Math.max(1,Math.min(500,Number(max.value)||100));
-  simulationState.category = category.value;
+  const visibleOrders = currentRole === 'kitchen'
+    ? orders.filter(order => ['accepted','preparing','ready'].includes(order.status))
+    : orders;
 
-  renderAdmin();
-  toast('Réglages de simulation appliqués !');
-}
-
-function createSimulatedClient(){
-  const simulated = simulationOrders();
-
-  if(simulated.length >= simulationState.maxClients){
-    toast('Limite de clients atteinte.');
-    pauseSimulation();
-    return;
-  }
-
-  let available = products.filter(p =>
-    p.available !== false && Number(p.stock)>0
-  );
-
-  if(simulationState.category!=='all'){
-    available = available.filter(p=>p.category===simulationState.category);
-  }
-
-  if(!available.length){
-    toast('Aucun produit disponible dans cette catégorie.');
-    pauseSimulation();
-    return;
-  }
-
-  const names = [
-    'Lucas','Emma','Noah','Jade','Hugo','Lina',
-    'Louis','Chloé','Adam','Léa','Gabriel','Inès',
-    'Nathan','Manon','Arthur','Camille','Raphaël'
+  const statusOptions = [
+    ['received', 'Reçue'],
+    ['accepted', 'Acceptée'],
+    ['preparing', 'En préparation'],
+    ['ready', 'Prête'],
+    ['done', 'Terminée']
   ];
 
-  const firstName = names[Math.floor(Math.random()*names.length)];
-  const itemCount = Math.min(available.length,Math.floor(Math.random()*3)+1);
-  const shuffled = [...available].sort(()=>Math.random()-0.5);
-  const selected = [];
+  container.innerHTML = `
+    <div class="card card-content">
+      <h3>📦 Gestion des commandes</h3>
+      <p class="muted">${visibleOrders.length} commande(s) affichée(s)</p>
+    </div>
 
-  for(let i=0;i<itemCount;i++){
-    const p = shuffled[i];
-    const quantity = Math.min(Math.floor(Math.random()*2)+1,Number(p.stock)||1);
+    <div style="display:grid;gap:15px;margin-top:18px;">
+      ${visibleOrders.map(order => {
+        const status = orderStatuses.find(item => item.id === order.status);
+        const statusLabel = status ? status.label : order.status;
 
-    selected.push({
-      id:p.id,
-      name:p.name,
-      price:Number(p.price)||0,
-      quantity
-    });
+        return `
+          <div class="card card-content">
+            <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+              <div>
+                <span class="eyebrow">Commande</span>
+                <h3>${escapeHTML(order.number)}</h3>
+              </div>
+              <span class="badge">${escapeHTML(statusLabel)}</span>
+            </div>
 
-    p.stock = Math.max(0,Number(p.stock)-quantity);
-    if(p.stock===0) p.available=false;
-  }
+            <hr class="divider">
 
-  const total = selected.reduce((s,i)=>s+i.price*i.quantity,0);
-  const now = new Date().toISOString();
+            <p><strong>Client :</strong> ${escapeHTML(order.customerName || 'Non renseigné')}</p>
+            <p><strong>Téléphone :</strong> ${escapeHTML(order.phone || 'Non renseigné')}</p>
+            <p><strong>Type :</strong> ${escapeHTML(order.orderType || 'À préciser')}</p>
+            <p><strong>Total :</strong> ${formatPrice(order.total)}</p>
 
-  const order = {
-    id:'SIM-'+Date.now().toString().slice(-7),
-    name:firstName+' (client simulé)',
-    items:selected,
-    total,
-    status:'new',
-    createdAt:now,
-    mode:'Sur place',
-    note:'Commande issue de la simulation.',
-    simulated:true,
-    history:[{status:'new',at:now}]
-  };
+            <h4 style="margin-top:16px;">Articles</h4>
+            <div style="margin:8px 0;">
+              ${(order.items || []).map(item => `
+                <p style="padding:5px 0;">
+                  ${Number(item.quantity || 1)} × ${escapeHTML(item.name)}
+                </p>
+                ${(item.components || []).map(component => `
+                  <p class="muted" style="padding-left:18px;font-size:12px;">
+                    • ${escapeHTML(component.name)}
+                  </p>
+                `).join('')}
+              `).join('')}
+            </div>
 
-  orders.push(order);
-  simulationState.generated++;
-  simulationState.revenue+=total;
+            ${order.note ? `
+              <p style="margin-top:12px;">
+                <strong>Note :</strong> ${escapeHTML(order.note)}
+              </p>
+            ` : ''}
 
-  saveAll();
-  renderAdmin();
-  renderProducts();
-  toast('Nouveau client : '+firstName+' !');
+            <div class="form-group" style="margin-top:16px;">
+              <label>Modifier le statut</label>
+              <select id="order-status-${order.id}"
+                onchange="setOrderStatus('${order.id}',this.value)">
+                ${statusOptions.map(([id,label]) => `
+                  <option value="${id}" ${order.status === id ? 'selected' : ''}>
+                    ${label}
+                  </option>
+                `).join('')}
+              </select>
+            </div>
+          </div>
+        `;
+      }).join('') || `
+        <div class="card card-content">
+          <p class="muted">Aucune commande pour le moment.</p>
+        </div>
+      `}
+    </div>
+  `;
 }
 
-function simulationTick(){
-  if(!simulationState.running) return;
+function setOrderStatus(orderId, newStatus) {
+  const allowedStatuses = [
+    'received', 'accepted', 'preparing', 'ready', 'done'
+  ];
 
-  simulationState.elapsed++;
+  if (!allowedStatuses.includes(newStatus)) return;
 
-  if(simulationState.elapsed>=SIMULATION_DURATION){
-    simulationState.elapsed=SIMULATION_DURATION;
-    simulationState.running=false;
-    simulationState.finished=true;
-    clearInterval(simulationTimer);
-    simulationTimer=null;
-    renderAdmin();
-    toast('Journée simulée terminée !');
+  const order = orders.find(item => String(item.id) === String(orderId));
+  if (!order) return;
+
+  const oldStatus = order.status;
+  order.status = newStatus;
+
+  if (newStatus === 'done' && oldStatus !== 'done') {
+    awardCustomerPoints(order);
+  }
+
+  localStorage.setItem('elf_orders', JSON.stringify(orders));
+
+  renderAdminOrders();
+
+  if (typeof renderTracking === 'function') {
+    renderTracking();
+  }
+
+  if (typeof renderCustomerSpace === 'function') {
+    renderCustomerSpace();
+  }
+}
+</script>
+
+<script>
+/* =====================================
+   PARTIE 11 — ECRAN CUISINE
+===================================== */
+
+function renderKitchenScreen() {
+  const container = document.getElementById('admin-tab-content');
+  if (!container) return;
+
+  const kitchenOrders = orders.filter(order =>
+    ['accepted', 'preparing'].includes(order.status)
+  );
+
+  container.innerHTML = `
+    <div class="card card-content" style="margin-bottom:18px;">
+      <span class="eyebrow">EL FAST-FOOD</span>
+      <h2>👨‍🍳 Écran cuisine</h2>
+      <p class="muted">${kitchenOrders.length} commande(s) à préparer</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:15px;">
+      ${kitchenOrders.map(order => `
+        <div class="card card-content" style="border-top:4px solid var(--primary);">
+          <div style="display:flex;justify-content:space-between;gap:8px;">
+            <h3>${escapeHTML(order.number)}</h3>
+            <span class="badge">
+              ${order.status === 'accepted' ? 'À commencer' : 'En préparation'}
+            </span>
+          </div>
+
+          <p class="muted" style="margin-top:8px;">
+            ${escapeHTML(order.orderType || 'Commande')}
+          </p>
+
+          <hr class="divider">
+
+          <h4>Articles à préparer</h4>
+
+          ${(order.items || []).map(item => `
+            <div style="padding:12px 0;border-bottom:1px solid var(--border);">
+              <strong style="font-size:17px;">
+                ${Number(item.quantity || 1)} × ${escapeHTML(item.name)}
+              </strong>
+
+              ${(item.components || []).map(component => `
+                <p class="muted" style="padding-left:14px;margin-top:5px;">
+                  • ${escapeHTML(component.name)}
+                </p>
+              `).join('')}
+            </div>
+          `).join('')}
+
+          ${order.note ? `
+            <div style="margin-top:14px;padding:12px;background:var(--surface);border-radius:10px;">
+              <strong>Note client</strong>
+              <p>${escapeHTML(order.note)}</p>
+            </div>
+          ` : ''}
+
+          <div style="margin-top:16px;">
+            ${order.status === 'accepted' ? `
+              <button class="btn btn-primary" style="width:100%;"
+                onclick="setOrderStatus('${order.id}','preparing')">
+                ▶ Commencer la préparation
+              </button>
+            ` : `
+              <button class="btn btn-primary" style="width:100%;"
+                onclick="setOrderStatus('${order.id}','ready')">
+                ✓ Commande prête
+              </button>
+            `}
+          </div>
+        </div>
+      `).join('') || `
+        <div class="card card-content">
+          <h3>Tout est calme !</h3>
+          <p class="muted">Aucune commande à préparer pour le moment.</p>
+        </div>
+      `}
+    </div>
+
+    <div class="card card-content" style="margin-top:20px;">
+      <h3>✅ Commandes prêtes</h3>
+      ${orders.filter(order => order.status === 'ready').map(order => `
+        <p style="padding:9px 0;border-bottom:1px solid var(--border);">
+          <strong>${escapeHTML(order.number)}</strong>
+          — ${escapeHTML(order.customerName || 'Client')}
+        </p>
+      `).join('') || '<p class="muted">Aucune commande prête.</p>'}
+    </div>
+  `;
+}
+
+/* Ajout de l'écran cuisine dans la navigation */
+
+function openKitchenScreen() {
+  if (!currentRole) {
+    alert('Connecte-toi d’abord.');
     return;
   }
 
-  const minute = Math.floor(simulationState.elapsed*SIMULATION_SPEED/60);
-  const hour = 9+Math.floor(minute/60);
-
-  let interval = 22;
-
-  if(hour>=11&&hour<14) interval=9;
-  else if(hour>=18&&hour<21) interval=10;
-  else if(hour<11) interval=35;
-  else if(hour<18) interval=23;
-  else interval=30;
-
-  const factors = {low:1.8,normal:1,high:0.65,extreme:0.4};
-  interval *= factors[simulationState.traffic]||1;
-
-  simulationState.nextArrival--;
-
-  if(simulationState.nextArrival<=0){
-    const group = Math.random()<0.18 ? 2 : 1;
-
-    for(let i=0;i<group;i++){
-      if(simulationOrders().length<simulationState.maxClients){
-        createSimulatedClient();
-      }
-    }
-
-    simulationState.nextArrival=Math.max(3,Math.round(interval*(0.65+Math.random()*0.7)));
+  if (currentRole !== 'kitchen' && currentRole !== 'director') {
+    alert('Accès réservé à la cuisine et à la direction.');
+    return;
   }
 
-  updateSimulationDisplay();
-}
-
-function updateSimulationDisplay(){
-  const clock=document.getElementById('simClock');
-  const progress=document.getElementById('simProgress');
-  const progressText=document.getElementById('simProgressText');
-  const period=document.getElementById('simPeriod');
-  const status=document.getElementById('simStatus');
-  const clients=document.getElementById('simClients');
-  const revenue=document.getElementById('simRevenue');
-  const pending=document.getElementById('simPending');
-
-  const simulated=simulationOrders();
-  const percent=simulationState.elapsed/SIMULATION_DURATION*100;
-
-  if(clock) clock.textContent=simulationClock();
-  if(progress) progress.style.width=percent+'%';
-  if(progressText) progressText.textContent=Math.floor(percent)+' %';
-  if(period) period.textContent=simulationPeriod();
-  if(status) status.textContent=simulationState.running?'Simulation en cours':simulationState.paused?'Simulation en pause':'Prêt';
-  if(clients) clients.textContent=simulated.length;
-  if(revenue) revenue.textContent=money(simulated.reduce((s,o)=>s+o.total,0));
-  if(pending) pending.textContent=simulated.filter(o=>o.status==='new').length;
-}
-
-function startSimulation(){
-  if(simulationState.running) return;
-
-  if(simulationState.finished){
-    simulationState.elapsed=0;
-    simulationState.finished=false;
-    simulationState.generated=0;
-    simulationState.revenue=0;
-    simulationState.nextArrival=10;
-  }
-
-  simulationState.running=true;
-  simulationState.paused=false;
-
-  if(simulationTimer) clearInterval(simulationTimer);
-  simulationTimer=setInterval(simulationTick,1000);
-
+  adminTab = 'kitchen';
   renderAdmin();
-  toast('La journée EL Fast-Food commence !');
 }
 
-function pauseSimulation(){
-  if(simulationTimer){
-    clearInterval(simulationTimer);
-    simulationTimer=null;
+/* Extension de l'affichage administratif */
+
+const previousRenderAdminTab11 = renderAdminTab;
+
+renderAdminTab = function() {
+  if (adminTab === 'kitchen') {
+    renderKitchenScreen();
+    return;
   }
 
-  simulationState.running=false;
-  simulationState.paused=true;
-
-  renderAdmin();
-  toast('Simulation mise en pause.');
-}
-
-
-function stopSimulation(){
-  if(simulationTimer){
-    clearInterval(simulationTimer);
-    simulationTimer=null;
-  }
-
-  simulationState.running=false;
-  simulationState.paused=false;
-  simulationState.finished=true;
-
-  renderAdmin();
-  toast('Simulation arrêtée.');
-}
-
-function init(){
-  renderMenus();
-  renderMenuBuilder();
-  renderProducts();
-
-  const home=document.getElementById('homeProducts');
-
-  if(home){
-    home.innerHTML=products
-      .filter(p=>p.available&&p.stock>0)
-      .slice(0,3)
-      .map(productCard)
-      .join('');
-  }
-
-  updateCartCount();
-  renderCart();
-}
-
-init();
-
+  previousRenderAdminTab11();
+};
 </script>
+
+<script>
+/* =====================================
+   PARTIE 12 — CAISSE ET PAIEMENTS
+===================================== */
+
+function saveOrdersPart12() {
+  localStorage.setItem('elf_orders', JSON.stringify(orders));
+}
+
+function renderCashRegister() {
+  const container = document.getElementById('admin-tab-content');
+  if (!container) return;
+
+  const unpaidOrders = orders.filter(order => !order.paymentStatus || order.paymentStatus !== 'paid');
+  const paidOrders = orders.filter(order => order.paymentStatus === 'paid');
+
+  const totalPaid = paidOrders.reduce((sum, order) => sum + Number(order.total || 0), 0);
+
+  container.innerHTML = `
+    <div class="grid">
+      <div class="card card-content">
+        <span class="eyebrow">À encaisser</span>
+        <h2 style="font-size:28px;">${unpaidOrders.length}</h2>
+      </div>
+      <div class="card card-content">
+        <span class="eyebrow">Déjà encaissé</span>
+        <h2 style="font-size:28px;">${formatPrice(totalPaid)}</h2>
+      </div>
+    </div>
+
+    <div class="card card-content" style="margin-top:20px;">
+      <h3>💳 Commandes à encaisser</h3>
+
+      <div style="display:grid;gap:14px;margin-top:15px;">
+        ${unpaidOrders.map(order => `
+          <div style="padding:15px;border:1px solid var(--border);border-radius:14px;">
+            <h3>${escapeHTML(order.number)}</h3>
+            <p class="muted">${escapeHTML(order.customerName || 'Client')}</p>
+            <h2 style="margin:12px 0;">${formatPrice(order.total)}</h2>
+
+            <div class="form-group">
+              <label>Moyen de paiement</label>
+              <select id="payment-method-${order.id}">
+                <option value="card">Carte bancaire</option>
+                <option value="cash">Espèces</option>
+                <option value="other">Autre</option>
+              </select>
+            </div>
+
+            <button class="btn btn-primary" style="width:100%;"
+              onclick="markOrderPaid('${order.id}')">
+              ✓ Enregistrer le paiement
+            </button>
+          </div>
+        `).join('') || '<p class="muted">Toutes les commandes sont encaissées.</p>'}
+      </div>
+    </div>
+
+    <div class="card card-content" style="margin-top:20px;">
+      <h3>Historique des paiements</h3>
+      ${paidOrders.map(order => `
+        <div style="padding:12px 0;border-bottom:1px solid var(--border);">
+          <strong>${escapeHTML(order.number)}</strong>
+          <span style="float:right;">${formatPrice(order.total)}</span>
+          <p class="muted">
+            ${order.paymentMethod === 'card' ? 'Carte bancaire' :
+              order.paymentMethod === 'cash' ? 'Espèces' : 'Autre'}
+          </p>
+        </div>
+      `).join('') || '<p class="muted">Aucun paiement enregistré.</p>'}
+    </div>
+  `;
+}
+
+function markOrderPaid(orderId) {
+  if (currentRole !== 'cashier' && currentRole !== 'director') {
+    alert('Accès réservé à la caisse et à la direction.');
+    return;
+  }
+
+  const order = orders.find(item => String(item.id) === String(orderId));
+  if (!order) return;
+
+  if (order.paymentStatus === 'paid') {
+    alert('Cette commande est déjà encaissée.');
+    return;
+  }
+
+  const methodInput = document.getElementById('payment-method-' + orderId);
+  if (!methodInput) return;
+
+  order.paymentStatus = 'paid';
+  order.paymentMethod = methodInput.value;
+  order.paidAt = new Date().toISOString();
+
+  saveOrdersPart12();
+  renderCashRegister();
+
+  alert('Paiement enregistré !');
+}
+
+/* Ajout de l'onglet caisse */
+
+function openCashRegister() {
+  if (!currentRole) {
+    alert('Connecte-toi d’abord.');
+    return;
+  }
+
+  if (currentRole !== 'cashier' && currentRole !== 'director') {
+    alert('Accès réservé à la caisse et à la direction.');
+    return;
+  }
+
+  adminTab = 'cash';
+  renderAdmin();
+}
+
+const previousRenderAdminTab12 = renderAdminTab;
+
+renderAdminTab = function() {
+  if (adminTab === 'cash') {
+    renderCashRegister();
+    return;
+  }
+
+  previousRenderAdminTab12();
+};
+</script>
+
 </body>
 </html>
