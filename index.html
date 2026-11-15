@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -55,306 +54,72 @@
 <script>
 'use strict';
 const STORE={cart:'elff_cart_v3',orders:'elff_orders_v3',products:'elff_products_v3',reviews:'elff_reviews_v1',team:'elff_team_v1',promos:'elff_promos_v1'};
-function loadJSON(key,fallback){
-  try{
-    const raw=localStorage.getItem(key);
-    return raw?JSON.parse(raw):JSON.parse(JSON.stringify(fallback));
-  }catch(e){
-    return JSON.parse(JSON.stringify(fallback));
-  }
-}
-
-const PROMOS=loadJSON(STORE.promos,{JUNGLE10:{type:'percent',value:10,label:'-10 %',active},WELCOME5:{type:'fixed',value:5,label:'-5 €',active}});
+const PROMOS=loadJSON(STORE.promos,{JUNGLE10:{type:'percent',value:10,label:'-10 %',active:true},WELCOME5:{type:'fixed',value:5,label:'-5 €',active:true}});
 let activePromo=null;let customerPseudo='';let reviews=loadJSON(STORE.reviews,[]);let teamMembers=loadJSON(STORE.team,['Directeur','Responsable caisse','Responsable cuisine','Équipier polyvalent']);
 const baseProducts=[
-{id:'classic',name:'Le Classique',category:'Burgers',price:12.99,desc:'Steak haché, cheddar, salade et sauce maison.',emoji:'🍔',image:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=80',custom,available},
-{id:'chicken',name:'Le Chicken',category:'Burgers',price:12.99,desc:'Poulet croustillant, salade fraîche et sauce crémeuse.',emoji:'🍗',image:'https://images.unsplash.com/photo-1606755962773-d324e0a13086?auto=format&fit=crop&w=900&q=80',custom,available},
-{id:'pizza',name:'Pizza',category:'Plats',price:11.99,desc:'Une pizza généreuse, tomate et fromage.',emoji:'🍕',image:'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=900&q=80',custom,available},
-{id:'sandwich',name:'Sandwich',category:'Plats',price:9.99,desc:'Un sandwich gourmand préparé à la commande.',emoji:'🥪',image:'https://images.unsplash.com/photo-1553902000-e036a7a58b3a?auto=format&fit=crop&w=900&q=80',custom,available},
-{id:'fajitas',name:'Fajitas',category:'Plats',price:11.99,desc:'Poulet épicé, légumes et galette moelleuse.',emoji:'🌯',image:'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=900&q=80',custom,available},
-{id:'fries',name:'Frites',category:'Accompagnements',price:2,desc:'Une portion de frites dorées.',emoji:'🍟',image:'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=900&q=80',custom,available},
-{id:'nuggets',name:'Croquettes natures',category:'Accompagnements',price:2,desc:'De petites bouchées croustillantes.',emoji:'🍗',image:'https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=900&q=80',custom,available},
-{id:'cheese-bites',name:'Croquettes au fromage',category:'Accompagnements',price:2,desc:'Des bouchées fondantes au fromage.',emoji:'🧀',image:'https://images.unsplash.com/photo-1531749668029-2db88e4276c7?auto=format&fit=crop&w=900&q=80',custom,available},
-{id:'icecream',name:'Glace',category:'Desserts',price:6,desc:'Une pause fraîche et sucrée.',emoji:'🍦',image:'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=900&q=80',custom,available},
-{id:'sundae',name:'Sunday',category:'Desserts',price:6,desc:'Glace et nappage gourmand.',emoji:'🍨',image:'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?auto=format&fit=crop&w=900&q=80',custom,available},
-{id:'cake',name:'Gâteau',category:'Desserts',price:6,desc:'Une part de gâteau pour finir en douceur.',emoji:'🍰',image:'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80',custom,available},
-{id:'croissant',name:'Croissant',category:'Desserts',price:6,desc:'Un croissant doré et croustillant.',emoji:'🥐',image:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=900&q=80',custom,available},
-{id:'coca',name:'Coca-Cola',category:'Boissons',price:3,desc:'Boisson fraîche.',emoji:'🥤',image:'https://images.unsplash.com/photo-1554866585-cd94860890b7?auto=format&fit=crop&w=900&q=80',custom,available},
-{id:'icetea',name:'Ice Tea',category:'Boissons',price:3,desc:'Thé glacé.',emoji:'🧋',image:'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=900&q=80',custom,available},
-{id:'schweppes',name:'Schweppes',category:'Boissons',price:3,desc:'Boisson pétillante.',emoji:'🥤',image:'https://images.unsplash.com/photo-1581006852262-e4307cf6283a?auto=format&fit=crop&w=900&q=80',custom,available},
-{id:'7up',name:'7UP',category:'Boissons',price:3,desc:'Boisson fraîche et pétillante.',emoji:'🥤',image:'https://images.unsplash.com/photo-1629203851122-3726ecdf080e?auto=format&fit=crop&w=900&q=80',custom,available},
-{id:'juice',name:'Jus de fruit',category:'Boissons',price:3,desc:'Un jus fruité.',emoji:'🧃',image:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=900&q=80',custom,available},
-{id:'coffee',name:'Café',category:'Boissons',price:3,desc:'Un café.',emoji:'☕',image:'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=900&q=80',custom,available}
-];  let products=loadJSON(STORE.products,baseProducts).map(p=>({...p,stock.isFinite(p.stock)?p.stock:40}));let cart=loadJSON(STORE.cart,[]);let orders=loadJSON(STORE.orders,[]).map(o=>({...o,history.isArray(o.history)?o.history:[{status.status||'new',at.createdAt||new Date().toISOString()}],etaMinutes.isFinite(o.etaMinutes)?o.etaMinutes:15}));let activeCategory='Tout';let currentRole=null;let adminTab='dashboard';let editingProductId=null;let modalProductId=null;let cashierDraftItems=[];let simulationTimer=null;let simulationCount=0;
-
-const roles={
-director:{
-label:'Directeur',
-pin:'1234',
-tabs:['dashboard','orders','simulation','products','stock','promos','team'],
-permissions:['Voir les statistiques','Gérer les commandes','Modifier la carte','Consulter les rôles']
-},
-cashier:{
-label:'Caisse',
-pin:'2222',
-tabs:['cashier','orders'],
-permissions:['Prendre des commandes','Consulter les commandes','Accepter ou refuser une commande']
-},
-kitchen:{
-label:'Cuisine',
-pin:'3333',
-tabs:['orders'],
-permissions:['Voir les commandes acceptées','Préparer et terminer les commandes']
-}
-};
-
+{id:'classic',name:'Le Classique',category:'Burgers',price:12.99,desc:'Steak haché, cheddar, salade et sauce maison.',emoji:'🍔',image:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=80',custom:true,available:true},
+{id:'chicken',name:'Le Chicken',category:'Burgers',price:12.99,desc:'Poulet croustillant, salade fraîche et sauce crémeuse.',emoji:'🍗',image:'https://images.unsplash.com/photo-1606755962773-d324e0a13086?auto=format&fit=crop&w=900&q=80',custom:true,available:true},
+{id:'pizza',name:'Pizza',category:'Plats',price:11.99,desc:'Une pizza généreuse, tomate et fromage.',emoji:'🍕',image:'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
+{id:'sandwich',name:'Sandwich',category:'Plats',price:9.99,desc:'Un sandwich gourmand préparé à la commande.',emoji:'🥪',image:'https://images.unsplash.com/photo-1553902000-e036a7a58b3a?auto=format&fit=crop&w=900&q=80',custom:true,available:true},
+{id:'fajitas',name:'Fajitas',category:'Plats',price:11.99,desc:'Poulet épicé, légumes et galette moelleuse.',emoji:'🌯',image:'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=900&q=80',custom:true,available:true},
+{id:'fries',name:'Frites',category:'Accompagnements',price:2,desc:'Une portion de frites dorées.',emoji:'🍟',image:'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
+{id:'nuggets',name:'Croquettes natures',category:'Accompagnements',price:2,desc:'De petites bouchées croustillantes.',emoji:'🍗',image:'https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
+{id:'cheese-bites',name:'Croquettes au fromage',category:'Accompagnements',price:2,desc:'Des bouchées fondantes au fromage.',emoji:'🧀',image:'https://images.unsplash.com/photo-1531749668029-2db88e4276c7?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
+{id:'icecream',name:'Glace',category:'Desserts',price:6,desc:'Une pause fraîche et sucrée.',emoji:'🍦',image:'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
+{id:'sundae',name:'Sunday',category:'Desserts',price:6,desc:'Glace et nappage gourmand.',emoji:'🍨',image:'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
+{id:'cake',name:'Gâteau',category:'Desserts',price:6,desc:'Une part de gâteau pour finir en douceur.',emoji:'🍰',image:'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
+{id:'croissant',name:'Croissant',category:'Desserts',price:6,desc:'Un croissant doré et croustillant.',emoji:'🥐',image:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
+{id:'coca',name:'Coca-Cola',category:'Boissons',price:3,desc:'Boisson fraîche.',emoji:'🥤',image:'https://images.unsplash.com/photo-1554866585-cd94860890b7?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
+{id:'icetea',name:'Ice Tea',category:'Boissons',price:3,desc:'Thé glacé.',emoji:'🧋',image:'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
+{id:'schweppes',name:'Schweppes',category:'Boissons',price:3,desc:'Boisson pétillante.',emoji:'🥤',image:'https://images.unsplash.com/photo-1581006852262-e4307cf6283a?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
+{id:'7up',name:'7UP',category:'Boissons',price:3,desc:'Boisson fraîche et pétillante.',emoji:'🥤',image:'https://images.unsplash.com/photo-1629203851122-3726ecdf080e?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
+{id:'juice',name:'Jus de fruit',category:'Boissons',price:3,desc:'Un jus fruité.',emoji:'🧃',image:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=900&q=80',custom:false,available:true},
+{id:'coffee',name:'Café',category:'Boissons',price:3,desc:'Un café.',emoji:'☕',image:'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=900&q=80',custom:false,available:true}
+];  let products=loadJSON(STORE.products,baseProducts).map(p=>({...p,stock:Number.isFinite(p.stock)?p.stock:40}));let cart=loadJSON(STORE.cart,[]);let orders=loadJSON(STORE.orders,[]).map(o=>({...o,history:Array.isArray(o.history)?o.history:[{status:o.status||'new',at:o.createdAt||new Date().toISOString()}],etaMinutes:Number.isFinite(o.etaMinutes)?o.etaMinutes:15}));let activeCategory='Tout';let currentRole=null;let adminTab='dashboard';let editingProductId=null;let modalProductId=null;let cashierDraftItems=[];let simulationTimer=null;let simulationCount=0;
+const roles={director:{label:'Directeur',pin:'1234',tabs:['dashboard','orders','simulation','products','stock','promos','team'],permissions:['Voir les statistiques','Gérer les commandes','Modifier la carte','Consulter les rôles']},cashier:{label:'Caisse',pin:'2222',tabs:['orders'],permissions:['Consulter les commandes','Accepter ou refuser une commande']},kitchen:{label:'Cuisine',pin:'3333',tabs:['orders'],permissions:['Voir les commandes acceptées','Préparer et terminer les commandes']}};
+function loadJSON(key,fallback){try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):structuredClone(fallback)}catch(e){return structuredClone(fallback)}}
 function saveAll(){localStorage.setItem(STORE.cart,JSON.stringify(cart));localStorage.setItem(STORE.orders,JSON.stringify(orders));localStorage.setItem(STORE.products,JSON.stringify(products));localStorage.setItem(STORE.reviews,JSON.stringify(reviews));localStorage.setItem(STORE.team,JSON.stringify(teamMembers));}
 function money(n){return Number(n||0).toLocaleString('fr-FR',{style:'currency',currency:'EUR'})}
 function makeOrderId(){let id;do{id='EL-'+String(Date.now()).slice(-6)+'-'+Math.random().toString(36).slice(2,5).toUpperCase()}while(orders.some(o=>o.id===id));return id}
-function escapeHTML(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&','<':'<','>':'>','"':'"',"'":'''}[c]))}
+function escapeHTML(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function toast(message){const el=document.getElementById('toast');el.textContent=message;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),2300)}
 function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+id));document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));if(id==='panier')renderCart();if(id==='admin')renderAdmin();if(id==='menus')renderMenuBuilder();if(id==='espace'&&customerPseudo){document.getElementById('profileName').value=customerPseudo;loadCustomerSpace()}window.scrollTo({top:0,behavior:'smooth'})}
 function productById(id){return products.find(p=>p.id===id)}
-function productCard(p){return <article class="product"><div class="product-photo"><span class="fallback">${escapeHTML(p.emoji||'🍽️')}</span><img src="${escapeHTML(p.image||'')}" alt="${escapeHTML(p.name)}" loading="lazy" onerror="this.style.display='none'"></div><div class="product-body"><span class="tag">${escapeHTML(p.category)}</span><div class="product-top"><h3>${escapeHTML(p.name)}</h3><span class="price">${money(p.price)}</span></div><p>${escapeHTML(p.desc)}</p><button class="btn btn-primary" onclick="${p.custom?'openProductModal(\''+p.id+'\')':'addSimpleProduct(\''+p.id+'\')'}">${p.custom?'Personnaliser':'Ajouter au panier'}</button></div></article>}
-function renderProducts(){const q=(document.getElementById('searchInput')?.value||'').trim().toLowerCase();let list=products.filter(p=>p.available&&p.stock>0&&(activeCategory==='Tout'||p.category===activeCategory)&&(${p.name} ${p.desc} ${p.category}).toLowerCase().includes(q));const sort=document.getElementById('sortSelect')?.value||'default';if(sort==='low')list.sort((a,b)=>a.price-b.price);if(sort==='high')list.sort((a,b)=>b.price-a.price);if(sort==='az')list.sort((a,b)=>a.name.localeCompare(b.name,'fr'));document.getElementById('productGrid').innerHTML=list.length?list.map(productCard).join(''):'<div class="empty" style="grid-column:1/-1">Aucun produit ne correspond à ta recherche.</div>';const categories=['Tout',...new Set(products.map(p=>p.category))];document.getElementById('categoryFilters').innerHTML=categories.map(c=><button class="chip ${activeCategory===c?'active':''}" onclick="setCategory('${escapeHTML(c)}')">${escapeHTML(c)}</button>).join('')}
+function productCard(p){return `<article class="product"><div class="product-photo"><span class="fallback">${escapeHTML(p.emoji||'🍽️')}</span><img src="${escapeHTML(p.image||'')}" alt="${escapeHTML(p.name)}" loading="lazy" onerror="this.style.display='none'"></div><div class="product-body"><span class="tag">${escapeHTML(p.category)}</span><div class="product-top"><h3>${escapeHTML(p.name)}</h3><span class="price">${money(p.price)}</span></div><p>${escapeHTML(p.desc)}</p><button class="btn btn-primary" onclick="${p.custom?'openProductModal(\''+p.id+'\')':'addSimpleProduct(\''+p.id+'\')'}">${p.custom?'Personnaliser':'Ajouter au panier'}</button></div></article>`}
+function renderProducts(){const q=(document.getElementById('searchInput')?.value||'').trim().toLowerCase();let list=products.filter(p=>p.available&&p.stock>0&&(activeCategory==='Tout'||p.category===activeCategory)&&(`${p.name} ${p.desc} ${p.category}`).toLowerCase().includes(q));const sort=document.getElementById('sortSelect')?.value||'default';if(sort==='low')list.sort((a,b)=>a.price-b.price);if(sort==='high')list.sort((a,b)=>b.price-a.price);if(sort==='az')list.sort((a,b)=>a.name.localeCompare(b.name,'fr'));document.getElementById('productGrid').innerHTML=list.length?list.map(productCard).join(''):'<div class="empty" style="grid-column:1/-1">Aucun produit ne correspond à ta recherche.</div>';const categories=['Tout',...new Set(products.map(p=>p.category))];document.getElementById('categoryFilters').innerHTML=categories.map(c=>`<button class="chip ${activeCategory===c?'active':''}" onclick="setCategory('${escapeHTML(c)}')">${escapeHTML(c)}</button>`).join('')}
 function setCategory(c){activeCategory=c;renderProducts()}
-function addSimpleProduct(id){const p=productById(id);if(!p||!p.available)return toast('Ce produit est indisponible.');addToCart({key,id.id,name.name,price(p.price),details:'',quantity:1});}
-function openProductModal(id){const p=productById(id);if(!p||!p.available)return;modalProductId=id;document.getElementById('modalProductName').textContent='Personnaliser · '+p.name;document.getElementById('modalProductContent').innerHTML=<p class="muted">${escapeHTML(p.desc)}</p><div class="form-group"><label for="sauce">Sauce</label><select id="sauce" class="field"><option>Maison</option><option>Barbecue</option><option>Mayonnaise</option><option>Ketchup</option><option>Sans sauce</option></select></div><p style="font-weight:850;margin-bottom:7px">À retirer</p><div class="check-list">${['Salade','Tomate','Oignon','Fromage'].map(x=><label><input type="checkbox" value="${x}" class="remove-item"> ${x}</label>).join('')}</div><p style="font-weight:850;margin-bottom:7px">Suppléments</p><div class="check-list"><label><input type="checkbox" value="Fromage supplémentaire" data-extra="1.5" class="extra-item"> Fromage (+1,50 €)</label><label><input type="checkbox" value="Steak supplémentaire" data-extra="2" class="extra-item"> Steak (+2 €)</label><label><input type="checkbox" value="Bacon" data-extra="1" class="extra-item"> Bacon (+1 €)</label></div><div class="form-group"><label for="productNote">Note particulière (facultatif)</label><textarea id="productNote" class="field" placeholder="Ex. bien grillé…"></textarea></div><p id="modalPrice" class="price" style="font-size:1.2rem;margin-top:14px">${money(p.price)}</p><div class="modal-actions"><button class="btn btn-light" onclick="closeProductModal()">Annuler</button><button class="btn btn-primary" onclick="confirmCustomization()">Ajouter au panier</button></div>;document.getElementById('productModal').classList.remove('hidden');document.querySelectorAll('.extra-item').forEach(el=>el.addEventListener('change',updateModalPrice))}
-function updateModalPrice(){const p=productById(modalProductId);const extras=[...document.querySelectorAll('.extra-item')].reduce((s,e)=>s+Number(e.dataset.extra),0);document.getElementById('modalPrice').textContent=money(Number(p.price)+extras)}
+function addSimpleProduct(id){const p=productById(id);if(!p||!p.available)return toast('Ce produit est indisponible.');addToCart({key:id,id:p.id,name:p.name,price:Number(p.price),details:'',quantity:1});}
+function openProductModal(id){const p=productById(id);if(!p||!p.available)return;modalProductId=id;document.getElementById('modalProductName').textContent='Personnaliser · '+p.name;document.getElementById('modalProductContent').innerHTML=`<p class="muted">${escapeHTML(p.desc)}</p><div class="form-group"><label for="sauce">Sauce</label><select id="sauce" class="field"><option>Maison</option><option>Barbecue</option><option>Mayonnaise</option><option>Ketchup</option><option>Sans sauce</option></select></div><p style="font-weight:850;margin-bottom:7px">À retirer</p><div class="check-list">${['Salade','Tomate','Oignon','Fromage'].map(x=>`<label><input type="checkbox" value="${x}" class="remove-item"> ${x}</label>`).join('')}</div><p style="font-weight:850;margin-bottom:7px">Suppléments</p><div class="check-list"><label><input type="checkbox" value="Fromage supplémentaire" data-extra="1.5" class="extra-item"> Fromage (+1,50 €)</label><label><input type="checkbox" value="Steak supplémentaire" data-extra="2" class="extra-item"> Steak (+2 €)</label><label><input type="checkbox" value="Bacon" data-extra="1" class="extra-item"> Bacon (+1 €)</label></div><div class="form-group"><label for="productNote">Note particulière (facultatif)</label><textarea id="productNote" class="field" placeholder="Ex. bien grillé…"></textarea></div><p id="modalPrice" class="price" style="font-size:1.2rem;margin-top:14px">${money(p.price)}</p><div class="modal-actions"><button class="btn btn-light" onclick="closeProductModal()">Annuler</button><button class="btn btn-primary" onclick="confirmCustomization()">Ajouter au panier</button></div>`;document.getElementById('productModal').classList.remove('hidden');document.querySelectorAll('.extra-item').forEach(el=>el.addEventListener('change',updateModalPrice))}
+function updateModalPrice(){const p=productById(modalProductId);const extras=[...document.querySelectorAll('.extra-item:checked')].reduce((s,e)=>s+Number(e.dataset.extra),0);document.getElementById('modalPrice').textContent=money(Number(p.price)+extras)}
 function closeProductModal(){document.getElementById('productModal').classList.add('hidden');modalProductId=null}
-function confirmCustomization(){const p=productById(modalProductId);if(!p)return;const removed=[...document.querySelectorAll('.remove-item')].map(e=>e.value);const extras=[...document.querySelectorAll('.extra-item')];const extraNames=extras.map(e=>e.value);const price=Number(p.price)+extras.reduce((s,e)=>s+Number(e.dataset.extra),0);const sauce=document.getElementById('sauce').value;const note=document.getElementById('productNote').value.trim();const details=[Sauce : ${sauce},removed.length?'Sans : '+removed.join(', '):'',extraNames.length?'Suppléments : '+extraNames.join(', '):'',note?'Note : '+note:''].filter(Boolean).join(' · ');const key=p.id+'-'+Date.now();addToCart({key,id.id,name.name,price,details,quantity:1});closeProductModal()}
+function confirmCustomization(){const p=productById(modalProductId);if(!p)return;const removed=[...document.querySelectorAll('.remove-item:checked')].map(e=>e.value);const extras=[...document.querySelectorAll('.extra-item:checked')];const extraNames=extras.map(e=>e.value);const price=Number(p.price)+extras.reduce((s,e)=>s+Number(e.dataset.extra),0);const sauce=document.getElementById('sauce').value;const note=document.getElementById('productNote').value.trim();const details=[`Sauce : ${sauce}`,removed.length?'Sans : '+removed.join(', '):'',extraNames.length?'Suppléments : '+extraNames.join(', '):'',note?'Note : '+note:''].filter(Boolean).join(' · ');const key=p.id+'-'+Date.now();addToCart({key,id:p.id,name:p.name,price,details,quantity:1});closeProductModal()}
 function addToCart(item){const p=productById(item.id);if(p&&p.stock<=0)return toast('Ce produit est momentanément en rupture.');cart.push(item);saveAll();updateCartCount();toast(item.name+' ajouté au panier !')}
 function updateCartCount(){document.getElementById('cartCount').textContent=cart.reduce((s,i)=>s+i.quantity,0)}
-function cartTotal(){return cart.reduce((s,i)=>s+i.pricei.quantity,0)}
-function discountAmount(){if(!activePromo)return 0;const sub=cartTotal();return activePromo.type==='percent'?Math.round(subactivePromo.value)/100.min(sub,activePromo.value)}
-function renderCart(){const root=document.getElementById('cartContent');if(!cart.length){root.innerHTML='<div class="panel empty"><div class="emoji">🛍️</div><h2>Ton panier est vide</h2><p>Il est temps de choisir quelque chose de bon !</p><button class="btn btn-primary" onclick="showPage(\'carte\')">Découvrir la carte</button></div>';return}root.innerHTML=<div class="two-col"><div class="panel"><h2 style="margin-top:0">Tes produits</h2>${cart.map((i,index)=><div class="cart-row"><div><h3>${escapeHTML(i.name)}</h3>${i.details?<p>${escapeHTML(i.details)}</p>:''}<p>${money(i.price)} l'unité</p><div class="qty"><button onclick="changeQty(${index},-1)">−</button><strong>${i.quantity}</strong><button onclick="changeQty(${index},1)">+</button><button class="btn btn-danger btn-small" onclick="removeCartItem(${index})">Retirer</button></div></div><strong>${money(i.pricei.quantity)}</strong></div>).join('')}</div><div class="panel"><h2 style="margin-top:0">Récapitulatif</h2><div class="summary-line"><span>Sous-total</span><strong>${money(cartTotal())}</strong></div><div class="form-group"><label for="promoCode">Code promotionnel</label><div style="display:flex;gap:8px"><input id="promoCode" class="field" placeholder="Ex. JUNGLE10"><button class="btn btn-dark" onclick="applyPromo()">Appliquer</button></div></div>${activePromo?<p class="small" style="color:var(--green)">Code ${escapeHTML(activePromo.code)} appliqué : -${money(discountAmount())}</p>:''}<div class="summary-line"><span>Réduction</span><strong>-${money(discountAmount())}</strong></div><div class="summary-line summary-total"><span>Total</span><strong>${money(Math.max(0,cartTotal()-discountAmount()))}</strong></div><button class="btn btn-primary" style="width:100%;margin-top:15px" onclick="showCheckout()">Valider ma commande →</button><p class="muted small">Démonstration : aucun paiement réel ne sera effectué.</p></div></div>}
+function cartTotal(){return cart.reduce((s,i)=>s+i.price*i.quantity,0)}
+function discountAmount(){if(!activePromo)return 0;const sub=cartTotal();return activePromo.type==='percent'?Math.round(sub*activePromo.value)/100:Math.min(sub,activePromo.value)}function renderCart(){const root=document.getElementById('cartContent');if(!cart.length){root.innerHTML='<div class="panel empty"><div class="emoji">🛍️</div><h2>Ton panier est vide</h2><p>Il est temps de choisir quelque chose de bon !</p><button class="btn btn-primary" onclick="showPage(\'carte\')">Découvrir la carte</button></div>';return}root.innerHTML=`<div class="two-col"><div class="panel"><h2 style="margin-top:0">Tes produits</h2>${cart.map((i,index)=>`<div class="cart-row"><div><h3>${escapeHTML(i.name)}</h3>${i.details?`<p>${escapeHTML(i.details)}</p>`:''}<p>${money(i.price)} l'unité</p><div class="qty"><button onclick="changeQty(${index},-1)">−</button><strong>${i.quantity}</strong><button onclick="changeQty(${index},1)">+</button><button class="btn btn-danger btn-small" onclick="removeCartItem(${index})">Retirer</button></div></div><strong>${money(i.price*i.quantity)}</strong></div>`).join('')}</div><div class="panel"><h2 style="margin-top:0">Récapitulatif</h2><div class="summary-line"><span>Sous-total</span><strong>${money(cartTotal())}</strong></div><div class="form-group"><label for="promoCode">Code promotionnel</label><div style="display:flex;gap:8px"><input id="promoCode" class="field" placeholder="Ex. JUNGLE10"><button class="btn btn-dark" onclick="applyPromo()">Appliquer</button></div></div>${activePromo?`<p class="small" style="color:var(--green)">Code ${escapeHTML(activePromo.code)} appliqué : -${money(discountAmount())}</p>`:''}<div class="summary-line"><span>Réduction</span><strong>-${money(discountAmount())}</strong></div><div class="summary-line summary-total"><span>Total</span><strong>${money(Math.max(0,cartTotal()-discountAmount()))}</strong></div><button class="btn btn-primary" style="width:100%;margin-top:15px" onclick="showCheckout()">Valider ma commande →</button><p class="muted small">Démonstration : aucun paiement réel ne sera effectué.</p></div></div>`}
 function changeQty(index,delta){if(!cart[index])return;cart[index].quantity+=delta;if(cart[index].quantity<=0)cart.splice(index,1);saveAll();updateCartCount();renderCart()}
 function removeCartItem(index){cart.splice(index,1);saveAll();updateCartCount();renderCart()}
 function applyPromo(){const code=(document.getElementById('promoCode')?.value||'').trim().toUpperCase();const promo=PROMOS[code];if(!promo||!promo.active){activePromo=null;toast('Code promotionnel invalide.');renderCart();return}activePromo={...promo,code};toast('Réduction appliquée !');renderCart()}
-function showCheckout(){if(!cart.length)return;const root=document.getElementById('cartContent');root.innerHTML=<div class="two-col"><div class="panel"><h2 style="margin-top:0">Tes informations</h2><form id="checkoutForm" onsubmit="submitOrder(event)"><div class="form-grid"><div class="form-group"><label for="customerName">Prénom ou pseudo</label><input class="field" id="customerName" maxlength="30" required placeholder="Ton prénom"></div><div class="form-group"><label for="customerMode">Mode de commande</label><select class="field" id="customerMode"><option>À emporter</option><option>Sur place</option></select></div><div class="form-group full"><label for="customerNote">Note pour la commande (facultatif)</label><textarea class="field" id="customerNote" maxlength="250" placeholder="Une précision pour l'équipe…"></textarea></div></div><div class="notice" style="margin-top:15px">Ce site est une démonstration. N'indique pas ton nom complet, ton adresse, ton téléphone ou des informations personnelles.</div><button class="btn btn-primary" style="width:100%;margin-top:16px" type="submit">Confirmer la commande</button></form></div><div class="panel"><h2 style="margin-top:0">Ton récapitulatif</h2>${cart.map(i=><div class="summary-line"><span>${i.quantity} × ${escapeHTML(i.name)}</span><strong>${money(i.pricei.quantity)}</strong></div>).join('')}<div class="summary-line"><span>Sous-total</span><strong>${money(cartTotal())}</strong></div><div class="summary-line"><span>Réduction</span><strong>-${money(discountAmount())}</strong></div><div class="summary-line summary-total"><span>Total</span><strong>${money(cartTotal()-discountAmount())}</strong></div></div></div>}
-function submitOrder(event){event.preventDefault();if(!cart.length)return;const name=document.getElementById('customerName').value.trim();if(!name)return;const now=new Date().toISOString();const items=cart.map(i=>({...i}));const order={id(),name,mode.getElementById('customerMode').value,note.getElementById('customerNote').value.trim(),items,total.max(0,cartTotal()-discountAmount()),promo?.code||null,status:'new',createdAt,etaMinutes:15,history:[{status:'new',at}]};orders.unshift(order);items.forEach(i=>{const p=productById(i.id);if(p)p.stock=Math.max(0,p.stock-i.quantity)});cart=[];activePromo=null;saveAll();updateCartCount();document.getElementById('cartContent').innerHTML=<div class="success-box"><div style="font-size:3rem">🎉</div><h2>Commande confirmée !</h2><p>Merci ${escapeHTML(name)} !</p><p>Ton numéro de commande :</p><h2>${escapeHTML(order.id)}</h2><p>Temps estimé : environ ${order.etaMinutes} minutes.</p><button class="btn btn-primary" onclick="document.getElementById('trackingCode').value='${escapeHTML(order.id)}';showPage('suivi');trackOrder()">Suivre ma commande</button></div>;toast('Commande enregistrée !')}
+function showCheckout(){if(!cart.length)return;const root=document.getElementById('cartContent');root.innerHTML=`<div class="two-col"><div class="panel"><h2 style="margin-top:0">Tes informations</h2><form id="checkoutForm" onsubmit="submitOrder(event)"><div class="form-grid"><div class="form-group"><label for="customerName">Prénom ou pseudo</label><input class="field" id="customerName" maxlength="30" required placeholder="Ton prénom"></div><div class="form-group"><label for="customerMode">Mode de commande</label><select class="field" id="customerMode"><option>À emporter</option><option>Sur place</option></select></div><div class="form-group full"><label for="customerNote">Note pour la commande (facultatif)</label><textarea class="field" id="customerNote" maxlength="250" placeholder="Une précision pour l'équipe…"></textarea></div></div><div class="notice" style="margin-top:15px">Ce site est une démonstration. N'indique pas ton nom complet, ton adresse, ton téléphone ou des informations personnelles.</div><button class="btn btn-primary" style="width:100%;margin-top:16px" type="submit">Confirmer la commande</button></form></div><div class="panel"><h2 style="margin-top:0">Ton récapitulatif</h2>${cart.map(i=>`<div class="summary-line"><span>${i.quantity} × ${escapeHTML(i.name)}</span><strong>${money(i.price*i.quantity)}</strong></div>`).join('')}<div class="summary-line"><span>Sous-total</span><strong>${money(cartTotal())}</strong></div><div class="summary-line"><span>Réduction</span><strong>-${money(discountAmount())}</strong></div><div class="summary-line summary-total"><span>Total</span><strong>${money(cartTotal()-discountAmount())}</strong></div></div></div>`}
+function submitOrder(event){event.preventDefault();if(!cart.length)return;const name=document.getElementById('customerName').value.trim();if(!name)return;const now=new Date().toISOString();const items=cart.map(i=>({...i}));const order={id:makeOrderId(),name,mode:document.getElementById('customerMode').value,note:document.getElementById('customerNote').value.trim(),items,total:Math.max(0,cartTotal()-discountAmount()),promo:activePromo?.code||null,status:'new',createdAt:now,etaMinutes:15,history:[{status:'new',at:now}]};orders.unshift(order);items.forEach(i=>{const p=productById(i.id);if(p)p.stock=Math.max(0,p.stock-i.quantity)});cart=[];activePromo=null;saveAll();updateCartCount();document.getElementById('cartContent').innerHTML=`<div class="success-box"><div style="font-size:3rem">🎉</div><h2>Commande confirmée !</h2><p>Merci ${escapeHTML(name)} !</p><p>Ton numéro de commande :</p><h2>${escapeHTML(order.id)}</h2><p>Temps estimé : environ ${order.etaMinutes} minutes.</p><button class="btn btn-primary" onclick="document.getElementById('trackingCode').value='${escapeHTML(order.id)}';showPage('suivi');trackOrder()">Suivre ma commande</button></div>`;toast('Commande enregistrée !')}
 function statusLabel(status){return({new:'Nouvelle',accepted:'Acceptée',preparing:'En préparation',ready:'Prête',done:'Terminée',refused:'Refusée'})[status]||status}
 function statusDescription(status){return({new:'Commande envoyée à l’équipe',accepted:'Commande acceptée',preparing:'Préparation en cuisine',ready:'Commande prête à récupérer',done:'Commande terminée',refused:'Commande refusée'})[status]||'Mise à jour'}
-function trackOrder(){const code=document.getElementById('trackingCode').value.trim().toUpperCase();const order=orders.find(o=>o.id.toUpperCase()===code);const root=document.getElementById('trackingResult');if(!order){root.innerHTML='<p class="notice">Aucune commande trouvée avec ce numéro sur ce navigateur.</p>';return}const stages=['new','accepted','preparing','ready','done'];const index=stages.indexOf(order.status);const progress=order.status==='refused'?0.max(0,index)/(stages.length-1)*100;root.innerHTML=<div class="admin-card"><div class="admin-card-head"><div><strong>${escapeHTML(order.id)}</strong><p>${escapeHTML(order.name)} · ${new Date(order.createdAt).toLocaleString('fr-FR')}</p></div><span class="status ${order.status}">${statusLabel(order.status)}</span></div><p>Temps estimé : ${order.status==='ready'||order.status==='done'?'Commande prête':order.status==='refused'?'Non disponible':order.etaMinutes+' minutes environ'}</p><div style="height:10px;background:#edf0e9;border-radius:20px;overflow:hidden;margin:15px 0"><div style="height:100%;width:${progress}%;background:var(--leaf);border-radius:20px"></div></div><div class="small muted">${order.status==='refused'?'La commande a été refusée.':statusDescription(order.status)}</div><h3>Historique</h3>${order.history.map(h=><div class="summary-line"><span>${statusDescription(h.status)}</span><span class="small muted">${new Date(h.at).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</span></div>).join('')}<button class="btn btn-light btn-small" onclick="enableOrderNotification('${escapeHTML(order.id)}')">Activer une alerte de commande prête</button></div>}
+function trackOrder(){const code=document.getElementById('trackingCode').value.trim().toUpperCase();const order=orders.find(o=>o.id.toUpperCase()===code);const root=document.getElementById('trackingResult');if(!order){root.innerHTML='<p class="notice">Aucune commande trouvée avec ce numéro sur ce navigateur.</p>';return}const stages=['new','accepted','preparing','ready','done'];const index=stages.indexOf(order.status);const progress=order.status==='refused'?0:Math.max(0,index)/(stages.length-1)*100;root.innerHTML=`<div class="admin-card"><div class="admin-card-head"><div><strong>${escapeHTML(order.id)}</strong><p>${escapeHTML(order.name)} · ${new Date(order.createdAt).toLocaleString('fr-FR')}</p></div><span class="status ${order.status}">${statusLabel(order.status)}</span></div><p>Temps estimé : ${order.status==='ready'||order.status==='done'?'Commande prête':order.status==='refused'?'Non disponible':order.etaMinutes+' minutes environ'}</p><div style="height:10px;background:#edf0e9;border-radius:20px;overflow:hidden;margin:15px 0"><div style="height:100%;width:${progress}%;background:var(--leaf);border-radius:20px"></div></div><div class="small muted">${order.status==='refused'?'La commande a été refusée.':statusDescription(order.status)}</div><h3>Historique</h3>${order.history.map(h=>`<div class="summary-line"><span>${statusDescription(h.status)}</span><span class="small muted">${new Date(h.at).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</span></div>`).join('')}<button class="btn btn-light btn-small" onclick="enableOrderNotification('${escapeHTML(order.id)}')">Activer une alerte de commande prête</button></div>`}
 function enableOrderNotification(orderId){if(!('Notification'in window))return toast('Les notifications ne sont pas disponibles.');Notification.requestPermission().then(permission=>{if(permission==='granted'){localStorage.setItem('elff_notify_order',orderId);toast('Alerte activée sur cet appareil.')}else toast('Autorisation refusée.')})}
-if(window.addEventListener)window.addEventListener('storage',event=>{if(event.key!==STORE.orders||!event.newValue)return;const watched=localStorage.getItem('elff_notify_order');if(!watched)return;try{const updated=JSON.parse(event.newValue),order=updated.find(o=>o.id===watched);if(order&&order.status==='ready'&&'Notification'in window&&Notification.permission==='granted'){new Notification('EL Fast-Food · Commande prête',{body:'La commande '+order.id+' est prête à être récupérée.'});localStorage.removeItem('elff_notify_order')}}catch(e){}});function loadCustomerSpace(){customerPseudo=(document.getElementById('profileName').value||'').trim();const root=document.getElementById('customerSpace');if(!customerPseudo){root.innerHTML='<p class="notice">Entre un pseudo pour afficher tes commandes.</p>';return}const mine=orders.filter(o=>o.name.toLowerCase()===customerPseudo.toLowerCase());const points=mine.filter(o=>['ready','done'].includes(o.status)).reduce((s,o)=>s+Math.floor(o.total),0);root.innerHTML=<div class="stats"><div class="stat"><span>Commandes</span><strong>${mine.length}</strong></div><div class="stat"><span>Points fidélité</span><strong>${points}</strong></div></div><h3>Mon historique</h3>${mine.length?mine.map(o=><div class="admin-card"><div class="admin-card-head"><div><strong>${escapeHTML(o.id)}</strong><p>${new Date(o.createdAt).toLocaleDateString('fr-FR')} · ${money(o.total)}</p></div><span class="status ${o.status}">${statusLabel(o.status)}</span></div><div class="admin-actions"><button class="btn btn-light btn-small" onclick="document.getElementById('trackingCode').value='${escapeHTML(o.id)}';showPage('suivi');trackOrder()">Suivre</button>${['ready','done'].includes(o.status)?<button class="btn btn-primary btn-small" onclick="showReviewForm('${escapeHTML(o.id)}')">Donner un avis</button>:''}</div></div>).join(''):'<p class="muted">Aucune commande trouvée avec ce pseudo sur cet appareil.</p>'}}
-function showReviewForm(orderId){const order=orders.find(o=>o.id===orderId);if(!order||!['ready','done'].includes(order.status))return;document.getElementById('reviewArea').innerHTML=<form onsubmit="submitReview(event,'${escapeHTML(orderId)}')"><p>Commande ${escapeHTML(orderId)}</p><div class="form-group"><label for="reviewRating">Ta note</label><select id="reviewRating" class="field"><option value="5">★★★★★ — Excellent</option><option value="4">★★★★☆ — Très bien</option><option value="3">★★★☆☆ — Bien</option><option value="2">★★☆☆☆ — Moyen</option><option value="1">★☆☆☆☆ — À améliorer</option></select></div><div class="form-group" style="margin-top:12px"><label for="reviewText">Ton commentaire (facultatif)</label><textarea id="reviewText" class="field" maxlength="300"></textarea></div><button class="btn btn-primary" style="margin-top:12px">Envoyer mon avis</button></form>}
-function submitReview(event,orderId){event.preventDefault();const order=orders.find(o=>o.id===orderId);if(!order)return;if(reviews.some(r=>r.orderId===orderId))return toast('Un avis existe déjà pour cette commande.');reviews.unshift({orderId,name,rating(document.getElementById('reviewRating').value),text.getElementById('reviewText').value.trim(),at Date().toISOString()});saveAll();document.getElementById('reviewArea').innerHTML='<p class="success-box">Merci pour ton avis !</p>';toast('Avis enregistré.')}
-function renderMenus(){const root=document.getElementById('menuGrid');const menus=[{name:'Menu Classique',emoji:'🍔',desc:'Un burger, des frites et une boisson.',price:16.99,items:['Burger au choix','Frites','Boisson']},{name:'Menu Gourmand',emoji:'🍗',desc:'Une formule généreuse pour les grandes faims.',price:16.99,items:['Plat au choix','Accompagnement','Boisson']},{name:'Menu Douceur',emoji:'🍦',desc:'Une formule avec une touche sucrée.',price:16.99,items:['Plat au choix','Accompagnement','Dessert'] }];root.innerHTML=menus.map(m=><article class="menu-card"><div class="menu-emoji">${m.emoji}</div><h3>${m.name}</h3><p>${m.desc}</p><ul>${m.items.map(i=><li>${i}</li>).join('')}</ul><div class="menu-price">${money(m.price)}</div><button class="btn btn-primary" onclick="showPage('menus');document.getElementById('menuMain').focus()">Composer cette formule</button></article>).join('')}
-function renderMenuBuilder(){const main=document.getElementById('menuMain'),side=document.getElementById('menuSide'),drink=document.getElementById('menuDrink');if(!main||!side||!drink)return;const fill=(el,items)=>{const old=el.value;el.innerHTML=items.map(p=><option value="${p.id}">${escapeHTML(p.name)}</option>).join('');if(items.some(p=>p.id===old))el.value=old};fill(main,products.filter(p=>p.available&&['Burgers','Plats'].includes(p.category)));fill(side,products.filter(p=>p.available&&p.category==='Accompagnements'));fill(drink,products.filter(p=>p.available&&p.category==='Boissons'))}
-function addComposedMenu(){const ids=['menuMain','menuSide','menuDrink'].map(id=>document.getElementById(id).value);const chosen=ids.map(productById);if(chosen.some(p=>!p))return toast('Choisis un plat, un accompagnement et une boisson.');const details='Menu : '+chosen.map(p=>p.name).join(' + ');addToCart({key:'menu-'+Date.now(),id.id,name:'Menu EL composé',price:16.99,details,quantity:1})}
-function renderAdmin(){const root=document.getElementById('adminRoot');if(!currentRole){root.innerHTML=<div class="panel admin-login"><h2>Connexion équipe</h2><p class="muted">Choisis ton rôle et entre le code de démonstration.</p><form onsubmit="loginAdmin(event)"><div class="form-group"><label for="roleSelect">Rôle</label><select class="field" id="roleSelect"><option value="director">Directeur</option><option value="cashier">Caisse</option><option value="kitchen">Cuisine</option></select></div><div class="form-group" style="margin-top:13px"><label for="adminPin">Code de démonstration</label><input class="field" id="adminPin" type="password" inputmode="numeric" maxlength="8" required></div><button class="btn btn-primary" style="width:100%;margin-top:16px">Se connecter</button></form><div class="notice" style="margin-top:15px">Codes de démonstration : Directeur 1234 · Caisse 2222 · Cuisine 3333. Ils ne sont pas sécurisés.</div></div>;return}const role=roles[currentRole];if(!role.tabs.includes(adminTab))adminTab=role.tabs[0];root.innerHTML=<div class="admin-shell"><aside class="admin-side"><div class="admin-user"><strong>${role.label}</strong><span>Session de démonstration</span></div><div class="admin-nav">${role.tabs.map(t=><button class="${adminTab===t?'active':''}" onclick="setAdminTab('${t}')">${({dashboard:'📊 Tableau de bord',cashier:'🛒 Nouvelle commande',orders:'🧾 Commandes',simulation:'🤖 Clients automatiques',products:'🍔 Carte & produits',stock:'📦 Gestion des stocks',promos:'🏷️ Promotions',team:'👥 Équipe'})[t]}</button>).join('')}<button onclick="logoutAdmin()">↪ Déconnexion</button></div></aside><div class="admin-main">${adminTab==='dashboard'?renderDashboard():adminTab==='cashier'?renderCashier():adminTab==='orders'?renderAdminOrders():adminTab==='simulation'?renderSimulation():adminTab==='products'?renderAdminProducts():adminTab==='stock'?renderStock():adminTab==='promos'?renderPromoAdmin():renderTeam()}</div></div>}
+if(window.addEventListener)window.addEventListener('storage',event=>{if(event.key!==STORE.orders||!event.newValue)return;const watched=localStorage.getItem('elff_notify_order');if(!watched)return;try{const updated=JSON.parse(event.newValue),order=updated.find(o=>o.id===watched);if(order&&order.status==='ready'&&'Notification'in window&&Notification.permission==='granted'){new Notification('EL Fast-Food · Commande prête',{body:'La commande '+order.id+' est prête à être récupérée.'});localStorage.removeItem('elff_notify_order')}}catch(e){}});function loadCustomerSpace(){customerPseudo=(document.getElementById('profileName').value||'').trim();const root=document.getElementById('customerSpace');if(!customerPseudo){root.innerHTML='<p class="notice">Entre un pseudo pour afficher tes commandes.</p>';return}const mine=orders.filter(o=>o.name.toLowerCase()===customerPseudo.toLowerCase());const points=mine.filter(o=>['ready','done'].includes(o.status)).reduce((s,o)=>s+Math.floor(o.total),0);root.innerHTML=`<div class="stats"><div class="stat"><span>Commandes</span><strong>${mine.length}</strong></div><div class="stat"><span>Points fidélité</span><strong>${points}</strong></div></div><h3>Mon historique</h3>${mine.length?mine.map(o=>`<div class="admin-card"><div class="admin-card-head"><div><strong>${escapeHTML(o.id)}</strong><p>${new Date(o.createdAt).toLocaleDateString('fr-FR')} · ${money(o.total)}</p></div><span class="status ${o.status}">${statusLabel(o.status)}</span></div><div class="admin-actions"><button class="btn btn-light btn-small" onclick="document.getElementById('trackingCode').value='${escapeHTML(o.id)}';showPage('suivi');trackOrder()">Suivre</button>${['ready','done'].includes(o.status)?`<button class="btn btn-primary btn-small" onclick="showReviewForm('${escapeHTML(o.id)}')">Donner un avis</button>`:''}</div></div>`).join(''):'<p class="muted">Aucune commande trouvée avec ce pseudo sur cet appareil.</p>'}`}
+function showReviewForm(orderId){const order=orders.find(o=>o.id===orderId);if(!order||!['ready','done'].includes(order.status))return;document.getElementById('reviewArea').innerHTML=`<form onsubmit="submitReview(event,'${escapeHTML(orderId)}')"><p>Commande ${escapeHTML(orderId)}</p><div class="form-group"><label for="reviewRating">Ta note</label><select id="reviewRating" class="field"><option value="5">★★★★★ — Excellent</option><option value="4">★★★★☆ — Très bien</option><option value="3">★★★☆☆ — Bien</option><option value="2">★★☆☆☆ — Moyen</option><option value="1">★☆☆☆☆ — À améliorer</option></select></div><div class="form-group" style="margin-top:12px"><label for="reviewText">Ton commentaire (facultatif)</label><textarea id="reviewText" class="field" maxlength="300"></textarea></div><button class="btn btn-primary" style="margin-top:12px">Envoyer mon avis</button></form>`}
+function submitReview(event,orderId){event.preventDefault();const order=orders.find(o=>o.id===orderId);if(!order)return;if(reviews.some(r=>r.orderId===orderId))return toast('Un avis existe déjà pour cette commande.');reviews.unshift({orderId,name:customerPseudo,rating:Number(document.getElementById('reviewRating').value),text:document.getElementById('reviewText').value.trim(),at:new Date().toISOString()});saveAll();document.getElementById('reviewArea').innerHTML='<p class="success-box">Merci pour ton avis !</p>';toast('Avis enregistré.')}
+function renderMenus(){const root=document.getElementById('menuGrid');const menus=[{name:'Menu Classique',emoji:'🍔',desc:'Un burger, des frites et une boisson.',price:16.99,items:['Burger au choix','Frites','Boisson']},{name:'Menu Gourmand',emoji:'🍗',desc:'Une formule généreuse pour les grandes faims.',price:16.99,items:['Plat au choix','Accompagnement','Boisson']},{name:'Menu Douceur',emoji:'🍦',desc:'Une formule avec une touche sucrée.',price:16.99,items:['Plat au choix','Accompagnement','Dessert'] }];root.innerHTML=menus.map(m=>`<article class="menu-card"><div class="menu-emoji">${m.emoji}</div><h3>${m.name}</h3><p>${m.desc}</p><ul>${m.items.map(i=>`<li>${i}</li>`).join('')}</ul><div class="menu-price">${money(m.price)}</div><button class="btn btn-primary" onclick="showPage('menus');document.getElementById('menuMain').focus()">Composer cette formule</button></article>`).join('')}
+function renderMenuBuilder(){const main=document.getElementById('menuMain'),side=document.getElementById('menuSide'),drink=document.getElementById('menuDrink');if(!main||!side||!drink)return;const fill=(el,items)=>{const old=el.value;el.innerHTML=items.map(p=>`<option value="${p.id}">${escapeHTML(p.name)}</option>`).join('');if(items.some(p=>p.id===old))el.value=old};fill(main,products.filter(p=>p.available&&['Burgers','Plats'].includes(p.category)));fill(side,products.filter(p=>p.available&&p.category==='Accompagnements'));fill(drink,products.filter(p=>p.available&&p.category==='Boissons'))}
+function addComposedMenu(){const ids=['menuMain','menuSide','menuDrink'].map(id=>document.getElementById(id).value);const chosen=ids.map(productById);if(chosen.some(p=>!p))return toast('Choisis un plat, un accompagnement et une boisson.');const details='Menu : '+chosen.map(p=>p.name).join(' + ');addToCart({key:'menu-'+Date.now(),id:chosen[0].id,name:'Menu EL composé',price:16.99,details,quantity:1})}
+function renderAdmin(){const root=document.getElementById('adminRoot');if(!currentRole){root.innerHTML=`<div class="panel admin-login"><h2>Connexion équipe</h2><p class="muted">Choisis ton rôle et entre le code de démonstration.</p><form onsubmit="loginAdmin(event)"><div class="form-group"><label for="roleSelect">Rôle</label><select class="field" id="roleSelect"><option value="director">Directeur</option><option value="cashier">Caisse</option><option value="kitchen">Cuisine</option></select></div><div class="form-group" style="margin-top:13px"><label for="adminPin">Code de démonstration</label><input class="field" id="adminPin" type="password" inputmode="numeric" maxlength="8" required></div><button class="btn btn-primary" style="width:100%;margin-top:16px">Se connecter</button></form><div class="notice" style="margin-top:15px">Codes de démonstration : Directeur 1234 · Caisse 2222 · Cuisine 3333. Ils ne sont pas sécurisés.</div></div>`;return}const role=roles[currentRole];if(!role.tabs.includes(adminTab))adminTab=role.tabs[0];root.innerHTML=`<div class="admin-shell"><aside class="admin-side"><div class="admin-user"><strong>${role.label}</strong><span>Session de démonstration</span></div><div class="admin-nav">${role.tabs.map(t=>`<button class="${adminTab===t?'active':''}" onclick="setAdminTab('${t}')">${({dashboard:'📊 Tableau de bord',orders:'🧾 Commandes',simulation:'🤖 Clients automatiques',products:'🍔 Carte & produits',stock:'📦 Gestion des stocks',promos:'🏷️ Promotions',team:'👥 Équipe'})[t]}</button>`).join('')}<button onclick="logoutAdmin()">↪ Déconnexion</button></div></aside><div class="admin-main">${adminTab==='dashboard'?renderDashboard():adminTab==='orders'?renderAdminOrders():adminTab==='simulation'?renderSimulation():adminTab==='products'?renderAdminProducts():adminTab==='stock'?renderStock():adminTab==='promos'?renderPromoAdmin():renderTeam()}</div></div>`}
 function loginAdmin(event){event.preventDefault();const role=document.getElementById('roleSelect').value;const pin=document.getElementById('adminPin').value;if(roles[role].pin!==pin){toast('Code incorrect.');return}currentRole=role;adminTab=roles[role].tabs[0];renderAdmin();toast('Connexion réussie.')}
 function logoutAdmin(){currentRole=null;renderAdmin();toast('Déconnexion effectuée.')}
 function setAdminTab(tab){if(!currentRole||!roles[currentRole].tabs.includes(tab))return;adminTab=tab;renderAdmin()}
-function renderDashboard(){const today=new Date().toDateString();const todays=orders.filter(o=>new Date(o.createdAt).toDateString()===today);const revenue=todays.filter(o=>o.status!=='refused').reduce((s,o)=>s+o.total,0);const low=products.filter(p=>p.stock<=5);return <h2>Tableau de bord</h2><div class="stats"><div class="stat"><span>Commandes aujourd'hui</span><strong>${todays.length}</strong></div><div class="stat"><span>À traiter</span><strong>${orders.filter(o=>['new','accepted','preparing'].includes(o.status)).length}</strong></div><div class="stat"><span>Chiffre d'affaires estimé</span><strong>${money(revenue)}</strong></div><div class="stat"><span>Alertes de stock</span><strong>${low.length}</strong></div></div><div class="panel"><h3 style="margin-top:0">Dernières commandes</h3>${orders.length?orders.slice(0,5).map(o=><div class="admin-card"><div class="admin-card-head"><div><strong>${escapeHTML(o.id)} · ${escapeHTML(o.name)}</strong><p>${new Date(o.createdAt).toLocaleString('fr-FR')}</p></div><span class="status ${o.status}">${statusLabel(o.status)}</span></div><p>${money(o.total)} · ${o.items.reduce((s,i)=>s+i.quantity,0)} article(s)</p></div>).join(''):'<p class="muted">Aucune commande pour le moment.</p>'}</div><div class="panel" style="margin-top:15px"><h3>Stocks à surveiller</h3>${low.length?low.map(p=><p>${escapeHTML(p.name)} : <strong>${p.stock}</strong> en stock</p>).join(''):'<p class="muted">Aucune alerte de stock.</p>'}</div>}
-let cashierCategory='Tout';
-
-function renderCashier(){
-const categories=['Tout',...new Set(products.map(p=>p.category))];
-const available=products.filter(p=>
-p.available && p.stock>0 &&
-(cashierCategory==='Tout'||p.category===cashierCategory)
-);
-
-const total=cashierDraftItems.reduce((sum,item)=>{
-const p=products.find(x=>x.id===item.id);
-return sum+(p?p.price*item.quantity:0);
-},0);
-
-return `
-<h2>🛒 Nouvelle commande</h2>
-<p class="muted">Prise de commande au comptoir</p>
-
-<div class="admin-card">
-  <h3>1. Choisir les produits</h3>
-  <div class="admin-actions">
-    ${categories.map(c=>`
-      <button class="btn ${cashierCategory===c?'btn-primary':'btn-secondary'}"
-        onclick="cashierCategory='${escapeHTML(c)}';renderAdmin()">
-        ${escapeHTML(c)}
-      </button>
-    `).join('')}
-  </div>
-
-  <div class="cashier-products">
-    ${available.length?available.map(p=>{
-      const item=cashierDraftItems.find(i=>i.id===p.id);
-      return `
-        <div class="admin-card">
-          <div class="admin-card-head">
-            <div>
-              <strong>${p.emoji||'🍽️'} ${escapeHTML(p.name)}</strong>
-              <p>${money(p.price)} · Stock : ${p.stock}</p>
-            </div>
-            <button class="btn btn-primary"
-              onclick="cashierAdd('${p.id}')">+ Ajouter</button>
-          </div>
-          ${item?`<p>Dans le panier : ${item.quantity}</p>`:''}
-        </div>
-      `;
-    }).join(''):'<p>Aucun produit disponible dans cette catégorie.</p>'}
-  </div>
-</div>
-
-<div class="admin-card">
-  <h3>2. Panier</h3>
-  ${cashierDraftItems.length?cashierDraftItems.map(item=>{
-    const p=products.find(x=>x.id===item.id);
-    if(!p)return '';
-    return `
-      <div class="admin-card-head">
-        <div>
-          <strong>${escapeHTML(p.name)}</strong>
-          <p>${money(p.price)} × ${item.quantity}</p>
-        </div>
-        <div class="admin-actions">
-          <button class="btn btn-secondary"
-            onclick="cashierChange('${p.id}',-1)">−</button>
-          <strong>${item.quantity}</strong>
-          <button class="btn btn-secondary"
-            onclick="cashierChange('${p.id}',1)">+</button>
-        </div>
-      </div>
-    `;
-  }).join(''):'<p class="muted">Le panier est vide.</p>'}
-
-  <hr>
-  <div class="admin-card-head">
-    <strong>Total à payer</strong>
-    <h2>${money(total)}</h2>
-  </div>
-</div>
-
-<div class="admin-card">
-  <h3>3. Informations client</h3>
-  <div class="form-group">
-    <label for="cashierCustomerName">Nom du client</label>
-    <input class="field" id="cashierCustomerName"
-      placeholder="Ex : Client comptoir">
-  </div>
-  <div class="form-group" style="margin-top:12px">
-    <label for="cashierMode">Mode de commande</label>
-    <select class="field" id="cashierMode">
-      <option value="Sur place">Sur place</option>
-      <option value="À emporter">À emporter</option>
-    </select>
-  </div>
-
-  <button class="btn btn-primary"
-    style="width:100%;margin-top:16px"
-    onclick="cashierSubmit()"
-    ${cashierDraftItems.length?'':'disabled'}>
-    Valider la commande · ${money(total)}
-  </button>
-
-  <button class="btn btn-secondary"
-    style="width:100%;margin-top:8px"
-    onclick="cashierClear()">
-    Vider le panier
-  </button>
-</div>
-
-`;
-}
-
-function cashierAdd(id){
-const p=products.find(x=>x.id===id);
-if(!p||!p.available||p.stock<=0){
-toast('Produit indisponible.');
-return;
-}
-const item=cashierDraftItems.find(i=>i.id===id);
-if(item){
-if(item.quantity>=p.stock){
-toast('Stock insuffisant.');
-return;
-}
-item.quantity++;
-}else{
-cashierDraftItems.push({id.id,name.name,price.price,quantity:1});
-}
-renderAdmin();
-}
-
-function cashierChange(id,change){
-const item=cashierDraftItems.find(i=>i.id===id);
-const p=products.find(x=>x.id===id);
-if(!item||!p)return;
-
-item.quantity+=change;
-if(item.quantity<=0){
-cashierDraftItems=cashierDraftItems.filter(i=>i.id!==id);
-}else if(item.quantity>p.stock){
-item.quantity=p.stock;
-toast('Stock maximum atteint.');
-}
-renderAdmin();
-}
-
-function cashierClear(){
-cashierDraftItems=[];
-renderAdmin();
-}
-
-function cashierSubmit(){
-if(!cashierDraftItems.length){
-toast('Le panier est vide.');
-return;
-}
-
-for(const item of cashierDraftItems){
-const p=products.find(x=>x.id===item.id);
-if(!p||!p.available||p.stock<item.quantity){
-toast('Stock insuffisant pour '+item.name+'.');
-renderAdmin();
-return;
-}
-}
-
-const name=document.getElementById('cashierCustomerName').value.trim();
-if(!name){
-toast('Entre le nom du client.');
-return;
-}
-
-const now=new Date().toISOString();
-const items=cashierDraftItems.map(i=>({...i}));
-const total=items.reduce((sum,i)=>sum+i.price*i.quantity,0);
-
-const order={
-id(),
-name,
-mode.getElementById('cashierMode').value,
-note:'',
-items,
-total,
-promo,
-status:'new',
-createdAt,
-etaMinutes:15,
-history:[{status:'new',at}],
-source:'cashier'
-};
-
-orders.unshift(order);
-
-items.forEach(item=>{
-const p=products.find(x=>x.id===item.id);
-if(p)p.stock=Math.max(0,p.stock-item.quantity);
-});
-
-cashierDraftItems=[];
-saveAll();
-renderAdmin();
-renderProducts();
-toast('Commande caisse enregistrée : '+order.id);
-}
-function renderAdminOrders(){
-let visible=orders;
-if(currentRole==='kitchen')visible=orders.filter(o=>['accepted','preparing','ready'].includes(o.status));
-return `<h2>Gestion des commandes</h2>
-
+function renderDashboard(){const today=new Date().toDateString();const todays=orders.filter(o=>new Date(o.createdAt).toDateString()===today);const revenue=todays.filter(o=>o.status!=='refused').reduce((s,o)=>s+o.total,0);const low=products.filter(p=>p.stock<=5);return `<h2>Tableau de bord</h2><div class="stats"><div class="stat"><span>Commandes aujourd'hui</span><strong>${todays.length}</strong></div><div class="stat"><span>À traiter</span><strong>${orders.filter(o=>['new','accepted','preparing'].includes(o.status)).length}</strong></div><div class="stat"><span>Chiffre d'affaires estimé</span><strong>${money(revenue)}</strong></div><div class="stat"><span>Alertes de stock</span><strong>${low.length}</strong></div></div><div class="panel"><h3 style="margin-top:0">Dernières commandes</h3>${orders.length?orders.slice(0,5).map(o=>`<div class="admin-card"><div class="admin-card-head"><div><strong>${escapeHTML(o.id)} · ${escapeHTML(o.name)}</strong><p>${new Date(o.createdAt).toLocaleString('fr-FR')}</p></div><span class="status ${o.status}">${statusLabel(o.status)}</span></div><p>${money(o.total)} · ${o.items.reduce((s,i)=>s+i.quantity,0)} article(s)</p></div>`).join(''):'<p class="muted">Aucune commande pour le moment.</p>'}</div><div class="panel" style="margin-top:15px"><h3>Stocks à surveiller</h3>${low.length?low.map(p=>`<p>${escapeHTML(p.name)} : <strong>${p.stock}</strong> en stock</p>`).join(''):'<p class="muted">Aucune alerte de stock.</p>'}</div>`}function renderAdminOrders(){
+  let visible=orders;
+  if(currentRole==='kitchen')visible=orders.filter(o=>['accepted','preparing','ready'].includes(o.status));
+  return `<h2>Gestion des commandes</h2>
   <p class="muted">Toutes les commandes enregistrées sur cet appareil.</p>
   ${visible.length?visible.map(o=>`
     <article class="admin-card">
@@ -370,56 +135,55 @@ return `<h2>Gestion des commandes</h2>
 }
 
 function orderButtons(o){
-let buttons='';
-if(currentRole==='cashier'&&o.status==='new'){
-buttons+=<button class="btn btn-success btn-small" onclick="setOrderStatus('${o.id}','accepted')">Accepter</button>
-    <button class="btn btn-danger btn-small" onclick="setOrderStatus('${o.id}','refused')">Refuser</button>;
-}
-if(currentRole==='kitchen'&&o.status==='accepted'){
-buttons+=<button class="btn btn-primary btn-small" onclick="setOrderStatus('${o.id}','preparing')">Commencer la préparation</button>;
-}
-if(currentRole==='kitchen'&&o.status==='preparing'){
-buttons+=<button class="btn btn-success btn-small" onclick="setOrderStatus('${o.id}','ready')">Commande prête</button>;
-}
-if(currentRole==='cashier'&&o.status==='ready'){
-buttons+=<button class="btn btn-success btn-small" onclick="setOrderStatus('${o.id}','done')">Commande remise</button>;
-}
-if(currentRole==='director'&&o.status!=='done'&&o.status!=='refused'){
-buttons+=<button class="btn btn-light btn-small" onclick="setOrderStatus('${o.id}','done')">Clôturer</button>;
-}
-if(currentRole==='director'){
-buttons+=<button class="btn btn-danger btn-small" onclick="deleteOrder('${o.id}')">Supprimer</button>;
-}
-return buttons||'<span class="muted small">Aucune action disponible.</span>';
+  let buttons='';
+  if(currentRole==='cashier'&&o.status==='new'){
+    buttons+=`<button class="btn btn-success btn-small" onclick="setOrderStatus('${o.id}','accepted')">Accepter</button>
+    <button class="btn btn-danger btn-small" onclick="setOrderStatus('${o.id}','refused')">Refuser</button>`;
+  }
+  if(currentRole==='kitchen'&&o.status==='accepted'){
+    buttons+=`<button class="btn btn-primary btn-small" onclick="setOrderStatus('${o.id}','preparing')">Commencer la préparation</button>`;
+  }
+  if(currentRole==='kitchen'&&o.status==='preparing'){
+    buttons+=`<button class="btn btn-success btn-small" onclick="setOrderStatus('${o.id}','ready')">Commande prête</button>`;
+  }
+  if(currentRole==='cashier'&&o.status==='ready'){
+    buttons+=`<button class="btn btn-success btn-small" onclick="setOrderStatus('${o.id}','done')">Commande remise</button>`;
+  }
+  if(currentRole==='director'&&o.status!=='done'&&o.status!=='refused'){
+    buttons+=`<button class="btn btn-light btn-small" onclick="setOrderStatus('${o.id}','done')">Clôturer</button>`;
+  }
+  if(currentRole==='director'){
+    buttons+=`<button class="btn btn-danger btn-small" onclick="deleteOrder('${o.id}')">Supprimer</button>`;
+  }
+  return buttons||'<span class="muted small">Aucune action disponible.</span>';
 }
 
 function setOrderStatus(id,status){
-const o=orders.find(x=>x.id===id);
-if(!o)return;
-o.status=status;
-o.history=o.history||[];
-o.history.push({status,at Date().toISOString()});
-if(status==='done'&&!o.loyaltyAwarded){
-o.loyaltyAwarded=true;
-o.pointsEarned=Math.floor(o.total);
-}
-saveAll();
-renderAdmin();
-renderProducts();
-toast('Commande mise à jour : '+statusLabel(status));
+  const o=orders.find(x=>x.id===id);
+  if(!o)return;
+  o.status=status;
+  o.history=o.history||[];
+  o.history.push({status,at:new Date().toISOString()});
+  if(status==='done'&&!o.loyaltyAwarded){
+    o.loyaltyAwarded=true;
+    o.pointsEarned=Math.floor(o.total);
+  }
+  saveAll();
+  renderAdmin();
+  renderProducts();
+  toast('Commande mise à jour : '+statusLabel(status));
 }
 
 function deleteOrder(id){
-if(!confirm('Supprimer cette commande ?'))return;
-orders=orders.filter(o=>o.id!==id);
-saveAll();
-renderAdmin();
-toast('Commande supprimée.');
+  if(!confirm('Supprimer cette commande ?'))return;
+  orders=orders.filter(o=>o.id!==id);
+  saveAll();
+  renderAdmin();
+  toast('Commande supprimée.');
 }
 
 function renderAdminProducts(){
-return `<h2>Gestion de la carte</h2>
-
+  return `<h2>Gestion de la carte</h2>
   <div class="panel">
     <h3>Ajouter un produit</h3>
     <form onsubmit="saveProduct(event)">
@@ -456,43 +220,42 @@ return `<h2>Gestion de la carte</h2>
 }
 
 function saveProduct(event){
-event.preventDefault();
-const name=document.getElementById('pName').value.trim();
-const price=Number(document.getElementById('pPrice').value);
-if(!name||!Number.isFinite(price)||price<0)return toast('Vérifie le nom et le prix.');
-const product={
-id:'custom-'+Date.now(),
-name,
-price,
-category.getElementById('pCategory').value,
-stock.max(0,Number(document.getElementById('pStock').value)||0),
-emoji.getElementById('pEmoji').value||'🍽️',
-desc.getElementById('pDesc').value.trim(),
-image.getElementById('pImage').value.trim(),
-available
-};
-products.push(product);
-saveAll();
-renderAdmin();
-renderProducts();
-renderMenuBuilder();
-toast('Produit ajouté à la carte !');
+  event.preventDefault();
+  const name=document.getElementById('pName').value.trim();
+  const price=Number(document.getElementById('pPrice').value);
+  if(!name||!Number.isFinite(price)||price<0)return toast('Vérifie le nom et le prix.');
+  const product={
+    id:'custom-'+Date.now(),
+    name,
+    price,
+    category:document.getElementById('pCategory').value,
+    stock:Math.max(0,Number(document.getElementById('pStock').value)||0),
+    emoji:document.getElementById('pEmoji').value||'🍽️',
+    desc:document.getElementById('pDesc').value.trim(),
+    image:document.getElementById('pImage').value.trim(),
+    available:true
+  };
+  products.push(product);
+  saveAll();
+  renderAdmin();
+  renderProducts();
+  renderMenuBuilder();
+  toast('Produit ajouté à la carte !');
 }
 
 function toggleProduct(id){
-const p=productById(id);
-if(!p)return;
-p.available=!p.available;
-saveAll();
-renderAdmin();
-renderProducts();
-renderMenuBuilder();
-toast(p.name+' : '+(p.available?'disponible':'indisponible'));
+  const p=productById(id);
+  if(!p)return;
+  p.available=!p.available;
+  saveAll();
+  renderAdmin();
+  renderProducts();
+  renderMenuBuilder();
+  toast(p.name+' : '+(p.available?'disponible':'indisponible'));
 }
 
 function renderStock(){
-return `<h2>Gestion des stocks</h2>
-
+  return `<h2>Gestion des stocks</h2>
   <p class="muted">Surveille les quantités et ajuste les stocks de chaque produit.</p>
   <div class="panel"><div class="admin-table-wrap">
     <table class="admin-table">
@@ -513,20 +276,19 @@ return `<h2>Gestion des stocks</h2>
 }
 
 function adjustStock(id,delta){
-const p=productById(id);
-if(!p)return;
-p.stock=Math.max(0,(Number(p.stock)||0)+delta);
-if(p.stock===0)p.available=false;
-else p.available=true;
-saveAll();
-renderAdmin();
-renderProducts();
-renderMenuBuilder();
+  const p=productById(id);
+  if(!p)return;
+  p.stock=Math.max(0,(Number(p.stock)||0)+delta);
+  if(p.stock===0)p.available=false;
+  else p.available=true;
+  saveAll();
+  renderAdmin();
+  renderProducts();
+  renderMenuBuilder();
 }
 
 function renderPromoAdmin(){
-return `<h2>Promotions et codes</h2>
-
+  return `<h2>Promotions et codes</h2>
   <p class="muted">Active ou désactive les codes promotionnels disponibles dans le panier.</p>
   <div class="panel">
     ${Object.entries(PROMOS).map(([code,promo])=>`
@@ -541,396 +303,23 @@ return `<h2>Promotions et codes</h2>
 }
 
 function togglePromo(code){
-if(!PROMOS[code])return;
-PROMOS[code].active=PROMOS[code].active===false;
-localStorage.setItem(STORE.promos,JSON.stringify(PROMOS));
-renderAdmin();
-}
-
-let simulationState = {
-elapsed: 0,
-running: false,
-finished: false,
-paused: false,
-nextArrival: 10,
-maxClients: 100,
-traffic: 'normal',
-category: 'all',
-generated: 0,
-revenue: 0
-};
-
-const SIMULATION_DURATION = 1200;
-const SIMULATION_SPEED = 39;
-
-function simulationOrders(){
-return orders.filter(o => o.simulated);
-}
-
-function simulationClock(){
-const minutes = Math.min(780, Math.floor(
-simulationState.elapsed * SIMULATION_SPEED / 60
-));
-const total = 9 * 60 + minutes;
-return String(Math.floor(total / 60)).padStart(2,'0') + ':' +
-String(total % 60).padStart(2,'0');
-}
-
-function renderSimulation(){
-const simulated = simulationOrders();
-
-return `
-<h2>Simulation de journée</h2>
-<p class="muted">
-Reproduis une journée complète chez EL Fast-Food en 20 minutes.
-</p>
-
-<div class="stats">
-  <div class="stat">
-    <span>Clients simulés</span>
-    <strong id="simClients">${simulated.length}</strong>
-  </div>
-  <div class="stat">
-    <span>Ventes simulées</span>
-    <strong id="simRevenue">${money(simulated.reduce((s,o)=>s+o.total,0))}</strong>
-  </div>
-  <div class="stat">
-    <span>Heure simulée</span>
-    <strong id="simClock">${simulationClock()}</strong>
-  </div>
-  <div class="stat">
-    <span>Commandes en attente</span>
-    <strong id="simPending">${simulated.filter(o=>o.status==='new').length}</strong>
-  </div>
-</div>
-
-<div class="panel">
-  <h3>Déroulement de la journée</h3>
-  <div style="display:flex;justify-content:space-between;gap:10px">
-    <strong>09:00</strong>
-    <strong id="simProgressText">${Math.floor(simulationState.elapsed/SIMULATION_DURATION*100)} %</strong>
-    <strong>22:00</strong>
-  </div>
-  <div style="height:13px;background:var(--border);border-radius:20px;overflow:hidden;margin:12px 0">
-    <div id="simProgress" style="height:100%;width:${simulationState.elapsed/SIMULATION_DURATION*100}%;background:var(--primary);border-radius:20px"></div>
-  </div>
-  <p id="simPeriod" class="muted">${simulationPeriod()}</p>
-  <div class="admin-actions">
-    <button class="btn btn-success" onclick="startSimulation()">▶ Démarrer / Reprendre</button>
-    <button class="btn btn-light" onclick="pauseSimulation()">Ⅱ Pause</button>
-    <button class="btn btn-danger" onclick="stopSimulation()">■ Arrêter</button>
-  </div>
-  <p id="simStatus" class="muted" style="margin-top:12px">
-    ${simulationState.running?'Simulation en cours':simulationState.paused?'Simulation en pause':simulationState.finished?'Journée terminée':'Prêt à démarrer'}
-  </p>
-</div>
-
-<div class="panel" style="margin-top:16px">
-  <h3>Personnaliser la simulation</h3>
-
-  <div class="form-grid">
-    <div class="form-group">
-      <label for="simTraffic">Fréquentation</label>
-      <select class="field" id="simTraffic">
-        <option value="low" ${simulationState.traffic==='low'?'selected':''}>Faible</option>
-        <option value="normal" ${simulationState.traffic==='normal'?'selected':''}>Normale</option>
-        <option value="high" ${simulationState.traffic==='high'?'selected':''}>Forte</option>
-        <option value="extreme" ${simulationState.traffic==='extreme'?'selected':''}>Exceptionnelle</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label for="simMax">Nombre maximum de clients</label>
-      <input class="field" id="simMax" type="number" min="1" max="500" value="${simulationState.maxClients}">
-    </div>
-
-    <div class="form-group full">
-      <label for="simCategory">Catégories de produits</label>
-      <select class="field" id="simCategory">
-        <option value="all" ${simulationState.category==='all'?'selected':''}>Toute la carte</option>
-        <option value="Burgers" ${simulationState.category==='Burgers'?'selected':''}>Burgers</option>
-        <option value="Plats" ${simulationState.category==='Plats'?'selected':''}>Plats</option>
-        <option value="Accompagnements" ${simulationState.category==='Accompagnements'?'selected':''}>Accompagnements</option>
-        <option value="Desserts" ${simulationState.category==='Desserts'?'selected':''}>Desserts</option>
-        <option value="Boissons" ${simulationState.category==='Boissons'?'selected':''}>Boissons</option>
-      </select>
-    </div>
-  </div>
-
-  <button class="btn btn-primary" style="margin-top:14px" onclick="applySimulationSettings()">
-    Appliquer les réglages
-  </button>
-  <p class="muted small">Les réglages peuvent être changés pendant une journée en cours.</p>
-</div>
-
-<div class="panel" style="margin-top:16px">
-  <h3>Dernières commandes simulées</h3>
-  <div id="simRecent">
-    ${renderSimulationRecent()}
-  </div>
-</div>
-
-`;
-}
-
-function simulationPeriod(){
-const m = Math.floor(simulationState.elapsed*SIMULATION_SPEED/60);
-const hour = 9 + Math.floor(m/60);
-
-if(hour < 11) return '☀️ Matinée calme';
-if(hour < 14) return '🔥 Coup de feu du midi';
-if(hour < 18) return '🍟 Après-midi';
-if(hour < 21) return '🔥 Coup de feu du soir';
-return '🌙 Fin de journée';
-}
-
-function renderSimulationRecent(){
-const recent = simulationOrders().slice().reverse().slice(0,8);
-
-if(!recent.length) return '<p class="muted">Aucune commande simulée pour le moment.</p>';
-
-return recent.map(o=>    <div class="admin-card">
-      <div class="admin-card-head">
-        <strong>${escapeHTML(o.name)}</strong>
-        <span class="status ${o.status}">${statusLabel(o.status)}</span>
-      </div>
-      <p>${o.items.map(i=>i.quantity+' × '+escapeHTML(i.name)).join(', ')}</p>
-      <strong>${money(o.total)}</strong>
-    </div>
- ).join('');
-}
-
-function applySimulationSettings(){
-const traffic = document.getElementById('simTraffic');
-const max = document.getElementById('simMax');
-const category = document.getElementById('simCategory');
-
-if(!traffic||!max||!category) return;
-
-simulationState.traffic = traffic.value;
-simulationState.maxClients = Math.max(1,Math.min(500,Number(max.value)||100));
-simulationState.category = category.value;
-
-renderAdmin();
-toast('Réglages de simulation appliqués !');
-}
-
-function createSimulatedClient(){
-const simulated = simulationOrders();
-
-if(simulated.length >= simulationState.maxClients){
-toast('Limite de clients atteinte.');
-pauseSimulation();
-return;
-}
-
-let available = products.filter(p =>
-p.available !== false && Number(p.stock)>0
-);
-
-if(simulationState.category!=='all'){
-available = available.filter(p=>p.category===simulationState.category);
-}
-
-if(!available.length){
-toast('Aucun produit disponible dans cette catégorie.');
-pauseSimulation();
-return;
-}
-
-const names = [
-'Lucas','Emma','Noah','Jade','Hugo','Lina',
-'Louis','Chloé','Adam','Léa','Gabriel','Inès',
-'Nathan','Manon','Arthur','Camille','Raphaël'
-];
-
-const firstName = names[Math.floor(Math.random()*names.length)];
-const itemCount = Math.min(available.length,Math.floor(Math.random()*3)+1);
-const shuffled = [...available].sort(()=>Math.random()-0.5);
-const selected = [];
-
-for(let i=0;i<itemCount;i++){
-const p = shuffled[i];
-const quantity = Math.min(Math.floor(Math.random()*2)+1,Number(p.stock)||1);
-
-selected.push({
-  id:p.id,
-  name:p.name,
-  price:Number(p.price)||0,
-  quantity
-});
-
-p.stock = Math.max(0,Number(p.stock)-quantity);
-if(p.stock===0) p.available=false;
-
-}
-
-const total = selected.reduce((s,i)=>s+i.price*i.quantity,0);
-const now = new Date().toISOString();
-
-const order = {
-id:'SIM-'+Date.now().toString().slice(-7),
-name+' (client simulé)',
-items,
-total,
-status:'new',
-createdAt,
-mode:'Sur place',
-note:'Commande issue de la simulation.',
-simulated,
-history:[{status:'new',at}]
-};
-
-orders.push(order);
-simulationState.generated++;
-simulationState.revenue+=total;
-
-saveAll();
-renderAdmin();
-renderProducts();
-toast('Nouveau client : '+firstName+' !');
-}
-
-function simulationTick(){
-if(!simulationState.running) return;
-
-simulationState.elapsed++;
-
-if(simulationState.elapsed>=SIMULATION_DURATION){
-simulationState.elapsed=SIMULATION_DURATION;
-simulationState.running=false;
-simulationState.finished=true;
-clearInterval(simulationTimer);
-simulationTimer=null;
-renderAdmin();
-toast('Journée simulée terminée !');
-return;
-}
-
-const minute = Math.floor(simulationState.elapsed*SIMULATION_SPEED/60);
-const hour = 9+Math.floor(minute/60);
-
-let interval = 22;
-
-if(hour>=11&&hour<14) interval=9;
-else if(hour>=18&&hour<21) interval=10;
-else if(hour<11) interval=35;
-else if(hour<18) interval=23;
-else interval=30;
-
-const factors = {low:1.8,normal:1,high:0.65,extreme:0.4};
-interval *= factors[simulationState.traffic]||1;
-
-simulationState.nextArrival--;
-
-if(simulationState.nextArrival<=0){
-const group = Math.random()<0.18 ? 2 : 1;
-
-for(let i=0;i<group;i++){
-  if(simulationOrders().length<simulationState.maxClients){
-    createSimulatedClient();
-  }
-}
-
-simulationState.nextArrival=Math.max(3,Math.round(interval*(0.65+Math.random()*0.7)));
-
-}
-
-updateSimulationDisplay();
-}
-
-function updateSimulationDisplay(){
-const clock=document.getElementById('simClock');
-const progress=document.getElementById('simProgress');
-const progressText=document.getElementById('simProgressText');
-const period=document.getElementById('simPeriod');
-const status=document.getElementById('simStatus');
-const clients=document.getElementById('simClients');
-const revenue=document.getElementById('simRevenue');
-const pending=document.getElementById('simPending');
-
-const simulated=simulationOrders();
-const percent=simulationState.elapsed/SIMULATION_DURATION*100;
-
-if(clock) clock.textContent=simulationClock();
-if(progress) progress.style.width=percent+'%';
-if(progressText) progressText.textContent=Math.floor(percent)+' %';
-if(period) period.textContent=simulationPeriod();
-if(status) status.textContent=simulationState.running?'Simulation en cours'.paused?'Simulation en pause':'Prêt';
-if(clients) clients.textContent=simulated.length;
-if(revenue) revenue.textContent=money(simulated.reduce((s,o)=>s+o.total,0));
-if(pending) pending.textContent=simulated.filter(o=>o.status==='new').length;
-}
-
-function startSimulation(){
-if(simulationState.running) return;
-
-if(simulationState.finished){
-simulationState.elapsed=0;
-simulationState.finished=false;
-simulationState.generated=0;
-simulationState.revenue=0;
-simulationState.nextArrival=10;
-}
-
-simulationState.running=true;
-simulationState.paused=false;
-
-if(simulationTimer) clearInterval(simulationTimer);
-simulationTimer=setInterval(simulationTick,1000);
-
-renderAdmin();
-toast('La journée EL Fast-Food commence !');
-}
-
-function pauseSimulation(){
-if(simulationTimer){
-clearInterval(simulationTimer);
-simulationTimer=null;
-}
-
-simulationState.running=false;
-simulationState.paused=true;
-
-renderAdmin();
-toast('Simulation mise en pause.');
-}
-
-function stopSimulation(){
-if(simulationTimer){
-clearInterval(simulationTimer);
-simulationTimer=null;
-}
-
-simulationState.running=false;
-simulationState.paused=false;
-simulationState.finished=true;
-
-renderAdmin();
-toast('Simulation arrêtée.');
+  if(!PROMOS[code])return;
+  PROMOS[code].active=PROMOS[code].active===false;
+  localStorage.setItem(STORE.promos,JSON.stringify(PROMOS));
+  renderAdmin();
 }
 
 function init(){
-renderMenus();
-renderMenuBuilder();
-renderProducts();
-
-const home=document.getElementById('homeProducts');
-
-if(home){
-home.innerHTML=products
-.filter(p=>p.available&&p.stock>0)
-.slice(0,3)
-.map(productCard)
-.join('');
-}
-
-updateCartCount();
-renderCart();
+  renderMenus();
+  renderMenuBuilder();
+  renderProducts();
+  const home=document.getElementById('homeProducts');
+  if(home)home.innerHTML=products.filter(p=>p.available&&p.stock>0).slice(0,3).map(productCard).join('');
+  updateCartCount();
+  renderCart();
 }
 
 init();
-
 </script>
 </body>
 </html>
